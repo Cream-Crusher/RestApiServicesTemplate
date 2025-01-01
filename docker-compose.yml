@@ -1,0 +1,13 @@
+services:
+
+  db:
+    image: postgres:latest
+    container_name: db_bot
+
+#  redis:
+#    image: redis
+#    container_name: redis_bot
+
+volumes:
+  postgres_data:
+  redis_data:

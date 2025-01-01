@@ -1,0 +1,11 @@
+venv
+.venv
+.env
+.idea
+*__pycache__
+/root.crt
+root.crt
+/.env
+volumes
+.DS_Store
+.gitlab-ci.yml
