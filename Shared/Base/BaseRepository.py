@@ -62,7 +62,7 @@ class BaseRepository[T, I]:
             if not model:
                 raise HTTPException(
                     status_code=404,
-                    detail={"message": f'{self.model} by id "{I}" not found'}
+                    detail={"message": f'{self.model} by id "{model_id}" not found'}
                 )
             await self.session.delete(model)
             await self.session.commit()
@@ -74,8 +74,11 @@ class BaseRepository[T, I]:
             logging.error(error)
             raise HTTPException(500, f"{error}")
 
-    async def update(self, model_id: I, update_data: dict) -> T:
+    async def update(self, model_id: I, update_data: dict | BaseModel) -> T:
         model = await self.id(model_id)
+
+        if isinstance(update_data, BaseModel):
+            update_data = update_data.model_dump()
 
         for key, value in update_data.items():
             if value is not None:

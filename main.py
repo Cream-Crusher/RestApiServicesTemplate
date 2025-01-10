@@ -10,7 +10,7 @@ from bot import main as bot_main
 config = uvicorn.config.Config(
     app,
     host="0.0.0.0",
-    port=8012,
+    port=8011,
 )
 server = uvicorn.Server(config=config)
 

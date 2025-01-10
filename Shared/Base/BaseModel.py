@@ -1,9 +1,7 @@
 import uuid
-
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel
 from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column
 
 
