@@ -25,7 +25,7 @@ config.set_main_option("sqlalchemy.url", url)
 # add your model's MetaData object here
 
 # models for autogenerate
-from Services.UserService.Users.model import Users
+from Services.UserService.Users.model import User
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata

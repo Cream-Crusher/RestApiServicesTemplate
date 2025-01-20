@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from Shared.Base.BaseModel import Base
 
 
-class Users(Base):
+class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(type_=BIGINT, primary_key=True, nullable=False)  # type: ignore

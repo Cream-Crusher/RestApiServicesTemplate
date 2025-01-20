@@ -12,6 +12,8 @@ from app.handlers.manager.states.tool import ToolState
 from app.handlers.manager.texts.tool import ToolText
 from app.middlewares.UserMW import TelegramUser
 
+from Services.BotService.handlers.manager.keyboards.callbacks.tool import ToolKeyboardsCallbacks
+
 router = Router()
 
 
@@ -88,3 +90,9 @@ async def tool(message: types.Message, state: FSMContext, telegram_user: Telegra
         await message.answer(ToolText.mailing_end)
     else:
         await message.answer(ToolText.mailing_canceled)
+
+
+@router.message(filters.Command("wa"), filters.StateFilter("*"))
+async def start(message: types.Message):
+    link = message.text.replace('/wa', '').strip()
+    await message.answer('start_test_url', reply_markup=ToolKeyboardsCallbacks.web_kb('wa_link', link))

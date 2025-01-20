@@ -1,3 +1,4 @@
+import logging
 from typing import Callable, Union
 
 from aiogram.types import Update
@@ -22,4 +23,4 @@ async def user_middleware(handler: Callable, event: Update, data: dict[str, Tele
 
         return await handler(event, data)
     except Exception as e:
-        return TelegramUser()
+        logging.error(e)
