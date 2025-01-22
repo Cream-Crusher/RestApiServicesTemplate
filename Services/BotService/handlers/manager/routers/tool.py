@@ -2,6 +2,7 @@ import asyncio
 from contextlib import suppress
 
 from aiogram import Router, filters, types
+from aiogram.filters import CommandObject
 from aiogram.fsm.context import FSMContext
 
 from Services.BotService.handlers.manager.filters.tools import ManagerFilter
@@ -92,7 +93,7 @@ async def tool(message: types.Message, state: FSMContext, telegram_user: Telegra
     await state.clear()
 
 
-@router.message(filters.Command("wa"), filters.StateFilter("*"))
-async def start(message: types.Message):
-    link = message.text.replace('/wa', '').strip()
-    await message.answer('start_test_url', reply_markup=ToolKeyboardsCallbacks.web_kb('wa_link', link))
+@router.message(filters.Command("wa"))
+async def webapp(message: types.Message, command: CommandObject):
+    assert command.args
+    await message.answer('start_test_url', reply_markup=ToolKeyboardsCallbacks.web_kb('wa_link', command.args))
