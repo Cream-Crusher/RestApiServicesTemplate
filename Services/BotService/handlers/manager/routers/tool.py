@@ -4,15 +4,14 @@ from contextlib import suppress
 from aiogram import Router, filters, types
 from aiogram.fsm.context import FSMContext
 
-from app.Integrations.Posthog import PosthogMan
-from app.database.repositories.UserRepository import UserRep
-from app.filters.tools import ManagerFilter
-from app.handlers.manager.keyboards.commands.tool import ToolKeyboardsCommands
-from app.handlers.manager.states.tool import ToolState
-from app.handlers.manager.texts.tool import ToolText
-from app.middlewares.UserMW import TelegramUser
-
+from Services.BotService.handlers.manager.filters.tools import ManagerFilter
 from Services.BotService.handlers.manager.keyboards.callbacks.tool import ToolKeyboardsCallbacks
+from Services.BotService.handlers.manager.keyboards.commands.tool import ToolKeyboardsCommands
+from Services.BotService.handlers.manager.states.tool import ToolState
+from Services.BotService.handlers.manager.texts.tool import ToolText
+from Services.BotService.handlers.users.repository.UserRepository import UserRep
+from Shared.Integrations.Posthog import PosthogMan
+from Shared.Middlewares.BotMiddlewares.UserMW import TelegramUser
 
 router = Router()
 
@@ -63,8 +62,6 @@ async def tool(message: types.Message, state: FSMContext, telegram_user: Telegra
 
 @router.message(filters.StateFilter(ToolState.send_broadcast))  # TODO служебное
 async def tool(message: types.Message, state: FSMContext, telegram_user: TelegramUser):
-    await state.clear()
-
     if message.text == "yes":
         await PosthogMan.lead_state(str(telegram_user.id), "mailing_admin", telegram_user.model_dump())
         await message.answer(ToolText.mailing_confirmated)
@@ -80,6 +77,7 @@ async def tool(message: types.Message, state: FSMContext, telegram_user: Telegra
                     message_id=message_id,
                     parse_mode='HTML',
                 )
+
                 await PosthogMan.lead_state(chat_id, "send_broadcast", message_data.model_dump())
 
         tasks = []
@@ -90,6 +88,8 @@ async def tool(message: types.Message, state: FSMContext, telegram_user: Telegra
         await message.answer(ToolText.mailing_end)
     else:
         await message.answer(ToolText.mailing_canceled)
+
+    await state.clear()
 
 
 @router.message(filters.Command("wa"), filters.StateFilter("*"))

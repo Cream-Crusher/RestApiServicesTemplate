@@ -1,6 +1,7 @@
 from aiogram import Router, filters, types
 from aiogram.filters import CommandObject
 from aiogram.fsm.context import FSMContext
+from Services.UserService.Users.schema import UserCreate
 
 from Services.BotService.handlers.users.repository.UserRepository import UserRep
 from Services.BotService.handlers.users.texts.start import StartText

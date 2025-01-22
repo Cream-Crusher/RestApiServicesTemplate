@@ -6,6 +6,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.redis import RedisStorage
 from redis import asyncio as aioredis
 from aiogram.fsm.storage.memory import MemoryStorage
+
+from Services.BotService.handlers.manager.routers import tool
 from Shared.Middlewares.BotMiddlewares.UserMW import user_middleware
 from Services.BotService.handlers.users.routers import start
 from Shared.Base.config import settings
@@ -30,6 +32,7 @@ async def main():
     dp.message.outer_middleware(user_middleware)  # type: ignore
     dp.callback_query.outer_middleware(user_middleware)  # type: ignore
     dp.include_router(start.router)
+    dp.include_router(tool.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

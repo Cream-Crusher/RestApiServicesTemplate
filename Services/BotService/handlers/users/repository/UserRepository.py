@@ -1,9 +1,10 @@
-from typing import Sequence, Any
+from typing import Type
 
+from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Row, and_
+
 from Services.UserService.Users.model import User
-from Shared.Base.BaseRepository import BaseBotRepository, session_handler
+from Shared.Base.BaseRepository import BaseBotRepository
 
 
 class UserRepository(BaseBotRepository[User, int]):
@@ -12,4 +13,4 @@ class UserRepository(BaseBotRepository[User, int]):
         super().__init__(model)
 
 
-UserRep: UserRepository = UserRepository(model=User)
+UserRep = UserRepository(model=User)

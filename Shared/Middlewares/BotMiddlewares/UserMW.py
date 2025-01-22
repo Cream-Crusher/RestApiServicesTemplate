@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 
 class TelegramUser(BaseModel):
-    id: str = None
+    id: Union[str, int]
     username: Union[str, None] = None
     first_name: Union[str, None] = None
     last_name: Union[str, None] = None

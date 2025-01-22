@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from aiogram.types import WebAppInfo
+from aiogram.types import WebAppInfo, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 

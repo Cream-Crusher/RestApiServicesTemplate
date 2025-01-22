@@ -10,7 +10,7 @@ with suppress(Exception):
 
 
 class PosthogConfig(BaseSettings):
-    token: str
+    token: str | None = None
 
     class Config:
         env_prefix = "POSTHOG_"
@@ -21,6 +21,7 @@ class PosthogConfig(BaseSettings):
 
 class BotConfig(BaseSettings):
     token: str
+    subscribe_channels: str | None = None
 
     class Config:
         env_prefix = "BOT_"
@@ -51,7 +52,7 @@ class DatabaseConfig(BaseSettings):
 
 class RedisConfig(BaseSettings):
     disable: bool = True
-    host: str = 'localhost'
+    host: str | None = None
 
     class Config:
         env_prefix = "REDIS_"
