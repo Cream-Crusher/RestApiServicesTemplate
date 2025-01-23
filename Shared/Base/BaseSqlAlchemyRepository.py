@@ -15,8 +15,7 @@ from Shared.Base.Pagination import Pagination
 from Shared.Sessions.session import AsyncDatabase
 
 
-#  todo для fastapi
-class BaseRepository[T, I]:
+class BaseSqlAlchemyRepository[T, I]:
 
     def __init__(self, session: AsyncSession, model: type[T]):
         self.session = session
@@ -26,8 +25,10 @@ class BaseRepository[T, I]:
         query = select(self.model).where(self.model.active.is_(True))  # type: ignore
         query = query.offset(paging.skip).limit(paging.limit) if paging else query
         result = await self.session.scalars(query)
+
         if not result:
             return []
+
         return result.all()
 
     async def id(self, model_id: I) -> T:
@@ -36,7 +37,7 @@ class BaseRepository[T, I]:
             return model
         raise HTTPException(
             status_code=404,
-            detail={"message": f'{self.model} by id "{I}" not found'}
+            detail={"message": f'{self.model} by id "{model_id}" not found'}
         )
 
     async def create(self, data: dict | BaseModel) -> T:
@@ -106,7 +107,7 @@ class BaseRepository[T, I]:
 
 
 #  todo для бота
-def session_handler[SELF, **P, T](
+def transaction[SELF, **P, T](
         func: Callable[Concatenate[SELF, AsyncSession, P], Awaitable[T]],
 ) -> Callable[Concatenate[SELF, P], Coroutine[Any, Any, T]]:
     @wraps(func)
@@ -127,22 +128,22 @@ def session_handler[SELF, **P, T](
     return wrapped
 
 
-class BaseBotRepository[T, I]:
+class BaseSqlAlchemyTransactionRepository[T, I]:
     def __init__(self, model: type[T]) -> None:
         self.model = model
 
-    @session_handler
+    @transaction
     async def all(self, session: AsyncSession) -> Sequence[T]:
         result = await session.scalars(select(self.model))
         return result.all()
 
-    @session_handler
+    @transaction
     async def id(self, session: AsyncSession, model_id: I) -> T | None:
         model = await session.get(self.model, model_id)
 
         return model
 
-    @session_handler
+    @transaction
     async def create(self, session: AsyncSession, data: T) -> T | None:
         try:
             model = self.model(**data.__dict__)
@@ -154,14 +155,14 @@ class BaseBotRepository[T, I]:
             logging.exception(e)
             return None
 
-    @session_handler
+    @transaction
     async def delete(self, session: AsyncSession, model_id: I) -> Literal[200]:
         model = await self.id(model_id)
         await session.delete(model)
         await session.commit()
         return 200
 
-    @session_handler
+    @transaction
     async def update(self, session: AsyncSession, model_id: I, update_data: dict) -> T | None:
         model = await self.id(model_id)
         for key, value in update_data.items():
