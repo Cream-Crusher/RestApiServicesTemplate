@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from Services.UserService.Users.schema import UserRead, UserCreate
 from Services.UserService.Users.service import user_repository
-from Shared.Auth.authentication import get_me as get_current_user
+from Shared.Auth.telegram_authentication import get_me as get_current_user
 
 users_router = APIRouter()
 
