@@ -1,4 +1,5 @@
 import asyncio
+from logging.config import fileConfig
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -24,11 +25,11 @@ config.set_main_option("sqlalchemy.url", url)
 # add your model's MetaData object here
 
 # models for autogenerate
+from Services.TemplateApiServise.Domain.User import User
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
-
 
 
 def run_migrations_offline() -> None:

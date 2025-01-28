@@ -28,5 +28,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    # run_migrations()
+    run_migrations()
     anyio.run(main)
