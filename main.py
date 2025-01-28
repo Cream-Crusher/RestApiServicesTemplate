@@ -3,9 +3,9 @@ import uvicorn.config
 from alembic import command
 from alembic.config import Config
 
-from Shared.Base.config import settings
-from app import app
-from bot import main as bot_main
+from Services.TemplateApiServise.WebApi.config import settings
+from Services.TemplateApiServise.WebApi.app import app
+from Services.TelegramBotService.bot import main as bot_main
 
 config = uvicorn.config.Config(
     app,
@@ -24,9 +24,9 @@ def run_migrations():
 async def main():
     async with anyio.create_task_group() as tg:
         tg.start_soon(server.serve)
-        tg.start_soon(bot_main)
+        # tg.start_soon(bot_main)
 
 
 if __name__ == "__main__":
-    run_migrations()
+    # run_migrations()
     anyio.run(main)
