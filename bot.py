@@ -7,9 +7,9 @@ from aiogram.fsm.storage.redis import RedisStorage
 from redis import asyncio as aioredis
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from Services.BotService.handlers.manager.routers import tool
+from Services.BotService.handlers.manager.routers import tool_flow
 from Shared.Middlewares.BotMiddlewares.UserMW import user_middleware
-from Services.BotService.handlers.users.routers import start
+from Services.BotService.handlers.users.routers import flow_start
 from Shared.Base.config import settings
 
 

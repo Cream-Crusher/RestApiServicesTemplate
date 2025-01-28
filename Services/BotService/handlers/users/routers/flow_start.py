@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
 from Services.BotService.handlers.users.repository.UserRepository import UserRep
-from Services.BotService.handlers.users.texts.start import StartText
+from Services.BotService.handlers.users.texts.start_text import StartText
 from Services.BotService.utils.keyboard.ikb import IKB
 from Services.UserService.Users.schema import UserCreate
 from Shared.Integrations.Posthog import PosthogMan

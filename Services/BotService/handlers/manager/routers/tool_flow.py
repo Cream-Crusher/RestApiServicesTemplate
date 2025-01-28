@@ -6,10 +6,10 @@ from aiogram.filters import CommandObject, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
-from Services.BotService.handlers.manager.filters.tools import ManagerFilter
-from Services.BotService.handlers.manager.keyboards.commands.tool import ToolKeyboardsCommands
-from Services.BotService.handlers.manager.states.tool import ToolState
-from Services.BotService.handlers.manager.texts.tool import ToolText
+from Services.BotService.handlers.manager.filters.tools_filters import ManagerFilter
+from Services.BotService.handlers.manager.keyboards.commands.tool_command import ToolKeyboardsCommands
+from Services.BotService.handlers.manager.states.tool_state import ToolState
+from Services.BotService.handlers.manager.texts.tool_text import ToolText
 from Services.BotService.handlers.users.repository.UserRepository import UserRep
 from Services.BotService.utils.keyboard.ikb import IKB
 from Shared.Integrations.Posthog import PosthogMan

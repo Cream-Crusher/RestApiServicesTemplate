@@ -1,11 +1,10 @@
-from abc import ABC
 from dataclasses import field
 from typing import List
 
 from pydantic import BaseModel
 
 
-class UserBase(ABC, BaseModel):
+class UserBase(BaseModel):
     id: int
     first_name:  str | None = None
     last_name: str | None = None

@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Services.UserService.Users.model import User
-from Shared.Base.BaseSqlAlchemyRepository import BaseSqlAlchemyRepository
+from Shared.Base.BaseRepository import BaseSqlAlchemyRepository
 from Shared.Sessions.session import AsyncDatabase
 
 

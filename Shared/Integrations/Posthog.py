@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 from aiogram.types import Chat
 from posthog import Posthog
@@ -23,7 +23,7 @@ class PosthogManager:
             },
         )
 
-    async def lead_state(self, user_id: str, state: str, data: Dict[str, int] | None = None) -> None:
+    async def lead_state(self, user_id: str, state: str, data: Dict[str, str, Any] | None = None) -> None:
         self.posthog.capture(
             user_id,
             state,

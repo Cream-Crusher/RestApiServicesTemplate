@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
 
 
-def utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+def utcnow(**kw) -> datetime:
+    return datetime.now(timezone.utc).replace(**kw, tzinfo=None)

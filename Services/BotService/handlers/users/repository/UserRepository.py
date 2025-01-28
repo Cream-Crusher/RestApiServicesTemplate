@@ -4,7 +4,7 @@ from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Services.UserService.Users.model import User
-from Shared.Base.BaseSqlAlchemyRepository import BaseSqlAlchemyTransactionRepository
+from Shared.Base.BaseRepository import BaseSqlAlchemyTransactionRepository
 
 
 class UserRepository(BaseSqlAlchemyTransactionRepository[User, int]):
