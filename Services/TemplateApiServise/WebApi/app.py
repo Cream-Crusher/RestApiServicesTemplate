@@ -2,20 +2,27 @@ import logging
 
 import uvicorn
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import APIRouter
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from Services.TemplateApiServise.Application.DI.ico import container
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 
+# add AsyncIOScheduler
 scheduler = AsyncIOScheduler()
 
-app = FastAPI(docs_url="/docs")
-
+# add logging
 logging.basicConfig(
     level=logging.NOTSET,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
 )
+
+# add FastApi
+app = FastAPI(docs_url="/docs")
+
+setup_dishka(container, app)  # add ioc_container in fastapi
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,11 +33,22 @@ app.add_middleware(
     max_age=3600
 )
 
-
 router = APIRouter()
 # User
 app.include_router(users_router, tags=['User | Users'], prefix='/users')
 # router.include_router(users_router, tags=['User | Users'], prefix='/users')
+
+
+@router.get("/ping", tags=["Server"])
+async def ping_server():
+    return "pong"
+
+
+app.include_router(router, prefix='/api/v1')
+
+
+if __name__ == '__main__':
+    uvicorn.run("app:app", host='127.0.0.1', port=8011, reload=True)
 
 
 # @app.exception_handler(HTTPException)
@@ -47,14 +65,3 @@ app.include_router(users_router, tags=['User | Users'], prefix='/users')
 #         status_code=422,
 #         content={"detail": "Некорректные данные. Пожалуйста, проверьте введенные данные."}
 #     )
-
-
-@router.get("/ping", tags=["Server"])
-async def ping_server():
-    return "pong"
-
-
-app.include_router(router, prefix='/api/v1')
-
-if __name__ == '__main__':
-    uvicorn.run("app:app", host='127.0.0.1', port=8011, reload=True)
