@@ -2,12 +2,10 @@ import logging
 
 import uvicorn
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from dishka.integrations.fastapi import setup_dishka
 from fastapi import APIRouter
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from Services.TemplateApiServise.Application.DI.ico import container
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 
 # add AsyncIOScheduler
@@ -21,8 +19,6 @@ logging.basicConfig(
 
 # add FastApi
 app = FastAPI(docs_url="/docs")
-
-setup_dishka(container, app)  # add ioc_container in fastapi
 
 app.add_middleware(
     CORSMiddleware,

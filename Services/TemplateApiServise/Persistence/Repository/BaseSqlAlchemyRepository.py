@@ -1,13 +1,12 @@
 import logging
 from typing import Sequence, Any, Union, List, Literal
 
-from pydantic import BaseModel
 from sqlalchemy import Row, RowMapping, select, func, ScalarResult
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Services.TemplateApiServise.Persistence.Repository.BaseRepository import BaseRepository
 from Infrastructure.Pagination.Pagination import Pagination
+from Services.TemplateApiServise.Persistence.Repository.BaseRepository import BaseRepository
 
 
 class BaseSqlAlchemyRepository[T, I](BaseRepository):

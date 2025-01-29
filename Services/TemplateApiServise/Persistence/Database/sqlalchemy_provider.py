@@ -9,7 +9,7 @@ from Services.TemplateApiServise.WebApi.config import settings
 Database = settings.database_config
 
 
-class AsyncDatabaseSessions:
+class AsyncSqlalchemyProvider:
     def __init__(self, url: SQURL.URL):
         self.URL = url
         self.engine = create_async_engine(self.URL, pool_size=10, max_overflow=5)
@@ -34,7 +34,7 @@ class AsyncDatabaseSessions:
         return self.factory()
 
 
-AsyncDatabase: AsyncDatabaseSessions = AsyncDatabaseSessions(
+AsyncDatabase: AsyncSqlalchemyProvider = AsyncSqlalchemyProvider(
     url=SQURL.URL.create(
         drivername="postgresql+asyncpg",
         username=Database.user,
