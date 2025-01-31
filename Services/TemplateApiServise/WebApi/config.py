@@ -61,11 +61,18 @@ class RedisConfig(BaseSettings):
         super().__init__(**values)
 
 
+class MinioConfig(BaseSettings):
+    access_key: str | None = None
+    secret_key: str | None = None
+    endpoint: str | None = None
+
+
 class AppSettings(BaseModel):
     bot_config: BotConfig = BotConfig()
     database_config: DatabaseConfig = DatabaseConfig()
     redis_config: RedisConfig = RedisConfig()
     posthog_config: PosthogConfig = PosthogConfig()
+    minio_config: MinioConfig = MinioConfig()
 
 
 settings = AppSettings()

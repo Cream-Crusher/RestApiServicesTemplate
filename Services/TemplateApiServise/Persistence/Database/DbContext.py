@@ -9,17 +9,11 @@ from Services.TemplateApiServise.WebApi.config import settings
 Database = settings.database_config
 
 
-class AsyncSqlalchemyProvider:
+class DbContext:
     def __init__(self, url: SQURL.URL):
         self.URL = url
         self.engine = create_async_engine(self.URL, pool_size=10, max_overflow=5)
         self.factory = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
-
-    def get_url(self):
-        return str(self.URL)
-
-    def get_session_maker(self) -> async_sessionmaker:
-        return self.factory
 
     async def get_session(self) -> AsyncSession:
         async with self.factory() as session:
@@ -30,11 +24,8 @@ class AsyncSqlalchemyProvider:
                 await session.rollback()
                 raise
 
-    async def return_session(self) -> AsyncSession:
-        return self.factory()
 
-
-AsyncDatabase: AsyncSqlalchemyProvider = AsyncSqlalchemyProvider(
+db_context: DbContext = DbContext(
     url=SQURL.URL.create(
         drivername="postgresql+asyncpg",
         username=Database.user,

@@ -3,7 +3,7 @@ from fastapi import status
 from fastapi.responses import JSONResponse
 
 from Services.TemplateApiServise.Application.Users.UserService import UserService, user_service
-from Services.TemplateApiServise.Application.Users.user_dto import CreateUserDto
+from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDto
 
 users_router = APIRouter()
 

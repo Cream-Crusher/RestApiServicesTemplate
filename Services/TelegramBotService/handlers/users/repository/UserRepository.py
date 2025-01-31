@@ -1,5 +1,5 @@
+from Services.TemplateApiServise.Persistence.Repository.BaseS3Repository import BaseSqlAlchemyTransactionRepository
 from Services.User.Users.model import User
-from Services.TemplateApiServise.Persistence.Repository.BaseRepository import BaseSqlAlchemyTransactionRepository
 
 
 class UserRepository(BaseSqlAlchemyTransactionRepository[User, int]):

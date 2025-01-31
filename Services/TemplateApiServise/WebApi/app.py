@@ -47,6 +47,7 @@ if __name__ == '__main__':
     uvicorn.run("app:app", host='127.0.0.1', port=8011, reload=True)
 
 
+# TODO отключение документации, если нужно
 # @app.exception_handler(HTTPException)
 # async def http_exception_handler(request, exc):
 #     return JSONResponse(

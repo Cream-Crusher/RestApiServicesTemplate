@@ -6,7 +6,6 @@ from aiogram.types import Message, WebAppInfo
 from Services.TelegramBotService.handlers.users.repository.UserRepository import UserRep
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
-from Services.User.Users.schema import UserCreate
 from Infrastructure.Posthog.Posthog import PosthogMan
 
 router = Router()
