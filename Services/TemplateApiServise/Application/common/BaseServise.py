@@ -9,8 +9,9 @@ from Infrastructure.Pagination.Pagination import Pagination
 
 
 class BaseServise[T, I]:
+
     def __init__(self, db_context: AsyncSession):
-        self.db_context = db_context
+        self.db_context: AsyncSession = db_context
 
     def add(self, entity: T) -> T:
         self.db_context.add(entity)
@@ -22,8 +23,13 @@ class BaseServise[T, I]:
         return entities
 
     async def find(self, query: func) -> Sequence[T]:  # type: ignore
-        result = (await self.db_context.execute(select(T).where(query))).scalars()
-        assert result is not None, f"{T}: query '{query}' not found"
+        query = (
+            select(T)
+            .where(query)
+        )
+        result = (await self.db_context.execute(query)).scalars()
+        if result is None:
+            return []
 
         return result.all()
 

@@ -15,7 +15,7 @@ class UserService[T, I](BaseServise):
         super().__init__(db_context=db_context)
 
     async def create(self, user: CreateUserDto) -> User:
-        user_model = User(**user.model_dump())
+        user_model: User = User(**user.model_dump())
         self.add(user_model)
         await self.db_context.commit()
 
