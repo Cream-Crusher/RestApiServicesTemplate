@@ -1,11 +1,14 @@
 import logging
-from typing import Sequence, Union, Iterable
+from typing import Sequence, Union, Iterable, cast, ClassVar
 
+from pydantic import BaseModel
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import DeclarativeBase
 
 from Infrastructure.Pagination.Pagination import Pagination
+from Services.TemplateApiServise.Domain.BaseEntity import Base
 
 
 class BaseServise[T, I]:

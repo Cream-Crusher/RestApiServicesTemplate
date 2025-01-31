@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDto
 from Services.TemplateApiServise.Application.common.BaseServise import BaseServise
+from Services.TemplateApiServise.Application.common.mapping import mapping
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import db_context
 
@@ -14,8 +15,8 @@ class UserService[T, I](BaseServise):
     ):
         super().__init__(db_context=db_context)
 
-    async def create(self, user: CreateUserDto) -> User:
-        user_model: User = User(**user.model_dump())
+    async def create(self, user_dto: CreateUserDto) -> User:
+        user_model: User = mapping(from_data=user_dto, to=User)
         self.add(user_model)
         await self.db_context.commit()
 
