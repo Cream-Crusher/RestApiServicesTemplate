@@ -4,7 +4,7 @@ from io import BytesIO
 from types_aiobotocore_s3 import S3Client
 
 from Services.TemplateApiServise.Persistence.Database.S3Context import s3_context
-from Services.TemplateApiServise.Persistence.Repository.BaseS3Repository import BaseS3Repository
+from Services.TemplateApiServise.Persistence.Repository.S3.BaseS3Repository import BaseS3Repository
 from Services.TemplateApiServise.WebApi.config import settings
 
 

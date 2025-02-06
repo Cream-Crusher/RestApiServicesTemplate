@@ -1,0 +1,53 @@
+from typing import Protocol, Iterable, Union, Any
+
+
+class BaseCacheRepository(Protocol):
+
+    async def get(self, key: str) -> str:
+        ...
+
+    async def expire(self, key: str, ex: float):
+        ...
+
+    async def set(self, key: str, value, ex: float | None = None):
+        ...
+
+    async def lpush(self, key: str, *values: bytes):
+        ...
+
+    async def lrem(self, key: str, count: int, value: bytes):
+        ...
+
+    async def lrange(self, key: str, start: int, end: int) -> list[bytes]:
+        ...
+
+    async def mget(self, keys: Iterable[str]) -> list[str]:
+        ...
+
+    async def incr(self, key: str) -> int:
+        ...
+
+    async def zincrby(self, key: str, value: float, item: str):
+        ...
+
+    async def zrevrange(
+        self, key: str, start: int, end: int
+    ) -> list[tuple[bytes, float]]:
+        ...
+
+    async def zrange(
+        self, key: str, start: int, end: int
+    ) -> list[tuple[bytes, float]]:
+        ...
+
+    async def zscore(self, key: str, name: str) -> Union[None, str]:
+        ...
+
+    async def zrem(self, key: str, name: str) -> Union[None, str]:
+        ...
+
+    async def zadd(self, key: str, data: dict):
+        ...
+
+    async def zrevrank(self, key: str, item: str) -> Union[None, int]:
+        ...

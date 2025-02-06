@@ -1,12 +1,10 @@
 import time
-from typing import Iterable, Literal
+from typing import Iterable, Union
 
-from Redis.asyncio import Redis
-
-from Services.TemplateApiServise.WebApi.config import RedisConfig, settings
+from Services.TemplateApiServise.Persistence.Repository.Cache.BaseCacheRepository import BaseCacheRepository
 
 
-class MemCache:
+class MemCacheRepository(BaseCacheRepository):
     def __init__(self) -> None:
         self.kv = {}
 
@@ -51,12 +49,12 @@ class MemCache:
         self.kv[key] = {k: v for k, v in sorted(data.items(), key=lambda x: x[1])}
 
     async def zrevrange(
-        self, key: str, start: int, end: int, **_
+        self, key: str, start: int, end: int
     ) -> list[tuple[bytes, float]]:
         return list(self.kv.setdefault(key, {}).items())[::-1][start: end + 1]
 
     async def zrange(
-        self, key: str, start: int, end: int, **_
+        self, key: str, start: int, end: int
     ) -> list[tuple[bytes, float]]:
         return list(self.kv.setdefault(key, {}).items())[start: end + 1]
 
@@ -69,7 +67,7 @@ class MemCache:
     async def zadd(self, key: str, data: dict):
         self.kv.setdefault(key, {}).update(data)
 
-    async def zrevrank(self, key: str, item: str, **_):
+    async def zrevrank(self, key: str, item: str) -> Union[None, int]:
         result = [
             x
             for x, v in enumerate(list(self.kv.setdefault(key, {}))[::-1])
@@ -81,15 +79,4 @@ class MemCache:
         return None
 
 
-def connect_redis(config: RedisConfig) -> Redis | MemCache:
-    if config.disable:
-        return MemCache()
-
-    return Redis(
-        host=config.host,
-        db=0,
-        decode_responses=True
-    )
-
-
-RedisInstance: Redis | MemCache = connect_redis(settings.redis_config)
+MemCacheRepositoryInstance: MemCacheRepository = MemCacheRepository()
