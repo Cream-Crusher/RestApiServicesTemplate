@@ -51,12 +51,12 @@ class MemCache:
         self.kv[key] = {k: v for k, v in sorted(data.items(), key=lambda x: x[1])}
 
     async def zrevrange(
-        self, key: str, start: int, end: int, withscores: Literal[True], **_
+        self, key: str, start: int, end: int, **_
     ) -> list[tuple[bytes, float]]:
         return list(self.kv.setdefault(key, {}).items())[::-1][start: end + 1]
 
     async def zrange(
-        self, key: str, start: int, end: int, withscores: Literal[True], **_
+        self, key: str, start: int, end: int, **_
     ) -> list[tuple[bytes, float]]:
         return list(self.kv.setdefault(key, {}).items())[start: end + 1]
 

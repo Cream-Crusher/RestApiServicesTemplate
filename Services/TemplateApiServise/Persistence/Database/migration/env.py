@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-from Services.TemplateApiServise.Domain.BaseEntity import Base
+from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
 from Services.TemplateApiServise.WebApi.config import settings
 
 # this is the Alembic Config object, which provides
@@ -29,7 +29,7 @@ from Services.TemplateApiServise.Domain.User import User
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = BaseEntity.metadata
 
 
 def run_migrations_offline() -> None:

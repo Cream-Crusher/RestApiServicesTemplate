@@ -1,10 +1,10 @@
 from sqlalchemy.dialects.postgresql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column
 
-from Services.TemplateApiServise.Domain.BaseEntity import Base
+from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
 
 
-class User(Base):
+class User(BaseEntity):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(type_=BIGINT, primary_key=True, nullable=False)  # type: ignore

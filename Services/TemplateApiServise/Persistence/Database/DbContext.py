@@ -24,6 +24,9 @@ class DbContext:
                 await session.rollback()
                 raise
 
+    def return_session(self) -> AsyncSession:
+        return self.factory()
+
 
 db_context: DbContext = DbContext(
     url=SQURL.URL.create(

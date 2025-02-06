@@ -2,14 +2,14 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 class CKB(ReplyKeyboardMarkup):
-    command_keyboard: list[list[KeyboardButton]] = []
+    keyboard: list[list[KeyboardButton]] = []
 
     def row(
             self,
             text: str | KeyboardButton | None = None,
             **kv
     ):
-        self.command_keyboard.append([])
+        self.keyboard.append([])
 
         if text:
             return self.btn(text, **kv)
@@ -23,10 +23,10 @@ class CKB(ReplyKeyboardMarkup):
     ):
 
         if isinstance(text, KeyboardButton):
-            self.command_keyboard[-1].append(text)
+            self.keyboard[-1].append(text)
             return self
 
-        self.command_keyboard[-1].append(
+        self.keyboard[-1].append(
             KeyboardButton(text=text, **kv)
         )
 

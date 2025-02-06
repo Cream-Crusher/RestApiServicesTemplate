@@ -13,13 +13,15 @@ class UserService[T, I](BaseServise):
             self,
             db_context: AsyncSession
     ):
-        super().__init__(db_context=db_context)
+        super().__init__(
+            db_context=db_context,
+        )
 
     async def create(self, user_dto: CreateUserDto) -> User:
         user_model: User = mapping(from_data=user_dto, to=User)
-        self.add(user_model)
+        query = await User.select().where(User.id == user_model.id).all()
+        user_model.add(self.db_context)
         await self.db_context.commit()
-
         return user_model
 
 

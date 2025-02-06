@@ -27,3 +27,4 @@ async def start(message: Message, command: CommandObject, state: FSMContext):
         reply_markup=IKB()
         .row("Перейти в игру1", web_app=WebAppInfo(url='https://www.littlerockzoo.com/media/2908/2022-0104-red-fox-james-syler.jpg'))
     )
+    await bot.send_invoice
