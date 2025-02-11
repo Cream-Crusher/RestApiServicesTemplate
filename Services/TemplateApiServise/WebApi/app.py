@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
+from Services.TemplateApiServise.WebApi.config import settings
 
 # add AsyncIOScheduler
 scheduler = AsyncIOScheduler()
@@ -29,6 +30,13 @@ app.add_middleware(
     max_age=3600
 )
 
+# add FastApi
+if settings.api_servise_config.dev:
+    app = FastAPI(docs_url="/swagger", redoc_url=None)
+else:
+    app = FastAPI(openapi_url=None)
+
+
 router = APIRouter()
 # User
 app.include_router(users_router, tags=['User | Users'], prefix='/users')
@@ -40,14 +48,7 @@ async def ping_server():
     return "pong"
 
 
-app.include_router(router, prefix='/api/v1')
-
-
-if __name__ == '__main__':
-    uvicorn.run("app:app", host='127.0.0.1', port=8011, reload=True)
-
-
-# TODO отключение документации, если нужно
+# TODO отключение документации для прода
 # @app.exception_handler(HTTPException)
 # async def http_exception_handler(request, exc):
 #     return JSONResponse(
@@ -62,3 +63,15 @@ if __name__ == '__main__':
 #         status_code=422,
 #         content={"detail": "Некорректные данные. Пожалуйста, проверьте введенные данные."}
 #     )
+
+
+app.include_router(router, prefix='/api/v1')
+
+# uvicorn
+config = uvicorn.config.Config(
+    app,
+    host="0.0.0.0",
+    port=8011,
+    reload=True,
+)
+uvicorn_server = uvicorn.Server(config=config)

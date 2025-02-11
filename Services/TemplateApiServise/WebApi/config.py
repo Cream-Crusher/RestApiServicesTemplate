@@ -67,12 +67,17 @@ class MinioConfig(BaseSettings):
     endpoint: str | None = None
 
 
+class ApiServiseConfig(BaseSettings):
+    dev: bool = True
+
+
 class AppSettings(BaseModel):
     bot_config: BotConfig = BotConfig()
     database_config: DatabaseConfig = DatabaseConfig()
     redis_config: RedisConfig = RedisConfig()
     posthog_config: PosthogConfig = PosthogConfig()
     minio_config: MinioConfig = MinioConfig()
+    api_servise_config: ApiServiseConfig = ApiServiseConfig()
 
 
 settings = AppSettings()

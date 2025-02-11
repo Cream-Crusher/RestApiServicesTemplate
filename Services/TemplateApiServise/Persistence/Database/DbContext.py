@@ -1,7 +1,9 @@
-import logging
+from contextlib import contextmanager
+from contextvars import ContextVar
+from functools import wraps
+from typing import Callable, Any, Coroutine, cast, Concatenate, Awaitable
 
 import sqlalchemy.engine.url as SQURL
-from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 from Services.TemplateApiServise.WebApi.config import settings
@@ -9,32 +11,54 @@ from Services.TemplateApiServise.WebApi.config import settings
 Database = settings.database_config
 
 
-class DbContext:
-    def __init__(self, url: SQURL.URL):
-        self.URL = url
-        self.engine = create_async_engine(self.URL, pool_size=10, max_overflow=5)
-        self.factory = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
+url = SQURL.URL.create(
+    drivername="postgresql+asyncpg",
+    username=Database.user,
+    password=Database.password,
+    host=Database.host,
+    port=Database.port,
+    database=Database.database
+)
 
-    async def get_session(self) -> AsyncSession:
-        async with self.factory() as session:
-            try:
-                yield session
-            except exc.SQLAlchemyError as error:
-                logging.error(error)
-                await session.rollback()
-                raise
-
-    def return_session(self) -> AsyncSession:
-        return self.factory()
+engine = create_async_engine(url, pool_size=10, max_overflow=5)
+factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-db_context: DbContext = DbContext(
-    url=SQURL.URL.create(
-        drivername="postgresql+asyncpg",
-        username=Database.user,
-        password=Database.password,
-        host=Database.host,
-        port=Database.port,
-        database=Database.database
-    )
+def require_session():
+    session = db_session_var.get()
+    assert session is not None, "Session context is not provided"
+    return session
+
+
+def transaction[SELF, **P, T]():
+    def wrapper(
+        cb: Callable[Concatenate[SELF, AsyncSession, P], Awaitable[T]],
+    ) -> Callable[Concatenate[SELF, P], Coroutine[Any, Any, T]]:
+        @wraps(cb)
+        async def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
+            if db_session_var.get() is not None:
+                return await cb(*args, **kwargs)
+
+            async with cast(AsyncSession, factory()) as session:
+                with use_context_value(db_session_var, session):
+                    result = await cb(*args, **kwargs)
+                    await session.commit()
+                    return result
+
+        return wrapped
+
+    return wrapper
+
+
+@contextmanager
+def use_context_value[T](context: ContextVar[T], value: T):
+    reset = context.set(value)
+    try:
+        yield
+    finally:
+        context.reset(reset)
+
+
+db_session_var: ContextVar[AsyncSession | None] = ContextVar(
+    "db_session_var", default=None
 )

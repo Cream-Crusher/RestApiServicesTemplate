@@ -18,10 +18,9 @@ from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 router = Router()
 
 
-@router.message(Command("/"), ManagerFilter())  # todo get file id
+@router.message(Command("/get_file_id"), ManagerFilter())  # todo get file id
 async def tool(message: Message, state: FSMContext):
-    if message.from_user.id == 1001631806:
-        await state.set_state(ToolState.tool)
+    await state.set_state(ToolState.tool)
 
 
 @router.message(ToolState.tool)

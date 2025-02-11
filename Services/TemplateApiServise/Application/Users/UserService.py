@@ -1,32 +1,18 @@
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDto
-from Services.TemplateApiServise.Application.common.BaseServise import BaseServise
 from Services.TemplateApiServise.Application.common.mapping import mapping
 from Services.TemplateApiServise.Domain.User import User
-from Services.TemplateApiServise.Persistence.Database.DbContext import db_context
+from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
 
-class UserService[T, I](BaseServise):
-    def __init__(
-            self,
-            db_context: AsyncSession
-    ):
-        super().__init__(
-            db_context=db_context,
-        )
+class UserService:
 
+    @transaction()
     async def create(self, user_dto: CreateUserDto) -> User:
         user_model: User = mapping(from_data=user_dto, to=User)
+        user_model.add()
         query = await User.select().where(User.id == user_model.id).all()
-        user_model.add(self.db_context)
-        await self.db_context.commit()
+
         return user_model
 
 
-async def get_user_service(db_context_session: AsyncSession = Depends(db_context.get_session)):
-    return UserService(db_context_session)
-
-
-user_service: UserService[User, int] = Depends(get_user_service)
+user_service: UserService = UserService()

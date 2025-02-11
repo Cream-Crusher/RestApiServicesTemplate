@@ -2,7 +2,7 @@ from typing import Generator, Any, Sequence, Callable, Iterator
 
 from sqlalchemy import ScalarResult, Select
 
-from Services.TemplateApiServise.Persistence.Database.DbContext import db_context
+from Services.TemplateApiServise.Persistence.Database.DbContext import require_session
 
 
 class SelectOfScalarExtended[TM](Select):
@@ -12,7 +12,7 @@ class SelectOfScalarExtended[TM](Select):
         return self.exec().__await__()
 
     async def exec(self) -> ScalarResult[TM]:
-        session = db_context.return_session()
+        session = require_session()
         return await session.execute(self)  # type: ignore
 
     async def all(self) -> Sequence[TM]:

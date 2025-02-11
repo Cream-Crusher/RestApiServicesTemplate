@@ -13,17 +13,16 @@ class PosthogManager:
 
     async def lead_start(self, user_id: str, referral: str | None, user: Chat) -> None:
         user_data = user.model_dump()
-        self.posthog.capture(
+        self.posthog.identify(
             user_id,
-            "start",
             {
                 "referral": referral,
                 **user_data,
                 "$set": {**user_data, "referral": referral},
-            },
+            }
         )
 
-    async def lead_state(self, user_id: str, state: str, data: Dict[str, str, Any] | None = None) -> None:
+    async def lead_state(self, user_id: str, state: str, data: Dict[str, Any] | None = None) -> None:
         self.posthog.capture(
             user_id,
             state,
