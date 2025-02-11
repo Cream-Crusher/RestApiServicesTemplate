@@ -1,5 +1,5 @@
-import logging
 from io import BytesIO
+from loguru import logger
 
 from types_aiobotocore_s3 import S3Client
 
@@ -42,11 +42,11 @@ class MinioRepository[T1, T2](BaseS3Repository):
                     "ACL": "public-read",
                 },
             )  # type: ignore
-            logging.info(
+            logger.info(
                 f"Файл '{object_name}' успешно загружен в бакет '{bucket_name}'"
             )
         except Exception as e:
-            logging.exception(f"Произошла ошибка при загрузке файла: {e}")
+            logger.exception(f"Произошла ошибка при загрузке файла: {e}")
 
         return self._compare_link(bucket_name, object_name)
 

@@ -12,7 +12,7 @@ users_router = APIRouter()
 async def create(
         user_create_dto: CreateUserDto,
 ):
-    await user_service.create(user_create_dto)
+    await user_service.create(user_create_dto.__dict__)
 
     return JSONResponse(
         content={"message": "Success"},
