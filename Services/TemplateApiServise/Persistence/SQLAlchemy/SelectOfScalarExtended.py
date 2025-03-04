@@ -13,7 +13,7 @@ class SelectOfScalarExtended[TM](Select):
 
     async def exec(self) -> ScalarResult[TM]:
         session = require_session()
-        return await session.execute(self)  # type: ignore
+        return await session.scalars(self)  # type: ignore
 
     async def all(self) -> Sequence[TM]:
         return (await self).all()

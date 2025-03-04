@@ -24,7 +24,7 @@ engine = create_async_engine(url, pool_size=10, max_overflow=5)
 factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-def require_session():
+def require_session() -> AsyncSession:
     session = db_session_var.get()
     assert session is not None, "Session context is not provided"
     return session
@@ -42,7 +42,7 @@ def transaction[SELF, **P, T]():
             async with cast(AsyncSession, factory()) as session:
                 with use_context_value(db_session_var, session):
                     result = await cb(*args, **kwargs)
-                    await session.commit()
+                    # await session.commit()
                     return result
 
         return wrapped

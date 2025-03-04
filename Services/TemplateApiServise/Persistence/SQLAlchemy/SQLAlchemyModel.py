@@ -11,6 +11,6 @@ class SQLAlchemyModel(DeclarativeBase):
     def select(cls) -> "SelectOfScalarExtended[Self]":
         return SelectOfScalarExtended(cls)
 
-    def add(self):
+    def add(self) -> "SQLAlchemyModel":
         require_session().add(self)
         return self

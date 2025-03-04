@@ -5,7 +5,7 @@ from loguru import logger
 from sqlalchemy import Row, RowMapping
 from sqlalchemy.exc import IntegrityError
 
-from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
+from Services.TemplateApiServise.Persistence.Database.DbContext import transaction, require_session
 
 
 class BaseRepository[T, I]:
@@ -44,7 +44,10 @@ class BaseRepository[T, I]:
     @transaction()
     async def create(self, data: dict) -> T:
         try:
-            return self.model(**data).add()
+            model = self.model(**data).add()
+            await require_session().commit()
+            return model
+
         except IntegrityError as error:
             logger.error(error)
             raise HTTPException(status_code=400, detail=f'{error}')
