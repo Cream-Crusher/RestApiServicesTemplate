@@ -1,16 +1,16 @@
 from typing import Protocol
 
 
-class BaseS3Repository[T1, T2, T3](Protocol):
+class BaseS3Repository[T](Protocol):
 
-    async def upload(self, body: T1, object_name: T2, bucket_name: T2, content_type: T2) -> T2:
+    async def upload(self, body: T, object_name: str, bucket_name: str, content_type: str) -> str:
         ...
 
-    async def get(self, object_name: T2, bucket_name: T3) -> T1:
+    async def get(self, object_name: str, bucket_name: str) -> T:
         ...
 
-    async def remove(self, object_name: T2, bucket_name: T2) -> None:
+    async def remove(self, object_name: str, bucket_name: str) -> None:
         ...
 
-    async def update(self, body: T1, object_name: T2, bucket_name: T2, content_type: T2) -> T2:
+    async def update(self, body: T, object_name: str, bucket_name: str, content_type: str) -> str:
         ...

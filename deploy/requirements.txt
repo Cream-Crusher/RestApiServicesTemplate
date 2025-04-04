@@ -25,3 +25,4 @@ aiobotocore==2.13.1
 fastapi-utils==0.8.0
 injector==0.22.0
 loguru==0.7.3
+async-lru==2.0.4

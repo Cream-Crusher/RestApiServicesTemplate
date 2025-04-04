@@ -7,18 +7,19 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
 from Services.TelegramBotService.handlers.manager.filters.tools_filters import ManagerFilter
-from Services.TelegramBotService.handlers.manager.keyboards.commands.tool_command import ToolKeyboardsCommands
 from Services.TelegramBotService.handlers.manager.states.tool_state import ToolState
 from Services.TelegramBotService.handlers.manager.texts.tool_text import ToolText
-from Services.TelegramBotService.handlers.users.repository.UserRepository import UserRep
+from Services.TelegramBotService.utils.keyboard.ckb import CKB
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
 from Infrastructure.Posthog.Posthog import PosthogMan
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
+from Services.TemplateApiServise.Domain.User import User
+from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
 router = Router()
 
 
-@router.message(Command("/get_file_id"), ManagerFilter())  # todo get file id
+@router.message(Command("get_file_id"), ManagerFilter())  # todo get file id
 async def tool(message: Message, state: FSMContext):
     await state.set_state(ToolState.tool)
 
@@ -60,18 +61,21 @@ async def tool(message: Message, state: FSMContext, telegram_user: TelegramUser)
     )
     await message.answer(
         ToolText.mailing_confirmation,
-        reply_markup=ToolKeyboardsCommands.mailing_confirmation_kb
+        reply_markup=CKB()
+        .row('yes')
+        .row('No')
     )
 
 
 @router.message(ToolState.send_broadcast)  # TODO служебное
+@transaction()
 async def tool(message: Message, state: FSMContext, telegram_user: TelegramUser):
     if message.text == "yes":
         await PosthogMan.lead_state(str(telegram_user.id), "mailing_admin", telegram_user.model_dump())
         await message.answer(ToolText.mailing_confirmated)
         data = await state.get_data()
         message_id = data.get('message_id')
-        users = await UserRep.all()
+        users = await User.select().all()
 
         async def send_message(message: types.Message, chat_id: str):
             with suppress(Exception):

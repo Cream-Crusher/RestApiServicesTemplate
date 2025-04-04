@@ -5,7 +5,7 @@ from sqlalchemy import ScalarResult, Select
 from Services.TemplateApiServise.Persistence.Database.DbContext import require_session
 
 
-class SelectOfScalarExtended[TM](Select):
+class SQLAlchemyRepository[TM](Select):
     inherit_cache = True
 
     def __await__(self) -> Generator[Any, Any, ScalarResult[TM]]:

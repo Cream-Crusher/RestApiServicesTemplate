@@ -1,16 +1,13 @@
 import logging
 
 import uvicorn
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import APIRouter
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
-from Services.TemplateApiServise.WebApi.config import settings
+from config import settings
 
-# add AsyncIOScheduler
-scheduler = AsyncIOScheduler()
 
 # add logging
 logging.basicConfig(
@@ -19,7 +16,10 @@ logging.basicConfig(
 )
 
 # add FastApi
-app = FastAPI(docs_url="/docs")
+if settings.api_servise_config.dev:
+    app = FastAPI(docs_url="/swagger", redoc_url=None)
+else:
+    app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,14 +30,9 @@ app.add_middleware(
     max_age=3600
 )
 
-# add FastApi
-if settings.api_servise_config.dev:
-    app = FastAPI(docs_url="/swagger", redoc_url=None)
-else:
-    app = FastAPI(openapi_url=None)
 
+router = APIRouter(prefix='/api/v1')
 
-router = APIRouter()
 # User
 app.include_router(users_router, tags=['User | Users'], prefix='/users')
 # router.include_router(users_router, tags=['User | Users'], prefix='/users')
@@ -64,8 +59,6 @@ async def ping_server():
 #         content={"detail": "Некорректные данные. Пожалуйста, проверьте введенные данные."}
 #     )
 
-
-app.include_router(router, prefix='/api/v1')
 
 # uvicorn
 config = uvicorn.config.Config(

@@ -62,13 +62,19 @@ class RedisConfig(BaseSettings):
 
 
 class MinioConfig(BaseSettings):
-    access_key: str | None = None
-    secret_key: str | None = None
-    endpoint: str | None = None
+    access_key: str | None = Field(alias="ACCESS", default=None)
+    secret_key: str | None = Field(alias="SECRET", default=None)
+    endpoint: str | None = Field(alias="ENDPOINT", default=None)
+
+    class Config:
+        env_prefix = "S3_"
+
+    def __init__(self, **values):
+        super().__init__(**values)
 
 
 class ApiServiseConfig(BaseSettings):
-    dev: bool = True
+    dev: bool = False
 
 
 class AppSettings(BaseModel):

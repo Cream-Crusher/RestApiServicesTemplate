@@ -1,14 +1,14 @@
-from typing import Sequence, Any, Literal
-
-from fastapi import HTTPException
+from datetime import datetime
+from typing import Sequence, Any
 from loguru import logger
+from fastapi import HTTPException
 from sqlalchemy import Row, RowMapping
 from sqlalchemy.exc import IntegrityError
 
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction, require_session
 
 
-class BaseRepository[T, I]:
+class BaseService[T, I]:
 
     def __init__(self, model: type[T]):
         self.model = model
@@ -44,10 +44,32 @@ class BaseRepository[T, I]:
     @transaction()
     async def create(self, data: dict) -> T:
         try:
-            model = self.model(**data).add()
-            await require_session().commit()
-            return model
-
+            user = self.model(**data).add()
+            session = require_session()
+            await session.commit()
+            return user
         except IntegrityError as error:
             logger.error(error)
-            raise HTTPException(status_code=400, detail=f'{error}')
+            raise error
+
+    @transaction()
+    async def update(self, model_id: [str | T], update_data: dict) -> T:
+        model = await self.id(model_id) if isinstance(model_id, str) else model_id
+
+        for key, value in update_data.items():
+            if value is not None:
+                setattr(model, key, value)
+
+        model.updated_at = datetime.utcnow()
+        session = require_session()
+        await session.commit()
+        return model
+
+    @transaction()
+    async def delete(self, model_id: [str | T]):
+        model = await self.id(model_id) if isinstance(model_id, str) else model_id
+
+        session = require_session()
+        await session.delete(model)
+        await session.commit()
+        return 200

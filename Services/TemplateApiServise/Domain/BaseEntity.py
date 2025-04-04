@@ -3,7 +3,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-from Services.TemplateApiServise.Persistence.SQLAlchemy.SQLAlchemyModel import SQLAlchemyModel
+from Services.TemplateApiServise.Persistence.Repository.Orm.SQLAlchemyModel import SQLAlchemyModel
 # todo небольшая погрешность чистой архитектуры т к это PyThOn
 
 

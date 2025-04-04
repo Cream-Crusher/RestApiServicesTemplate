@@ -1,8 +1,10 @@
+import uuid
+
+from Services.TemplateApiServise.Application.common.BaseService import BaseService
 from Services.TemplateApiServise.Domain.User import User
-from Services.TemplateApiServise.Persistence.Repository.SQLAlchemy.BaseRepository import BaseRepository
 
 
-class UserService(BaseRepository[User, int]):
+class UserService(BaseService[User, uuid.UUID]):
 
     def __init__(self):
         super().__init__(model=User)

@@ -1,5 +1,5 @@
 from Services.TemplateApiServise.Persistence.Repository.Cache.BaseCacheRepository import BaseCacheRepository
-from Services.TemplateApiServise.WebApi.config import RedisConfig, settings
+from config import RedisConfig, settings
 from redis.asyncio import Redis
 
 

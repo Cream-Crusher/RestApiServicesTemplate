@@ -3,7 +3,7 @@ from typing import Dict, Any
 from aiogram.types import Chat
 from posthog import Posthog
 
-from Services.TemplateApiServise.WebApi.config import settings
+from config import settings
 
 
 class PosthogManager:

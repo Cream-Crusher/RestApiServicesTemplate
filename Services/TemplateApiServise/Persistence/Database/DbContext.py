@@ -6,7 +6,7 @@ from typing import Callable, Any, Coroutine, cast, Concatenate, Awaitable
 import sqlalchemy.engine.url as SQURL
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from Services.TemplateApiServise.WebApi.config import settings
+from config import settings
 
 Database = settings.database_config
 
