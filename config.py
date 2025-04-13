@@ -1,4 +1,5 @@
 from contextlib import suppress
+from typing import Any
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
@@ -6,16 +7,16 @@ from pydantic_settings import BaseSettings
 
 with suppress(Exception):
     env_file = 'deploy/env/.env'
-    load_dotenv(env_file)
+    load_dotenv(dotenv_path=env_file)
 
 
 class PosthogConfig(BaseSettings):
     token: str | None = None
 
     class Config:
-        env_prefix = "POSTHOG_"
+        env_prefix: str = "POSTHOG_"
 
-    def __init__(self, **values):
+    def __init__(self, **values: Any) -> None:
         super().__init__(**values)
 
 
@@ -24,9 +25,9 @@ class BotConfig(BaseSettings):
     subscribe_channels: str | None = None
 
     class Config:
-        env_prefix = "BOT_"
+        env_prefix: str = "BOT_"
 
-    def __init__(self, **values):
+    def __init__(self, **values: Any) -> None:
         super().__init__(**values)
 
 
@@ -40,13 +41,13 @@ class DatabaseConfig(BaseSettings):
     url: str = ""
 
     class Config:
-        env_prefix = "POSTGRES_"
+        env_prefix: str = "POSTGRES_"
 
-    def __init__(self, **values):
+    def __init__(self, **values: Any) -> None:
         super().__init__(**values)
         self.url = self._assemble_database_url()
 
-    def _assemble_database_url(self):
+    def _assemble_database_url(self) -> str:
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
 
@@ -55,9 +56,9 @@ class RedisConfig(BaseSettings):
     host: str | None = None
 
     class Config:
-        env_prefix = "REDIS_"
+        env_prefix: str = "REDIS_"
 
-    def __init__(self, **values):
+    def __init__(self, **values: Any) -> None:
         super().__init__(**values)
 
 
@@ -67,14 +68,17 @@ class MinioConfig(BaseSettings):
     endpoint: str | None = Field(alias="ENDPOINT", default=None)
 
     class Config:
-        env_prefix = "S3_"
+        env_prefix: str = "S3_"
 
-    def __init__(self, **values):
+    def __init__(self, **values: Any) -> None:
         super().__init__(**values)
 
 
 class ApiServiseConfig(BaseSettings):
     dev: bool = False
+
+    class Config:
+        env_prefix: str = "API_"
 
 
 class AppSettings(BaseModel):

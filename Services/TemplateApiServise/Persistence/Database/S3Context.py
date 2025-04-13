@@ -5,24 +5,28 @@ from typing import cast, AsyncGenerator
 import aioboto3
 from types_aiobotocore_s3 import S3Client
 
-from config import settings
+from config import DatabaseConfig, settings
 
-Database = settings.database_config
+Database: DatabaseConfig = settings.database_config
 
 
 class S3Context:
-    def __init__(self, endpoint: str, access_key: str, secret_key: str):
-        self.endpoint = f"https://{endpoint}"
-        self.access_key = access_key
-        self.secret_key = secret_key
-        self.session = aioboto3.Session()
+    def __init__(self, endpoint: str | None, access_key: str | None, secret_key: str | None) -> None:
+        assert endpoint is not None
+        assert access_key is not None
+        assert secret_key is not None
+
+        self.endpoint: str = f"https://{endpoint}"
+        self.access_key: str = access_key
+        self.secret_key: str = secret_key
+        self.session: aioboto3.Session = aioboto3.Session()
 
     @asynccontextmanager
     async def session_client(self) -> AsyncGenerator[S3Client, None]:
         async with cast(
             S3Client,
             self.session.client(
-                "s3",
+                service_name="s3",
                 endpoint_url=self.endpoint,
                 aws_access_key_id=self.access_key,
                 aws_secret_access_key=self.secret_key,

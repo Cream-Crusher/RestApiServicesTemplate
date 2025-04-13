@@ -8,11 +8,11 @@ from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDt
 users_router = APIRouter()
 
 
-@users_router.post('/', name='create', status_code=201)
+@users_router.post(path='/', name='create', status_code=201)
 async def create(
         user_create_dto: CreateUserDto,
-):
-    await user_service.create(user_create_dto.__dict__)
+) -> JSONResponse:
+    await user_service.create(data=user_create_dto.__dict__)
 
     return JSONResponse(
         content={"message": "Success"},

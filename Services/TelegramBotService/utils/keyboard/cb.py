@@ -1,24 +1,26 @@
-from typing import ClassVar
+from typing import ClassVar, Any, Type
 from aiogram import F
-from aiogram.filters.callback_data import CallbackData
+from aiogram.filters.callback_data import CallbackData, CallbackQueryFilter
 from aiogram.utils.magic_filter import MagicFilter
 
 
 class AutoCallback[T]:
-    def __init__(self, type: type[T], **kwargs) -> None:
-        self.type = type
-        self.kwargs = kwargs
+    value: T
 
-    def __get__(self, *_):
+    def __init__(self, type: Type[T], **kwargs: Any) -> None:
+        self.type: Type[T] = type
+        self.kwargs: dict[str, Any] = kwargs
+
+    def __get__(self, *_) -> T:
         return self.value
 
-    def __set_name__(self, owner: type, name: str):
-        self.value = self.type(data=name, **self.kwargs)  # type: ignore
+    def __set_name__(self, owner: type, name: str) -> None:
+        self.value = self.type(data=name, **self.kwargs)  # type: ignore 
 
 
 class AutoCallbackFactory:
-    def __get__[T](self, owner: None, type: type[T]):
-        return AutoCallback(type)
+    def __get__[T](self, owner: None, type: type[T]) -> AutoCallback[T]:
+        return AutoCallback(type=type)
 
 
 class GlobalCallback(CallbackData, prefix="g"):
@@ -26,13 +28,13 @@ class GlobalCallback(CallbackData, prefix="g"):
 
     data: str
 
-    def filter(self, rule: MagicFilter | None = None):
+    def filter(self, rule: MagicFilter | None = None) -> CallbackQueryFilter:  # type: ignore
         if rule is None:
             rule = F.data == self.data
         else:
             rule &= F.data == self.data
-        return super().filter(rule)
+        return super().filter(rule=rule)
 
 
 class CB:
-    support = GlobalCallback.AUTO
+    support: AutoCallback[GlobalCallback] = GlobalCallback.AUTO

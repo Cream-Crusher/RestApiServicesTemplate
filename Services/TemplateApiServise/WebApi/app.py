@@ -61,7 +61,7 @@ async def ping_server():
 
 
 # uvicorn
-config = uvicorn.config.Config(
+config = uvicorn.Config(
     app,
     host="0.0.0.0",
     port=8011,

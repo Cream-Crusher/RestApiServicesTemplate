@@ -24,7 +24,7 @@ config.set_main_option("sqlalchemy.url", url)
 # add your model's MetaData object here
 
 # models for autogenerate
-from Services.TemplateApiServise.Domain.User import User
+from Services.TemplateApiServise.Domain.User import User  # type: ignore
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
@@ -44,7 +44,7 @@ def run_migrations_offline() -> None:
 
     """
     url = config.get_main_option("sqlalchemy.url")
-    context.configure(
+    context.configure(  # type: ignore
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
@@ -56,7 +56,7 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(connection=connection, target_metadata=target_metadata)  # type: ignore
 
     with context.begin_transaction():
         context.run_migrations()

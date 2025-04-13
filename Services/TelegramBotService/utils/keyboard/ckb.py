@@ -1,4 +1,5 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from typing import Any, Self
 
 
 class CKB(ReplyKeyboardMarkup):
@@ -7,8 +8,8 @@ class CKB(ReplyKeyboardMarkup):
     def row(
             self,
             text: str | KeyboardButton | None = None,
-            **kv
-    ):
+            **kv: Any,
+    ) -> Self:
         self.keyboard.append([])
 
         if text:
@@ -19,15 +20,16 @@ class CKB(ReplyKeyboardMarkup):
     def btn(
             self,
             text: str | KeyboardButton | None = None,
-            **kv
-    ):
+            **kv: Any,
+    ) -> Self:
 
         if isinstance(text, KeyboardButton):
             self.keyboard[-1].append(text)
             return self
+        
+        assert text is not None, "text is required"
 
         self.keyboard[-1].append(
             KeyboardButton(text=text, **kv)
         )
-
         return self

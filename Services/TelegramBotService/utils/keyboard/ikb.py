@@ -1,3 +1,5 @@
+from typing import Any, Self
+
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -11,12 +13,12 @@ class IKB(InlineKeyboardMarkup):
         self,
         text: str | InlineKeyboardButton | None = None,
         callback_data: str | CallbackData | None = None,
-        **kw,
-    ):
+        **kw: Any,
+    ) -> Self:
         self.inline_keyboard.append([])
 
         if text:
-            self.btn(text, callback_data, **kw)
+            self.btn(text=text, callback_data=callback_data, **kw)
 
         return self
 
@@ -25,8 +27,8 @@ class IKB(InlineKeyboardMarkup):
         text: str | InlineKeyboardButton,
         callback_data: str | CallbackData | None = None,
         max_width: int = 300,
-        **kw,
-    ):
+        **kw: Any,
+    ) -> Self:
 
         if not self.inline_keyboard or len(self.inline_keyboard[-1]) >= max_width:
             self.row()

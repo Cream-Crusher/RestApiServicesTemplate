@@ -1,4 +1,4 @@
-from typing import Protocol, Iterable, Union, Any
+from typing import Protocol, Iterable, Union, Literal
 
 
 class BaseCacheRepository(Protocol):
@@ -9,13 +9,13 @@ class BaseCacheRepository(Protocol):
     async def expire(self, key: str, ex: float):
         ...
 
-    async def set(self, key: str, value, ex: float | None = None):
+    async def set(self, key: str, value: str, ex: float | None = None):
         ...
 
     async def lpush(self, key: str, *values: bytes):
         ...
 
-    async def lrem(self, key: str, count: int, value: bytes):
+    async def lrem(self, key: str, count: int, value: bytes) -> Literal[1]:
         ...
 
     async def lrange(self, key: str, start: int, end: int) -> list[bytes]:
@@ -46,7 +46,7 @@ class BaseCacheRepository(Protocol):
     async def zrem(self, key: str, name: str) -> Union[None, str]:
         ...
 
-    async def zadd(self, key: str, data: dict):
+    async def zadd(self, key: str, data: dict[str, float]):
         ...
 
     async def zrevrank(self, key: str, item: str) -> Union[None, int]:
