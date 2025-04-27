@@ -69,7 +69,7 @@ class BaseService[T, I]:
 
     @transaction()  # type: ignore
     async def delete(self, model_id: str | T) -> None:
-        model: T | object = await self.id(model_id=model_id) if isinstance(model_id, str) else model_id  # type: ignore
+        model: T = await self.id(model_id=model_id) if isinstance(model_id, str) else model_id  # type: ignore
 
         session: AsyncSession = require_session()
         await session.delete(model)

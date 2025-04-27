@@ -4,6 +4,7 @@ from alembic.config import Config
 from loguru import logger
 
 from Infrastructure.Scheduler.scheduler import setup
+from Services.TelegramBotService.bot_main import bot_main
 from Services.TemplateApiServise.WebApi.app import uvicorn_server
 from config import settings
 

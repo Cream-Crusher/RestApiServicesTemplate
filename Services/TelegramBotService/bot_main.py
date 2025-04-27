@@ -1,12 +1,12 @@
-import asyncio
 import logging
 
 from aiogram import Dispatcher, Bot
-from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.fsm.storage.base import BaseStorage
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from redis import asyncio as aioredis
 from redis.asyncio import Redis
-from aiogram.fsm.storage.memory import MemoryStorage
+
 from Services.TelegramBotService.BotMiddlewares.UserMW import user_middleware  # type: ignore
 from Services.TelegramBotService.get_bot import get_bot
 from Services.TelegramBotService.handlers.manager.routers import flow_tool
@@ -21,7 +21,7 @@ async def bot_main():
     )
     bot: Bot = get_bot()
     redis: Redis | None = aioredis.Redis(host=settings.redis_config.host) if settings.redis_config.host else None
-    storage: BaseStorage = MemoryStorage() if settings.redis_config.disable or redis is None else RedisStorage(redis=redis)
+    storage: BaseStorage = MemoryStorage() if redis is None else RedisStorage(redis=redis)
 
     dp = Dispatcher(storage=storage)
 
@@ -31,8 +31,4 @@ async def bot_main():
     dp.include_router(router=flow_tool.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot=bot)  # type: ignore
-
-
-if __name__ == "__main__":
-    asyncio.run(bot_main())
+    await dp.start_polling(bot)  # type: ignore

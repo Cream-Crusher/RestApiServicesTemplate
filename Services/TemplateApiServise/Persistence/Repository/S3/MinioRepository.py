@@ -10,7 +10,7 @@ from Services.TemplateApiServise.Persistence.Repository.S3.BaseS3Repository impo
 
 class MinioRepository(BaseS3Repository[BytesIO]):
     def __init__(self, s3_context: S3Context) -> None:
-        self.endpoint: str = f"https://{s3_context.endpoint}"
+        self.endpoint: str = f"https://{s3_context.endpoint}" if 'https://' not in s3_context.endpoint else s3_context.endpoint
         self.s3_context: S3Context = s3_context
 
     async def _is_exists_bucket(self, bucket: str) -> bool:

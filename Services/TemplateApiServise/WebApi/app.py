@@ -30,17 +30,19 @@ app.add_middleware(
     max_age=3600
 )
 
-
 router = APIRouter(prefix='/api/v1')
-
-# User
-app.include_router(users_router, tags=['User | Users'], prefix='/users')
-# router.include_router(users_router, tags=['User | Users'], prefix='/users')
 
 
 @router.get("/ping", tags=["Server"])
 async def ping_server():
     return "pong"
+
+
+# Server
+app.include_router(router, tags=['Server'], prefix='server')
+# User
+app.include_router(users_router, tags=['User | Users'], prefix=f'{router.prefix}/users')
+# router.include_router(users_router, tags=['User | Users'], prefix='/users')
 
 
 # TODO отключение документации для прода

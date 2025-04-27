@@ -8,7 +8,7 @@ from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDt
 users_router = APIRouter()
 
 
-@users_router.post(path='/', name='create', status_code=201)
+@users_router.post(path='/', name='create', status_code=status.HTTP_201_CREATED)
 async def create(
         user_create_dto: CreateUserDto,
 ) -> JSONResponse:

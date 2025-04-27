@@ -31,20 +31,24 @@ def require_session() -> AsyncSession:
     return session
 
 
-def transaction[SELF, **P, T](cb: Callable[Concatenate[SELF, AsyncSession, P], Awaitable[T]]) -> Callable[Concatenate[SELF, P], Coroutine[Any, Any, T]]:
-    @wraps(wrapped=cb)
-    async def wrapped(self: SELF, *args: P.args, **kwargs: P.kwargs) -> T:
-        session: AsyncSession | None = db_session_var.get()
-        if session is not None:
-            return await cb(self, session, *args, **kwargs)
+def transaction[SELF, **P, T]():
+    def wrapper(
+        cb: Callable[Concatenate[SELF, AsyncSession, P], Awaitable[T]],
+    ) -> Callable[Concatenate[SELF, P], Coroutine[Any, Any, T]]:
+        @wraps(cb)
+        async def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
+            if db_session_var.get() is not None:
+                return await cb(*args, **kwargs)  # type: ignore
 
-        async with factory() as session:
-            with use_context_value(context=db_session_var, value=session):
-                result: T = await cb(self, session, *args, **kwargs)
-                # await session.commit()
-                return result
+            async with cast(AsyncSession, factory()) as session:  # type: ignore
+                with use_context_value(db_session_var, session):
+                    result = await cb(*args, **kwargs)  # type: ignore
+                    # await session.commit()
+                    return result  # type: ignore
 
-    return wrapped
+        return wrapped  # type: ignore
+
+    return wrapper
 
 
 @contextmanager

@@ -8,4 +8,4 @@ root.crt
 /.env
 volumes
 .DS_Store
-deploy/.gitlab-ci.yml
+.gitlab-ci.yml
