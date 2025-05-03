@@ -3,6 +3,7 @@ from alembic import command
 from alembic.config import Config
 from loguru import logger
 
+from Infrastructure.Logging.logger import setup_logging
 from Infrastructure.Scheduler.scheduler import setup
 from Services.TelegramBotService.bot_main import bot_main
 from Services.TemplateApiServise.WebApi.app import uvicorn_server
@@ -16,16 +17,17 @@ def run_migrations():
 
 
 async def main():
+    setup_logging(settings.app_config.log_level)
+    
     async with anyio.create_task_group() as tg:
         tg.start_soon(uvicorn_server.serve)
         tg.start_soon(setup)
-
-        # tg.start_soon(bot_main)
+        tg.start_soon(bot_main)
 
 
 if __name__ == "__main__":
     try:
         run_migrations()
         anyio.run(main)
-    except SystemExit:
+    except SystemExit:  # /NOSONAR
         logger.info("Exiting")

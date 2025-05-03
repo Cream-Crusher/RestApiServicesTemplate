@@ -1,9 +1,8 @@
-import logging
-
 from aiogram import Dispatcher, Bot
 from aiogram.fsm.storage.base import BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage
+from loguru import logger
 from redis import asyncio as aioredis
 from redis.asyncio import Redis
 
@@ -15,10 +14,6 @@ from config import settings
 
 
 async def bot_main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    )
     bot: Bot = get_bot()
     redis: Redis | None = aioredis.Redis(host=settings.redis_config.host) if settings.redis_config.host else None
     storage: BaseStorage = MemoryStorage() if redis is None else RedisStorage(redis=redis)
@@ -32,3 +27,4 @@ async def bot_main():
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)  # type: ignore
+    logger.info("Bot started")

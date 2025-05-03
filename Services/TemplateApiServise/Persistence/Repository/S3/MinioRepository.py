@@ -44,10 +44,10 @@ class MinioRepository(BaseS3Repository[BytesIO]):
                     },
                 )  # type: ignore
                 logger.info(
-                    f"Файл '{object_name}' успешно загружен в бакет '{bucket_name}'"
+                    f"File '{object_name}' success uploaded to '{bucket_name}'"
                 )
             except Exception as e:
-                logger.exception(f"Произошла ошибка при загрузке файла: {e}")
+                logger.exception(f"There was an error loading the file: {e}")
 
         return self._compare_link(bucket_name=bucket_name, object_name=object_name)
 

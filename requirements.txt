@@ -27,3 +27,5 @@ injector==0.22.0
 loguru==0.7.3
 async-lru==2.0.4
 python-multipart==0.0.20
+starlette~=0.41.3
+python-dotenv~=1.0.1

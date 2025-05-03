@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
-from typing import Sequence, Any, Tuple
+from typing import Sequence, Any, Tuple, Union
+from uuid import UUID
+
 from loguru import logger
 from fastapi import HTTPException
 from sqlalchemy import Row, RowMapping
@@ -55,8 +57,8 @@ class BaseService[T, I]:
             raise error
 
     @transaction()  # type: ignore
-    async def update(self, model_id: str | T, update_data: dict[str, Any]) -> T:
-        model: T = await self.id(model_id=model_id) if isinstance(model_id, str) else model_id  # type: ignore
+    async def update(self, model_id: Union[str, int, T, UUID], update_data: dict[str, Any]) -> T:
+        model: T = await self.id(model_id=model_id) if isinstance(model_id, Union[str, int, UUID]) else model_id  # type: ignore
 
         for key, value in update_data.items():
             if value is not None:

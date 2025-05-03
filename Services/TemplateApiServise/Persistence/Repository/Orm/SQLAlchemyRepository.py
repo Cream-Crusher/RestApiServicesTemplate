@@ -40,7 +40,7 @@ class SQLAlchemyRepository[TM](Select[Tuple[TM]]):
     async def first_or_raise(self, exception: BaseException) -> TM:
         result: TM | None = await self.first()
         if result is None:
-            raise exception
+            raise exception  # /NOSONAR
         return result
 
     async def first_or_none(self) -> TM | None:
@@ -58,7 +58,7 @@ class SQLAlchemyRepository[TM](Select[Tuple[TM]]):
     async def one_or_raise(self, exception: BaseException) -> TM:
         result: TM | None = await self.one_or_none()
         if result is None:
-            raise exception
+            raise exception  # /NOSONAR
         return result
 
     async def one_or_call[T](self, callback: Callable[[], T]) -> T | TM:

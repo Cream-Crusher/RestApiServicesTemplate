@@ -19,7 +19,7 @@ from Services.TemplateApiServise.Persistence.Database.DbContext import transacti
 router = Router()
 
 
-@router.message(Command("get_file_id"), ManagerFilter())  # todo get file id
+@router.message(Command("get_file_id"), ManagerFilter())
 async def get_file_id_tool(message: Message, state: FSMContext) -> None:
     await state.set_state(state=ToolState.tool)
 
@@ -40,13 +40,13 @@ async def get_file_id_tool_state(message: Message) -> None:
         await message.answer(message.sticker.file_id)
 
 
-@router.message(Command("send_broadcast"), ManagerFilter())  # todo malling
+@router.message(Command("send_broadcast"), ManagerFilter())
 async def send_broadcast_tool(message: Message, state: FSMContext) -> None:
     await state.set_state(state=ToolState.start_mallin)
     await message.answer(text="Отправьте сообщение, которое надо разослать")
 
 
-@router.message(ToolState.start_mallin)  # TODO служебное
+@router.message(ToolState.start_mallin)
 async def send_broadcast_state_malling_tool(message: Message, state: FSMContext, telegram_user: TelegramUser) -> None:
     await state.update_data(message_id=message.message_id)
     await state.set_state(state=ToolState.send_broadcast)
@@ -70,7 +70,7 @@ async def send_broadcast_state_malling_tool(message: Message, state: FSMContext,
     )
 
 
-@router.message(ToolState.send_broadcast)  # TODO служебное
+@router.message(ToolState.send_broadcast)
 @transaction()  # type: ignore
 async def send_broadcast_state_tool(message: Message, state: FSMContext, telegram_user: TelegramUser) -> None:
     if message.text == "yes":

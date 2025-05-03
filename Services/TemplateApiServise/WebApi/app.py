@@ -1,5 +1,4 @@
-import logging
-
+from typing import Literal
 import uvicorn
 from fastapi import APIRouter
 from fastapi import FastAPI
@@ -8,21 +7,14 @@ from starlette.middleware.cors import CORSMiddleware
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 from config import settings
 
-
-# add logging
-logging.basicConfig(
-    level=logging.NOTSET,
-    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-)
-
 # add FastApi
-if settings.api_servise_config.dev:
-    app = FastAPI(docs_url="/swagger", redoc_url=None)
-else:
+if settings.app_config.environment_type == 'prod':
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+else:
+    app = FastAPI(docs_url="/swagger", redoc_url=None)
 
 app.add_middleware(
-    CORSMiddleware,
+    middleware_class=CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
@@ -34,7 +26,7 @@ router = APIRouter(prefix='/api/v1')
 
 
 @router.get("/ping", tags=["Server"])
-async def ping_server():
+async def ping_server() -> Literal['pong']:
     return "pong"
 
 
@@ -45,8 +37,7 @@ app.include_router(users_router, tags=['User | Users'], prefix=f'{router.prefix}
 # router.include_router(users_router, tags=['User | Users'], prefix='/users')
 
 
-# TODO отключение документации для прода
-# @app.exception_handler(HTTPException)
+# @app.exception_handler(HTTPException) /NOSONAR
 # async def http_exception_handler(request, exc):
 #     return JSONResponse(
 #         status_code=422,

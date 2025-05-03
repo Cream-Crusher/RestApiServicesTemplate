@@ -1,6 +1,6 @@
 from typing import Any
 
-from aiogram.types import Chat
+from loguru import logger
 from posthog import Posthog
 
 from config import settings
@@ -9,10 +9,13 @@ from config import settings
 class PosthogManager:
 
     def __init__(self, token: str | None = None) -> None:
+        logger.info(f"PosthogManager init token: {token}")
         self.posthog = Posthog(api_key=token, host='https://hog.trendsurfers.ru')
 
-    async def lead_start(self, user_id: str, referral: str | None, user: Chat) -> None:
-        user_data: dict[str, Any] = user.model_dump()
+    async def lead_register(self, user_id: str, referral: str = 'self', user_data: dict[str, Any] | None = None) -> None:
+        if user_data is None:
+            user_data = {}
+
         self.posthog.identify(  # type: ignore
             distinct_id=user_id,
             properties={

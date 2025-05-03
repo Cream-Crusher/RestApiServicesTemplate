@@ -1,12 +1,12 @@
 from contextlib import suppress
-from typing import Any
+from typing import Any, Literal
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
 with suppress(Exception):
-    env_file = 'deploy/env/.env'
+    env_file = '.env'
     load_dotenv(dotenv_path=env_file)
 
 
@@ -69,13 +69,17 @@ class MinioConfig(BaseSettings):
 
     class Config:
         env_prefix: str = "S3_"
+        
 
-
-class ApiServiseConfig(BaseSettings):
-    dev: bool = False
+class AppConfig(BaseSettings):
+    environment_type: Literal["local", "dev", "prod"] | str = "dev"
+    log_level: str = "DEBUG"
 
     class Config:
-        env_prefix: str = "API_"
+        env_prefix: str = "APP_"
+
+    def __init__(self, **values: Any) -> None:
+        super().__init__(**values)
 
 
 class AppSettings(BaseModel):
@@ -84,7 +88,7 @@ class AppSettings(BaseModel):
     redis_config: RedisConfig = RedisConfig()
     posthog_config: PosthogConfig = PosthogConfig()
     minio_config: MinioConfig = MinioConfig()
-    api_servise_config: ApiServiseConfig = ApiServiseConfig()
+    app_config: AppConfig = AppConfig()
 
 
 settings = AppSettings()

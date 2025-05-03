@@ -1,4 +1,4 @@
-from typing import Protocol, Iterable, Union, Literal
+from typing import Protocol, Iterable, Union
 
 
 class BaseCacheRepository(Protocol):
@@ -15,7 +15,7 @@ class BaseCacheRepository(Protocol):
     async def lpush(self, key: str, *values: bytes):
         ...
 
-    async def lrem(self, key: str, count: int, value: bytes) -> Literal[1]:
+    async def lrem(self, key: str, count: int, value: bytes) -> int:
         ...
 
     async def lrange(self, key: str, start: int, end: int) -> list[bytes]:

@@ -77,6 +77,3 @@ class MemCacheRepository(BaseCacheRepository):
             return result[0]
 
         return None
-
-
-MemCacheRepositoryInstance: MemCacheRepository = MemCacheRepository()
