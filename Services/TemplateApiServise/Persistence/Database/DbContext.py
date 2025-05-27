@@ -43,7 +43,7 @@ def transaction[SELF, **P, T]():
             async with cast(AsyncSession, factory()) as session:  # type: ignore
                 with use_context_value(db_session_var, session):  # type: ignore
                     result = await cb(*args, **kwargs)  # type: ignore
-                    # await session.commit()
+                    await session.commit()
                     return result  # type: ignore
 
         return wrapped  # type: ignore

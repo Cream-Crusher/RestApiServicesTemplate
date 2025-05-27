@@ -5,7 +5,7 @@ from loguru import logger
 scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
 
 
-async def setup() -> None:
+async def setup_scheduler() -> None:
     # scheduler.add_job(
     #     func=,
     #     kwargs={},
