@@ -52,7 +52,6 @@ class DatabaseConfig(BaseSettings):
 
 
 class RedisConfig(BaseSettings):
-    disable: bool = True
     host: str | None = None
 
     class Config:

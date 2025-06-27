@@ -2,7 +2,7 @@ from typing import Self
 
 from sqlalchemy.orm import DeclarativeBase
 
-from Services.TemplateApiServise.Persistence.Database.DbContext import require_session
+from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 from Services.TemplateApiServise.Persistence.Repository.Orm.SQLAlchemyRepository import SQLAlchemyRepository
 
 
@@ -13,5 +13,5 @@ class SQLAlchemyModel(DeclarativeBase):
         return SQLAlchemyRepository(cls)
 
     def add(self) -> "SQLAlchemyModel":
-        require_session().add(instance=self)
+        get_session().add(instance=self)
         return self

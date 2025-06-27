@@ -12,3 +12,7 @@ class User(BaseEntity):
     first_name: Mapped[str | None] = mapped_column(nullable=True)
     last_name: Mapped[str | None] = mapped_column(nullable=True)
     username: Mapped[str | None] = mapped_column(nullable=True)
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name if self.last_name else ''}".strip()

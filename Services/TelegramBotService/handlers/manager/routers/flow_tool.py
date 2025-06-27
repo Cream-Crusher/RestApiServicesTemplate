@@ -1,18 +1,18 @@
-from contextlib import suppress
-from typing import Any, Sequence
-import anyio
+from typing import Any
+
 from aiogram import Router
 from aiogram.filters import CommandObject, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, WebAppInfo, MessageId
+from aiogram.types import Message, WebAppInfo
 
+from Infrastructure.Posthog.Posthog import posthog_manager  # type: ignore
+from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.manager.filters.tools_filters import ManagerFilter
 from Services.TelegramBotService.handlers.manager.states.tool_state import ToolState
 from Services.TelegramBotService.handlers.manager.texts.tool_text import ToolText
 from Services.TelegramBotService.utils.keyboard.ckb import CKB
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
-from Infrastructure.Posthog.Posthog import posthog_manager  # type: ignore
-from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
+from Services.TelegramBotService.utils.message.send_copy_message import send_copy_message
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
@@ -74,29 +74,23 @@ async def send_broadcast_state_malling_tool(message: Message, state: FSMContext,
 @transaction()  # type: ignore
 async def send_broadcast_state_tool(message: Message, state: FSMContext, telegram_user: TelegramUser) -> None:
     if message.text == "yes":
-        await posthog_manager.lead_state(user_id=str(object=telegram_user.id), state="mailing_admin", data=telegram_user.model_dump())
+        await posthog_manager.lead_state(
+            user_id=str(telegram_user.id),
+            state="mailing_admin",
+            data=telegram_user.model_dump()
+        )
         await message.answer(ToolText.mailing_confirmated)
         data: dict[str, Any] = await state.get_data()
         message_id: int | None = data.get('message_id')
-        users: Sequence[User] = await User.select().all()
+        assert message_id is not None, "message_id is None"
 
-        async def send_message(message: Message, chat_id: str) -> None:
-            with suppress(Exception):
-                assert message_id is not None, "message_id is None"
-                assert message.bot is not None, "message.bot is None"
-
-                message_data: MessageId = await message.bot.copy_message(
-                    from_chat_id=telegram_user.id,
-                    chat_id=chat_id,
-                    message_id=message_id,
-                    parse_mode='HTML',
-                )
-
-                await posthog_manager.lead_state(user_id=chat_id, state="send_broadcast", data=message_data.model_dump())
-
-        async with anyio.create_task_group() as tg:
-            for user in users:
-                tg.start_soon(send_message, message, str(user.id))
+        for user in await User.select().order_by(User.created_at.asc()).all():
+            await send_copy_message(
+                user_id=user.id,
+                msg_id=message_id,
+                msg_chat=int(telegram_user.id),
+                parse_mode="html",
+            )
 
         await message.answer(text=ToolText.mailing_end)
     else:
@@ -113,3 +107,20 @@ async def webapp(message: Message, command: CommandObject) -> None:
         reply_markup=IKB()
         .row(text='TestWaLinkKB', web_app=WebAppInfo(url=command.args))
     )
+
+
+@router.message(Command("broadcast_user_id"))
+async def broadcast_chat_botton_on(msg: Message, telegram_user: TelegramUser, command: CommandObject):
+    if str(telegram_user.id) not in ["1001631806"]:
+        return
+
+    assert msg.reply_to_message and command.args
+    
+    for user_id in command.args.splitlines():
+        await send_copy_message(
+            int(user_id.strip()),
+            msg_chat=msg.chat.id,
+            msg_id=msg.reply_to_message.message_id,
+            parse_mode="markdown",
+        )
+    await msg.answer("ok")

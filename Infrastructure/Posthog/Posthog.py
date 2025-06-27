@@ -12,10 +12,7 @@ class PosthogManager:
         logger.info(f"PosthogManager init token: {token}")
         self.posthog = Posthog(api_key=token if token else 'None', host='https://hog.trendsurfers.ru')
 
-    async def lead_register(self, user_id: str, referral: str = 'self', user_data: dict[str, Any] | None = None) -> None:
-        if user_data is None:
-            user_data = {}
-
+    async def lead_register(self, user_id: str, referral: str = 'self', user_data: dict[str, Any] = {}) -> None:
         self.posthog.identify(  # type: ignore
             distinct_id=user_id,
             properties={

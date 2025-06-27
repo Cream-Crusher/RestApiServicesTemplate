@@ -50,12 +50,12 @@ class MemCacheRepository(BaseCacheRepository):
 
     async def zrevrange(
         self, key: str, start: int, end: int
-    ) -> list[tuple[bytes, float]]:
+    ) -> list[tuple[Any, Any]]:
         return list(self.kv.setdefault(key, {}).items())[::-1][start: end + 1]
 
     async def zrange(
         self, key: str, start: int, end: int
-    ) -> list[tuple[bytes, float]]:
+    ) -> list[tuple[Any, Any]]:
         return list(self.kv.setdefault(key, {}).items())[start: end + 1]
 
     async def zscore(self, key: str, name: str) -> Any:

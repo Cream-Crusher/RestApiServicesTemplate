@@ -1,14 +1,12 @@
+from datetime import datetime
 from typing import Sequence, Any, Union
-from uuid import UUID
 
 from fastapi import HTTPException
-from loguru import logger
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from Services.TemplateApiServise.Application.common.Pagination import Pagination
-from Services.TemplateApiServise.Application.common.utcnow import utcnow
-from Services.TemplateApiServise.Persistence.Database.DbContext import transaction, require_session
+from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 
 class BaseService[T, I]:
@@ -18,24 +16,22 @@ class BaseService[T, I]:
 
     async def all(self, paging: None | Pagination = None) -> Sequence[T]:
         if paging is None:
-            query = (  # type: ignore
+            result: Any = (
                 self.model.select()  # type: ignore
                 .where(self.model.active.is_(True))  # type: ignore
             )
         else:
-            query = await (  # type: ignore
+            result = await (
                 self.model.select()  # type: ignore
                 .where(self.model.active.is_(True))  # type: ignore
                 .offset(paging.skip)
                 .limit(paging.limit)
             )
 
-        result = await query.all()  # type: ignore
-
         if not result:
             return []
 
-        return result  # type: ignore
+        return result.all()
 
     async def id(self, model_id: I) -> T:
         return (
@@ -45,25 +41,23 @@ class BaseService[T, I]:
         )  # type: ignore
 
     async def create(self, data: dict[str, Any]) -> T:
-        try:
-            user: T = self.model(**data).add()  # type: ignore
-            return user  # type: ignore
-        except IntegrityError as error:
-            logger.error(error)
-            raise error
+        return self.model(**data).add()  # type: ignore
 
-    async def update(self, model_id: Union[str, int, T, UUID], update_data: dict[str, Any]) -> T:
-        model: T = await self.id(model_id=model_id) if isinstance(model_id, Union[str, int, UUID]) else model_id  # type: ignore
+    async def update(self, model_id: Union[T, I], update_data: dict[str, Any]) -> T:
+        model: T = model_id if isinstance(type(model_id), type(I)) else await self.id(model_id=model_id)  # type: ignore
 
         for key, value in update_data.items():
             if value is not None:
-                setattr(model, key, value)
+                setattr(model, key, value)  # type: ignore
 
-        model.updated_at = utcnow()  # type: ignore
-        return model
+        model.updated_at = datetime.now(tz=None)  # type: ignore
+        return model  # type: ignore
 
-    async def delete(self, model_id: Union[str, int, T, UUID]) -> None:
-        model: T = await self.id(model_id=model_id) if isinstance(model_id, Union[str, int, UUID]) else model_id  # type: ignore
-
-        session: AsyncSession = require_session()
-        await session.delete(model)
+    async def delete(self, model_id: Union[T, I]) -> None:
+        id_value: I = model_id if isinstance(model_id, I) else model_id.id  # type: ignore
+        query = (
+            delete(self.model)
+            .where(self.model.id == id_value)  # type: ignore
+        )
+        session: AsyncSession = get_session()
+        await session.execute(query)

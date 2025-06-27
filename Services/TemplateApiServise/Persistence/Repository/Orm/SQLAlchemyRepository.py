@@ -3,7 +3,7 @@ from typing import Generator, Any, Sequence, Callable, Iterator, Tuple
 from sqlalchemy import ScalarResult, Select
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from Services.TemplateApiServise.Persistence.Database.DbContext import require_session
+from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 
 class SQLAlchemyRepository[TM](Select[Tuple[TM]]):
@@ -13,7 +13,7 @@ class SQLAlchemyRepository[TM](Select[Tuple[TM]]):
         return self.exec().__await__()
 
     async def exec(self) -> ScalarResult[TM]:
-        session: AsyncSession = require_session()
+        session: AsyncSession = get_session()
         return await session.scalars(statement=self)  # type: ignore
 
     async def all(self) -> Sequence[TM]:

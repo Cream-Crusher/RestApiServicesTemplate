@@ -1,9 +1,13 @@
 from typing import Literal
+
 import uvicorn
 from fastapi import APIRouter
 from fastapi import FastAPI
+from sqlalchemy.exc import IntegrityError
 from starlette.middleware.cors import CORSMiddleware
 
+from Services.TemplateApiServise.Application.exceptions.integrity_error_exception_handler import \
+    integrity_error_exception_handler
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 from config import settings
 
@@ -26,7 +30,7 @@ router = APIRouter(prefix='/api/v1')
 
 
 @router.get("/ping", tags=["Server"])
-async def ping_server() -> Literal['pong']:
+async def ping_server() -> Literal["pong"]:
     return "pong"
 
 
@@ -34,23 +38,10 @@ async def ping_server() -> Literal['pong']:
 app.include_router(router, tags=['Server'], prefix='server')
 # User
 app.include_router(users_router, tags=['User | Users'], prefix=f'{router.prefix}/users')
-# router.include_router(users_router, tags=['User | Users'], prefix='/users')
 
 
-# @app.exception_handler(HTTPException) /NOSONAR
-# async def http_exception_handler(request, exc):
-#     return JSONResponse(
-#         status_code=422,
-#         content={"detail": "Произошла ошибка. Пожалуйста, проверьте данные."}
-#     )
-#
-#
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     return JSONResponse(
-#         status_code=422,
-#         content={"detail": "Некорректные данные. Пожалуйста, проверьте введенные данные."}
-#     )
+# Exceptions Handlers
+app.add_exception_handler(IntegrityError, integrity_error_exception_handler)
 
 
 # uvicorn

@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from functools import wraps
-from typing import Callable, Any, Coroutine, Generator, Concatenate, Awaitable
+from typing import Callable, Any, Coroutine, Generator, Concatenate, Awaitable, cast
 
 import sqlalchemy.engine.url as SQURL
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
@@ -25,7 +25,7 @@ engine: AsyncEngine = create_async_engine(url=url, pool_size=10, max_overflow=5)
 factory: async_sessionmaker[AsyncSession] = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 
-def require_session() -> AsyncSession:
+def get_session() -> AsyncSession:
     session: AsyncSession | None = db_session_var.get()
     assert session is not None, "Session context is not provided"
     return session
@@ -43,7 +43,7 @@ def transaction[SELF, **P, T]():
             async with cast(AsyncSession, factory()) as session:  # type: ignore
                 with use_context_value(db_session_var, session):  # type: ignore
                     result = await cb(*args, **kwargs)  # type: ignore
-                    await session.commit()
+                    await session.commit()  # type: ignore
                     return result  # type: ignore
 
         return wrapped  # type: ignore
