@@ -23,6 +23,7 @@ class PosthogConfig(BaseSettings):
 class BotConfig(BaseSettings):
     token: str
     subscribe_channels: str | None = None
+    web_app_url: str | None = None
 
     class Config:
         env_prefix: str = "BOT_"

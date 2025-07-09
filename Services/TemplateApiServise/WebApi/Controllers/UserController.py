@@ -1,23 +1,65 @@
 from fastapi import APIRouter
 from fastapi import status
 
-from Services.TemplateApiServise.Application.Users.UserService import user_service
-from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDto
+from Services.TemplateApiServise.Application.Users.UserCommandService import user_command_service
+from Services.TemplateApiServise.Application.Users.UserQueryService import user_query_service
+from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO, UpdateUserDto, CreateUserDto
 from Services.TemplateApiServise.Application.common.BaseResponse import BaseResponse
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
 users_router = APIRouter()
 
 
-@users_router.post(
+@users_router.get(
+    path='/{user_id}',
+    name='get user by id',
+    status_code=status.HTTP_200_OK
+)
+@transaction()  # type: ignore
+async def get_user_by_id_api(
+        user_id: int,
+) -> GetUserByIdDTO:
+    return await user_query_service.get_by_id(user_id)
+
+
+@users_router.put(
     path='',
-    name='create',
+    name='create user',
     status_code=status.HTTP_201_CREATED
 )
 @transaction()  # type: ignore
 async def create_user_api(
-        user_create_dto: CreateUserDto,
+        new_user_dto: CreateUserDto,
 ) -> BaseResponse:
-    await user_service.create(data=user_create_dto.model_dump())
+    await user_command_service.create(new_user_dto)
+
+    return BaseResponse(success=True)
+
+
+@users_router.put(
+    path='/{user_id}',
+    name='update user',
+    status_code=status.HTTP_200_OK
+)
+@transaction()  # type: ignore
+async def create_user_api(
+        user_id: int,
+        update_user_dto: UpdateUserDto,
+) -> BaseResponse:
+    await user_command_service.update(user_id, update_user_dto, f"user:{user_id}")
+
+    return BaseResponse(success=True)
+
+
+@users_router.delete(
+    path='/{user_id}',
+    name='delete user',
+    status_code=status.HTTP_200_OK
+)
+@transaction()  # type: ignore
+async def delete_user_api(
+        user_id: int,
+) -> BaseResponse:
+    await user_command_service.delete(user_id, f"user:{user_id}")
 
     return BaseResponse(success=True)

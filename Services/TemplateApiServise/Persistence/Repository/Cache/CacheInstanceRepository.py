@@ -3,6 +3,7 @@ from typing import Literal, Union
 
 from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import MemCacheRepository
 from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import RedisCacheRepository
+from config import settings
 
 
 @cache
@@ -19,4 +20,4 @@ def connect_cache_repository_instance(
             return MemCacheRepository()
 
 
-CacheRepositoryInstance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance('memory')
+CacheRepositoryInstance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance('redis', settings.redis_config.host)

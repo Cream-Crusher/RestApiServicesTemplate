@@ -1,12 +1,13 @@
+import json
 import uuid
 from datetime import datetime
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-from Services.TemplateApiServise.Persistence.Repository.Orm.SQLAlchemyModel import SQLAlchemyModel
+from Services.TemplateApiServise.Persistence.Repository.Orm.SqlModel import BaseSqlModel
 
 
-class BaseEntity(SQLAlchemyModel):
+class BaseEntity(BaseSqlModel):
     __abstract__ = True
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)

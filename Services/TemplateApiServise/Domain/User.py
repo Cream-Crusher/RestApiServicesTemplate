@@ -9,9 +9,9 @@ class User(BaseEntity):
 
     id: Mapped[int] = mapped_column(type_=BIGINT, primary_key=True, nullable=False)  # type: ignore
 
-    first_name: Mapped[str | None] = mapped_column(nullable=True)
+    first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str | None] = mapped_column(nullable=True)
-    username: Mapped[str | None] = mapped_column(nullable=True)
+    username: Mapped[str] = mapped_column(nullable=False)
 
     @property
     def full_name(self):

@@ -8,15 +8,23 @@ from Infrastructure.Posthog.Posthog import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
+from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
+from config import settings
 
 router = Router()
 
 
-@alru_cache()
-async def get_user(user_id: str) -> User:
-    return await User.select().where(User.id == user_id).one_or_raise(AssertionError(f'User {user_id} not found'))
+@alru_cache(512)
+async def get_user(user_id: str) -> GetUserByIdDTO:
+    return GetUserByIdDTO(
+        **(
+            await User.select()
+            .where(User.id == user_id)
+            .one_or_raise(AssertionError(f'User {user_id} not found'))
+        ).__dict__
+    )
 
 
 @router.message(Command("start"))
@@ -35,5 +43,5 @@ async def start(message: Message, command: CommandObject, state: FSMContext, tel
     await message.answer(
         text=StartText.start,
         reply_markup=IKB()
-        .row(text="Перейти в игру1", web_app=WebAppInfo(url='https://www.littlerockzoo.com/media/2908/2022-0104-red-fox-james-syler.jpg'))
+        .row(text="Перейти в игру1", web_app=WebAppInfo(url=settings.bot_config.web_app_url))
     )

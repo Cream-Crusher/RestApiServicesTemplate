@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 
-class SQLAlchemyRepository[TM](Select[Tuple[TM]]):
+class BaseRepository[TM](Select[Tuple[TM]]):
     inherit_cache = True
 
     def __await__(self) -> Generator[Any, Any, ScalarResult[TM]]:

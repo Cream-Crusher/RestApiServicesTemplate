@@ -1,12 +1,12 @@
 services:
 
-  db:
+  postgres:
     image: postgres:latest
-    container_name: db_bot
+    container_name: TEMPLATE_POSTGRES_NAME
 
-#  redis:
-#    image: redis
-#    container_name: redis_bot
+  redis:
+    image: redis:latest
+    container_name: TEMPLATE_REDIS_NAME
 
 volumes:
   postgres_data:

@@ -6,6 +6,9 @@ from fastapi import FastAPI
 from sqlalchemy.exc import IntegrityError
 from starlette.middleware.cors import CORSMiddleware
 
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
+from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import \
+    model_not_found_error_exception_handler
 from Services.TemplateApiServise.Application.exceptions.integrity_error_exception_handler import \
     integrity_error_exception_handler
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
@@ -35,13 +38,14 @@ async def ping_server() -> Literal["pong"]:
 
 
 # Server
-app.include_router(router, tags=['Server'], prefix='server')
+app.include_router(router, tags=['Server'], prefix='/server')
 # User
 app.include_router(users_router, tags=['User | Users'], prefix=f'{router.prefix}/users')
 
 
 # Exceptions Handlers
 app.add_exception_handler(IntegrityError, integrity_error_exception_handler)
+app.add_exception_handler(ModelNotFound, model_not_found_error_exception_handler)
 
 
 # uvicorn
