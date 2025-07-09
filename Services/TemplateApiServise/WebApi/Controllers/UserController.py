@@ -28,7 +28,7 @@ async def get_user_by_id_api(
     status_code=status.HTTP_201_CREATED
 )
 @transaction()  # type: ignore
-async def create_user_api(
+async def update_user_api(
         new_user_dto: CreateUserDto,
 ) -> BaseResponse:
     await user_command_service.create(new_user_dto)

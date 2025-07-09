@@ -1,6 +1,5 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound

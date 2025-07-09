@@ -43,5 +43,5 @@ async def start(message: Message, command: CommandObject, state: FSMContext, tel
     await message.answer(
         text=StartText.start,
         reply_markup=IKB()
-        .row(text="Перейти в игру1", web_app=WebAppInfo(url=settings.bot_config.web_app_url))
+        .row(text="Перейти в игру1", web_app=WebAppInfo(url=settings.bot_config.web_app_url))  # type: ignore
     )

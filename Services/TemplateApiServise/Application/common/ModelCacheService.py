@@ -31,5 +31,5 @@ class ModelCacheService:
 
 
 model_cache_service = ModelCacheService(
-    cache=CacheRepositoryInstance
+    cache=CacheRepositoryInstance  # type: ignore
 )
