@@ -11,6 +11,7 @@ with suppress(Exception):
 
 
 class PosthogConfig(BaseSettings):
+    host: str = "localhost"
     token: str | None = None
 
     class Config:

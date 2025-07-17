@@ -13,7 +13,8 @@ users_router = APIRouter()
 @users_router.get(
     path='/{user_id}',
     name='get user by id',
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    response_model=GetUserByIdDTO,
 )
 @transaction()  # type: ignore
 async def get_user_by_id_api(
@@ -22,13 +23,13 @@ async def get_user_by_id_api(
     return await user_query_service.get_by_id(user_id)
 
 
-@users_router.put(
+@users_router.post(
     path='',
     name='create user',
     status_code=status.HTTP_201_CREATED
 )
 @transaction()  # type: ignore
-async def update_user_api(
+async def create_user_api(
         new_user_dto: CreateUserDto,
 ) -> BaseResponse:
     await user_command_service.create(new_user_dto)
@@ -42,7 +43,7 @@ async def update_user_api(
     status_code=status.HTTP_200_OK
 )
 @transaction()  # type: ignore
-async def create_user_api(
+async def update_user_api(
         user_id: int,
         update_user_dto: UpdateUserDto,
 ) -> BaseResponse:

@@ -8,15 +8,15 @@ from config import settings
 
 class PosthogManager:
 
-    def __init__(self, token: str | None = None) -> None:
+    def __init__(self, host: str, token: str | None = None) -> None:
         logger.info(f"PosthogManager init token: {token}")
-        self.posthog = Posthog(api_key=token if token else 'None', host='')
+        self.posthog = Posthog(api_key=token if token else "None", host="")
 
-    async def lead_register(self, user_id: str, referral: str = 'self', user_data: dict[str, Any] = {}) -> None:
+    async def lead_register(self, user_id: str, referral: str = "self", user_data: dict[str, Any] = {}) -> None:
         self.posthog.identify(  # type: ignore
             distinct_id=user_id,
             properties={
-                "referral": referral,
+                "referral": referral if referral else "self",
                 **user_data,
                 "$set": {**user_data, "referral": referral},
             }
@@ -31,5 +31,6 @@ class PosthogManager:
 
 
 posthog_manager: PosthogManager = PosthogManager(
-    token=settings.posthog_config.token
+    token=settings.posthog_config.token,
+    host=settings.posthog_config.host
 )
