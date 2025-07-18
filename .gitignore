@@ -9,3 +9,5 @@ root.crt
 volumes
 .DS_Store
 .gitlab-ci.yml
+.run
+*__init__.py
