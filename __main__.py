@@ -20,11 +20,11 @@ async def main():
     setup_logging(settings.app_config.log_level)
     
     async with anyio.create_task_group() as tg:
-        tg.start_soon(uvicorn_server.serve)
+        # tg.start_soon(uvicorn_server.serve)
         tg.start_soon(setup_scheduler)
 
-        if settings.app_config.environment_type != 'local':
-            tg.start_soon(bot_main)
+        # if settings.app_config.environment_type != 'local':
+        tg.start_soon(bot_main)
 
 
 if __name__ == "__main__":

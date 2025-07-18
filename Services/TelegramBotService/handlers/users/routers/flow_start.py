@@ -2,29 +2,18 @@ from aiogram import Router
 from aiogram.filters import CommandObject, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
-from async_lru import alru_cache
 
 from Infrastructure.Posthog.Posthog import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
-from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
+from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api
 from config import settings
 
 router = Router()
-
-
-@alru_cache(512)
-async def get_user(user_id: str) -> GetUserByIdDTO:
-    return GetUserByIdDTO(
-        **(
-            await User.select()
-            .where(User.id == user_id)
-            .one_or_raise(AssertionError(f'User {user_id} not found'))
-        ).__dict__
-    )
 
 
 @router.message(Command("start"))
@@ -33,8 +22,8 @@ async def start(message: Message, command: CommandObject, state: FSMContext, tel
     await state.clear()
     user_id: int | str = telegram_user.id
     try:
-        await get_user()
-    except AssertionError:
+        await get_user_by_id_api(telegram_user.id)
+    except ModelNotFound:
         User(**telegram_user.model_dump()).add()
         await posthog_manager.lead_register(user_id=str(user_id), referral=command.args, user_data=message.chat.model_dump())  # type: ignore
 
