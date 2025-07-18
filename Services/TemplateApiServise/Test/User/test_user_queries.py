@@ -1,7 +1,7 @@
 import pytest
 
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
-from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api
+from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
 
 pytest_plugins = ('pytest_asyncio',)
 

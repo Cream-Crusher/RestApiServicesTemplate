@@ -10,7 +10,7 @@ from Services.TelegramBotService.utils.keyboard.ikb import IKB
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
-from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api
+from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
 from config import settings
 
 router = Router()
