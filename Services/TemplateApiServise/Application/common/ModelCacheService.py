@@ -1,6 +1,7 @@
 import json
+from contextlib import suppress
 from typing import Any, Callable
-
+from redis.exceptions import ConnectionError
 from pydantic import BaseModel
 
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import CacheRepositoryInstance
@@ -14,20 +15,47 @@ class ModelCacheService:
             cache: RedisCacheRepository
     ):
         self.cache = cache
-    
-    async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:
-        cached_user = await self.cache.get(key)
 
-        if cached_user:
-            return callback(**json.loads(cached_user))
-        
-        return None
+    async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:
+        """
+        get cache model by key
+
+        :param key: key of model 
+        :param callback: pydantic model
+
+        :return: pydantic model or None
+        """
+
+        with suppress(ConnectionError):
+            cached_model = await self.cache.get(key)
     
+            if cached_model:
+                return callback(**json.loads(cached_model))
+            
+            return None
+
     async def set(self, key: str, model: BaseModel, **kw: Any):
-        await self.cache.set(name=key, value=json.dumps(model.model_dump()), ex=300, **kw)
+        """
+        set cache model by key
+        
+        :param key: key of model 
+        :param model: pydantic model
+        :param kw: Any redis.set parameter 
+
+        :return: pydantic model or None
+        """
+
+        with suppress(ConnectionError):
+            await self.cache.set(name=key, value=json.dumps(model.model_dump()), ex=300, **kw)
     
     async def delete(self, key: str):
-        await self.cache.delete(key)
+        """
+        delete cache model by key
+
+        :param key: key of model 
+        """
+        with suppress(ConnectionError):
+            await self.cache.delete(key)
 
 
 model_cache_service = ModelCacheService(

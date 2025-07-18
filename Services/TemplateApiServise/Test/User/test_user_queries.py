@@ -1,18 +1,29 @@
-from fastapi.testclient import TestClient
+import pytest
 
 from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
-from Services.TemplateApiServise.WebApi.app import app, router
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
+from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api
 
-client = TestClient(app)
+pytest_plugins = ('pytest_asyncio',)
 
 
-def test_get_user_by_id():
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_user_by_id():
     # Arrange
     user_id = 1
 
     # Act
-    response = client.get(f"{router.prefix}/users/{user_id}")
+    user = await get_user_by_id_api(user_id)
 
     # Assert
-    assert response.status_code == 200
-    GetUserByIdDTO(**response.json())
+    assert isinstance(user, GetUserByIdDTO)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_user_by_id_error():
+    # Arrange
+    user_id = 2
+
+    # Act & Assert
+    with pytest.raises(ModelNotFound):
+        await get_user_by_id_api(user_id)

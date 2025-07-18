@@ -1,44 +1,62 @@
-from fastapi.testclient import TestClient
+import pytest
 
 from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDto, UpdateUserDto
-from Services.TemplateApiServise.WebApi.app import router, app
+from Services.TemplateApiServise.Application.common.BaseResponse import BaseResponse
+from Services.TemplateApiServise.WebApi.Controllers.UserController import update_user_api, create_user_api, \
+    delete_user_api
 
-client = TestClient(app)
+pytest_plugins = ("pytest_asyncio",)
 
 
-def test_create_user():
+@pytest.mark.asyncio(scope="session")
+async def test_delete_user():
+    # Arrange
+    user_id = 3
+
+    # Act
+    response = await delete_user_api(
+        user_id,
+    )
+
+    # Assert
+    assert isinstance(response, BaseResponse)
+    assert response.success is True
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_create_user():
     # Arrange
     new_user_dto = CreateUserDto(
         id=3,
         first_name="John",
-        last_name="Doe",
-        username="johndoe",
+        last_name="Smith",
+        username="username"
     )
 
     # Act
-    response = client.post(f"{router.prefix}/users", json=new_user_dto.model_dump())
+    response = await create_user_api(new_user_dto)
 
     # Assert
-    assert response.status_code == 201
-    assert response.json()["success"] is True
+    assert isinstance(response, BaseResponse)
+    assert response.success is True
 
 
-def test_update_user():
+@pytest.mark.asyncio(scope="session")
+async def test_update_user():
     # Arrange
-    user_id = 2
+    user_id = 3
     update_user_dto = UpdateUserDto(
-        first_name="John_updated",
-        last_name="Doe_updated",
-        username="johndoe_updated",
+        first_name="John_new",
+        last_name="Smith_new",
+        username="username_new"
     )
 
     # Act
-    response = client.put(f"{router.prefix}/users/{user_id}", json=update_user_dto.model_dump())
+    response = await update_user_api(
+        user_id,
+        update_user_dto
+    )
 
     # Assert
-    assert response.status_code == 200
-    assert response.json()["success"] is True
-
-
-# todo дописать тесты на удаление
-# todo дописать Arrange для бд => создать моки в базе
+    assert isinstance(response, BaseResponse)
+    assert response.success is True
