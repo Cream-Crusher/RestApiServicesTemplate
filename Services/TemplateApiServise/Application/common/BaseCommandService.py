@@ -17,8 +17,8 @@ class BaseCommandService[T, I]:
         self.model: type[T] = model
         self.cache_service = cache_service
 
-    async def create(self, new_model: BaseModel) -> T:
-        return await self.model(**new_model.model_dump()).add()  # type: ignore
+    def create(self, new_model: BaseModel) -> T:
+        return self.model(**new_model.model_dump()).add()  # type: ignore
 
     async def update(self, model_id: I, update_model: BaseModel, cache_key: str | None = None) -> None:
         update_data = {**update_model.model_dump(), "updated_at": datetime.now()}

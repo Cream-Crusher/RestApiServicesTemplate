@@ -30,7 +30,7 @@ async def get_user_by_id_api(
 async def create_user_api(
         new_user_dto: CreateUserDto,
 ) -> BaseResponse:
-    await user_command_service.create(new_user_dto)
+    user_command_service.create(new_user_dto)
 
     return BaseResponse(success=True)
 
