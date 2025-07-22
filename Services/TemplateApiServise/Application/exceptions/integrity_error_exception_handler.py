@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 
-async def integrity_error_exception_handler(_: Request, exc: Exception) -> JSONResponse:
+def integrity_error_exception_handler(_: Request, exc: Exception) -> JSONResponse:
     if isinstance(exc, IntegrityError):
         error_message = str(exc.orig)
         table_name = error_message.split('"')[1].replace("_unique", "") if '"' in error_message else "Model"

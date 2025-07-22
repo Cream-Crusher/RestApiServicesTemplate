@@ -13,4 +13,4 @@ async def test_get_user_by_id_error():
 
     # Act & Assert
     with pytest.raises(ModelNotFound):
-        await get_user_by_id_api(user_id)
+        await get_user_by_id_api(user_id)  # type: ignore

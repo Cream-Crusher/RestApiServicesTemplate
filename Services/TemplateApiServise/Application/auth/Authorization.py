@@ -11,7 +11,7 @@ from config import settings
 is_local = settings.app_config.environment_type == 'local'
 
 
-async def init_data_dependency(
+def init_data_dependency(
         auth: Annotated[str, Depends(dependency=APIKeyHeader(name="Authorization"))],
 ) -> WebAppInitData:
     try:
@@ -31,7 +31,7 @@ async def init_data_dependency(
         raise HTTPException(403, detail="Invalid init data signature")
 
 
-async def get_me(
+def get_me(
         auth_data: Annotated[WebAppInitData, Depends(init_data_dependency)]
 ) -> WebAppUser:
 

@@ -33,8 +33,8 @@ def get_session() -> AsyncSession:
 
 def transaction[SELF, **P, T]():
     def wrapper(
-        cb: Callable[Concatenate[SELF, AsyncSession, P], Awaitable[T]],
-    ) -> Callable[Concatenate[SELF, P], Coroutine[Any, Any, T]]:
+        cb: Callable[[Concatenate[SELF, AsyncSession, P]], Awaitable[T]],
+    ) -> Callable[[Concatenate[SELF, P]], Coroutine[Any, Any, T]]:
         @wraps(cb)
         async def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
             if db_session_var.get() is not None:

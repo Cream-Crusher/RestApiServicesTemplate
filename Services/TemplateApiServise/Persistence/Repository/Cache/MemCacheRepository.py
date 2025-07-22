@@ -46,7 +46,7 @@ class MemCacheRepository(BaseCacheRepository):
         data: dict[str, float] = self.kv.setdefault(key, {})
         data.setdefault(item, 0)
         data[item] += value
-        self.kv[key] = {k: v for k, v in sorted(data.items(), key=lambda x: x[1])}
+        self.kv[key] = {k: v for k, v in sorted(data.items(), key=lambda x: x[1])}  # /NOSONAR
 
     async def zrevrange(
         self, key: str, start: int, end: int

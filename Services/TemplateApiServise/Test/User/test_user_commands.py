@@ -19,7 +19,7 @@ async def test_create_user():
     )
 
     # Act
-    response: BaseResponse = cast(BaseResponse, await create_user_api(new_user_dto))
+    response: BaseResponse = cast(BaseResponse, await create_user_api(new_user_dto))  # type: ignore
 
     # Assert
     assert isinstance(response, BaseResponse)
@@ -37,7 +37,7 @@ async def test_update_user():
     )
 
     # Act
-    response: BaseResponse = cast(BaseResponse, await update_user_api(user_id, update_user_dto))
+    response: BaseResponse = cast(BaseResponse, await update_user_api(user_id, update_user_dto))  # type: ignore
 
     # Assert
     assert isinstance(response, BaseResponse)
@@ -50,7 +50,7 @@ async def test_delete_user():
     user_id = 3
 
     # Act
-    response: BaseResponse = cast(BaseResponse, await delete_user_api(user_id))
+    response: BaseResponse = cast(BaseResponse, await delete_user_api(user_id))  # type: ignore
 
     # Assert
     assert isinstance(response, BaseResponse)

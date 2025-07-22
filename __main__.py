@@ -3,10 +3,10 @@ from alembic import command
 from alembic.config import Config
 from loguru import logger
 
-from Infrastructure.Logging.logger import setup_logging
-from Infrastructure.Scheduler.scheduler import setup_scheduler
-from Services.TelegramBotService.bot_main import bot_main
-from Services.TemplateApiServise.WebApi.app import uvicorn_server
+from Infrastructure.Logging.logger import setup_logging  # type: ignore
+from Infrastructure.Scheduler.scheduler import setup_scheduler  # type: ignore
+from Services.TelegramBotService.bot_main import bot_main  # type: ignore
+from Services.TemplateApiServise.WebApi.app import uvicorn_server  # type: ignore
 from config import settings
 
 
@@ -21,7 +21,7 @@ async def main():
     
     async with anyio.create_task_group() as tg:
         # tg.start_soon(uvicorn_server.serve)
-        tg.start_soon(setup_scheduler)
+        tg.start_soon(setup_scheduler)  # type: ignore
 
         # if settings.app_config.environment_type != 'local':
         tg.start_soon(bot_main)

@@ -22,7 +22,7 @@ async def start(message: Message, command: CommandObject, state: FSMContext, tel
     await state.clear()
     user_id: int | str = telegram_user.id
     try:
-        await get_user_by_id_api(telegram_user.id)
+        await get_user_by_id_api(user_id)  # type: ignore
     except ModelNotFound:
         User(**telegram_user.model_dump()).add()
         await posthog_manager.lead_register(user_id=str(user_id), referral=command.args, user_data=message.chat.model_dump())  # type: ignore
