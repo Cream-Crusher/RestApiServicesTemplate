@@ -7,14 +7,14 @@ class GetUserByIdDTO(BaseModel):
     username: str
 
 
-class CreateUserDto(BaseModel):
+class CreateUserDTO(BaseModel):
     id: int
     first_name: str
     last_name: str | None = None
     username: str
 
 
-class UpdateUserDto(BaseModel):
+class UpdateUserDTO(BaseModel):
     first_name: str
     last_name: str | None = None
     username: str
