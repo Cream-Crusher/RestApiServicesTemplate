@@ -7,8 +7,8 @@ from redis import asyncio as aioredis
 from redis.asyncio import Redis
 
 from config import settings
-from Services.TelegramBotService.BotMiddlewares.UserMW import (  # type: ignore
-    user_middleware,
+from Services.TelegramBotService.BotMiddlewares.UserMW import (
+    user_middleware,  # type: ignore
 )
 from Services.TelegramBotService.get_bot import get_bot
 from Services.TelegramBotService.handlers.manager.routers import flow_tool

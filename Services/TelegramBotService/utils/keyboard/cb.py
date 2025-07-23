@@ -9,7 +9,7 @@ class AutoCallback[T]:
     value: T
 
     def __init__(self, type: type[T], **kwargs: Any) -> None:
-        self.type: type[T] = type
+        self.type: type[T] = type  # type: ignore
         self.kwargs: dict[str, Any] = kwargs
 
     def __get__(self, *_) -> T:

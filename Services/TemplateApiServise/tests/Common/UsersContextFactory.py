@@ -1,7 +1,4 @@
-from typing import cast
-
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import (
     db_session_var,
@@ -18,8 +15,7 @@ class UsersContextFactory(ContextFactory):
     user_id_for_create: int = 3
     user_id_for_update: int = 4
     user_id_for_delete: int = 5
-
-    def __init__(self, engine, factory):
+    def __init__(self, engine: AsyncEngine, factory: async_sessionmaker[AsyncSession]) -> None:
         super().__init__(engine, factory)
         self.models: list[BaseSqlModel] = []
 
@@ -54,7 +50,7 @@ class UsersContextFactory(ContextFactory):
             ]
         )
 
-        async with cast(AsyncSession, self.factory()) as session:
+        async with self.factory() as session:
             with use_context_value(db_session_var, session):
                 for model in self.models:
                     session.add(model)
@@ -63,5 +59,5 @@ class UsersContextFactory(ContextFactory):
 
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self):
         await self._clear_db()

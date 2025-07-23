@@ -13,8 +13,8 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
 )
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
-from Services.TemplateApiServise.WebApi.Controllers.UserController import (  # type: ignore
-    get_user_by_id_api,
+from Services.TemplateApiServise.WebApi.Controllers.UserController import (
+    get_user_by_id_api,  # type: ignore
 )
 
 router = Router()
@@ -42,6 +42,6 @@ async def start(
         text=StartText.start,
         reply_markup=IKB().row(
             text="Перейти в игру1",
-            web_app=WebAppInfo(url=settings.bot_config.web_app_url),
+            web_app=WebAppInfo(url=settings.bot_config.web_app_url),  # type: ignore
         ),  # type: ignore
     )
