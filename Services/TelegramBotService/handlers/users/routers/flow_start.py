@@ -13,9 +13,7 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
 )
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
-from Services.TemplateApiServise.WebApi.Controllers.UserController import (
-    get_user_by_id_api,  # type: ignore
-)
+from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
 
 router = Router()
 
