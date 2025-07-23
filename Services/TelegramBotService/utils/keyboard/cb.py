@@ -1,4 +1,5 @@
-from typing import ClassVar, Any, Type
+from typing import Any, ClassVar
+
 from aiogram import F
 from aiogram.filters.callback_data import CallbackData, CallbackQueryFilter
 from aiogram.utils.magic_filter import MagicFilter
@@ -7,15 +8,15 @@ from aiogram.utils.magic_filter import MagicFilter
 class AutoCallback[T]:
     value: T
 
-    def __init__(self, type: Type[T], **kwargs: Any) -> None:
-        self.type: Type[T] = type
+    def __init__(self, type: type[T], **kwargs: Any) -> None:
+        self.type: type[T] = type
         self.kwargs: dict[str, Any] = kwargs
 
     def __get__(self, *_) -> T:
         return self.value
 
     def __set_name__(self, owner: type, name: str) -> None:
-        self.value = self.type(data=name, **self.kwargs)  # type: ignore 
+        self.value = self.type(data=name, **self.kwargs)  # type: ignore
 
 
 class AutoCallbackFactory:

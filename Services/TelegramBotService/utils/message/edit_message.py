@@ -1,7 +1,8 @@
-from aiogram.types.message import Message
+from typing import Any
+
 import anyio
 from aiogram.exceptions import TelegramRetryAfter
-from typing import Any
+from aiogram.types.message import Message
 
 from Infrastructure.Posthog.Posthog import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
@@ -26,12 +27,7 @@ async def edit_message(user_id: int, message_id: int, text: str, **kw: Any) -> N
                 )
                 return
             except TelegramRetryAfter as e:
-                if (
-                    i == 3
-                    or "message is not modified" in str(e)
-                    or "blocked" in str(e)
-                    or "chat not found" in str(e)
-                ):
+                if i == 3 or "message is not modified" in str(e) or "blocked" in str(e) or "chat not found" in str(e):
                     await posthog_manager.lead_state(
                         user_id=str(user_id),
                         state="broadcast_edit_fail",
@@ -43,12 +39,7 @@ async def edit_message(user_id: int, message_id: int, text: str, **kw: Any) -> N
                     await anyio.sleep(min(i**3, 30))
                 await anyio.sleep(e.retry_after * 2)
             except Exception as e:
-                if (
-                    i == 3
-                    or "blocked" in str(e)
-                    or "chat not found" in str(e)
-                    or "message is not modified" in str(e)
-                ):
+                if i == 3 or "blocked" in str(e) or "chat not found" in str(e) or "message is not modified" in str(e):
                     await posthog_manager.lead_state(
                         user_id=str(user_id),
                         state="broadcast_edit_fail",

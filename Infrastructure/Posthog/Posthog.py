@@ -19,18 +19,13 @@ class PosthogManager:
                 "referral": referral if referral else "self",
                 **user_data,
                 "$set": {**user_data, "referral": referral},
-            }
+            },
         )
 
     async def lead_state(self, user_id: str, state: str, data: dict[str, Any] | None = None) -> None:
-        await self.posthog.capture(  # type: ignore
-            distinct_id=user_id,
-            event=state,
-            properties=data
-        )
+        await self.posthog.capture(distinct_id=user_id, event=state, properties=data)  # type: ignore
 
 
 posthog_manager: PosthogManager = PosthogManager(
-    token=settings.posthog_config.token,
-    host=settings.posthog_config.host
+    token=settings.posthog_config.token, host=settings.posthog_config.host
 )

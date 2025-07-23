@@ -1,23 +1,28 @@
 from functools import cache
-from typing import Literal, Union
+from typing import Literal
 
-from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import MemCacheRepository
-from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import RedisCacheRepository
 from config import settings
+from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import (
+    MemCacheRepository,
+)
+from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import (
+    RedisCacheRepository,
+)
 
 
 @cache
 def connect_cache_repository_instance(
-        cache_type: Literal['redis', 'memory'],
-        host: str | None = None
-) -> Union[MemCacheRepository, RedisCacheRepository]:
+    cache_type: Literal["redis", "memory"], host: str | None = None
+) -> MemCacheRepository | RedisCacheRepository:
 
     match cache_type:
-        case 'redis':
-            assert host is not None, 'cache_type is redis, but host is None'
+        case "redis":
+            assert host is not None, "cache_type is redis, but host is None"
             return RedisCacheRepository(host=host)
-        case 'memory':
+        case "memory":
             return MemCacheRepository()
 
 
-CacheRepositoryInstance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance('redis', settings.redis_config.host)
+CacheRepositoryInstance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance(
+    "redis", settings.redis_config.host
+)

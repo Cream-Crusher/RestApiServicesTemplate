@@ -1,15 +1,17 @@
+from Services.TemplateApiServise.Application.common.ModelCacheService import (
+    ModelCacheService,
+    model_cache_service,
+)
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+    ModelNotFound,
+)
 from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
-from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService, model_cache_service
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.User import User
 
 
 class UserQueryService:
 
-    def __init__(
-            self,
-            cache_service: ModelCacheService = model_cache_service
-    ):
+    def __init__(self, cache_service: ModelCacheService = model_cache_service):
         self.cache_service = cache_service
 
     async def get_by_id(self, user_id: int) -> GetUserByIdDTO:

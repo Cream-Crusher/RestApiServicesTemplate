@@ -11,6 +11,6 @@ def get_bot() -> Bot:
     return Bot(
         settings.bot_config.token,
         default=DefaultBotProperties(
-            parse_mode='html',
-        )
+            parse_mode="html",
+        ),
     )

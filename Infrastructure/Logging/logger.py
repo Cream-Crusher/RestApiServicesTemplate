@@ -1,5 +1,6 @@
 import sys
-from typing import Any, Callable, cast
+from collections.abc import Callable
+from typing import Any, cast
 
 from loguru import logger
 
@@ -21,10 +22,21 @@ def log[F](operation_name: str) -> Callable[[F], F]:
             logger.info(f"Starting {operation_name}", operation=operation_name)
             try:
                 result = await func(*args, **kwargs)  # type: ignore
-                logger.info(f"Completed {operation_name}", operation=operation_name, success=True)
+                logger.info(
+                    f"Completed {operation_name}",
+                    operation=operation_name,
+                    success=True,
+                )
                 return result  # type: ignore
             except Exception as e:
-                logger.error(f"Failed {operation_name}", operation=operation_name, error=str(e), exc_info=True)
+                logger.error(
+                    f"Failed {operation_name}",
+                    operation=operation_name,
+                    error=str(e),
+                    exc_info=True,
+                )
                 raise
+
         return cast(F, wrapper)
+
     return decorator

@@ -1,12 +1,15 @@
 import time
-from typing import Iterable, Union, Any, Dict, Literal
+from collections.abc import Iterable
+from typing import Any, Literal
 
-from Services.TemplateApiServise.Persistence.Repository.Cache.BaseCacheRepository import BaseCacheRepository
+from Services.TemplateApiServise.Persistence.Repository.Cache.BaseCacheRepository import (
+    BaseCacheRepository,
+)
 
 
 class MemCacheRepository(BaseCacheRepository):
     def __init__(self) -> None:
-        self.kv: Dict[str, Any] = {}
+        self.kv: dict[str, Any] = {}
 
     async def get(self, key: str) -> str:
         if key not in self.kv:
@@ -48,15 +51,11 @@ class MemCacheRepository(BaseCacheRepository):
         data[item] += value
         self.kv[key] = {k: v for k, v in sorted(data.items(), key=lambda x: x[1])}  # /NOSONAR
 
-    async def zrevrange(
-        self, key: str, start: int, end: int
-    ) -> list[tuple[Any, Any]]:
-        return list(self.kv.setdefault(key, {}).items())[::-1][start: end + 1]
+    async def zrevrange(self, key: str, start: int, end: int) -> list[tuple[Any, Any]]:
+        return list(self.kv.setdefault(key, {}).items())[::-1][start : end + 1]
 
-    async def zrange(
-        self, key: str, start: int, end: int
-    ) -> list[tuple[Any, Any]]:
-        return list(self.kv.setdefault(key, {}).items())[start: end + 1]
+    async def zrange(self, key: str, start: int, end: int) -> list[tuple[Any, Any]]:
+        return list(self.kv.setdefault(key, {}).items())[start : end + 1]
 
     async def zscore(self, key: str, name: str) -> Any:
         return self.kv.setdefault(key, {}).get(name)
@@ -67,12 +66,8 @@ class MemCacheRepository(BaseCacheRepository):
     async def zadd(self, key: str, data: dict[str, float]) -> None:
         self.kv.setdefault(key, {}).update(data)
 
-    async def zrevrank(self, key: str, item: str) -> Union[None, int]:
-        result = [
-            x
-            for x, v in enumerate(list(self.kv.setdefault(key, {}))[::-1])
-            if v == item
-        ]
+    async def zrevrank(self, key: str, item: str) -> None | int:
+        result = [x for x, v in enumerate(list(self.kv.setdefault(key, {}))[::-1]) if v == item]
         if result:
             return result[0]
 

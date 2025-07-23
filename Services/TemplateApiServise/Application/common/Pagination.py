@@ -1,14 +1,15 @@
-from typing import Optional
-from fastapi import Query, HTTPException
+from fastapi import HTTPException, Query
 
 
 class Pagination:
-    def __init__(self,
-                 page: Optional[int] = Query(default=None, ge=1, description="page > 1"),
-                 size: Optional[int] = Query(default=None, le=50, description="size > 1 and <= 50")):
+    def __init__(
+        self,
+        page: int | None = Query(default=None, ge=1, description="page > 1"),
+        size: int | None = Query(default=None, le=50, description="size > 1 and <= 50"),
+    ):
 
         if (not page and size) or (page and not size):
-            raise HTTPException(status_code=400, detail='page and size must be specified together')
+            raise HTTPException(status_code=400, detail="page and size must be specified together")
 
         self.page: None | int = page
         self.size: int | None = size

@@ -1,6 +1,8 @@
+from typing import Any
+
 import anyio
 from aiogram.exceptions import TelegramRetryAfter
-from typing import Any
+
 from Infrastructure.Posthog.Posthog import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
 
@@ -24,11 +26,7 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
                 )
                 return
             except TelegramRetryAfter as e:
-                if (
-                        i == 3
-                        or "blocked" in str(e)
-                        or "chat not found" in str(e)
-                ):
+                if i == 3 or "blocked" in str(e) or "chat not found" in str(e):
                     await posthog_manager.lead_state(
                         user_id=str(user_id),
                         state="broadcast_sent_fail",

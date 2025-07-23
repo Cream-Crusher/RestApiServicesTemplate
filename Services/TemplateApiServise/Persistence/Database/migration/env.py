@@ -25,6 +25,7 @@ config.set_main_option("sqlalchemy.url", url)
 
 # models for autogenerate
 from Services.TemplateApiServise.Domain.User import User  # type: ignore
+
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata

@@ -1,4 +1,5 @@
-from typing import Generator, Any, Sequence, Callable, Iterator, Tuple
+from collections.abc import Callable, Generator, Iterator, Sequence
+from typing import Any
 
 from sqlalchemy import ScalarResult, Select
 from sqlalchemy.ext.asyncio.session import AsyncSession
@@ -6,7 +7,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 
-class BaseRepository[TM](Select[Tuple[TM]]):
+class BaseRepository[TM](Select[tuple[TM]]):
     inherit_cache = True
 
     def __await__(self) -> Generator[Any, Any, ScalarResult[TM]]:

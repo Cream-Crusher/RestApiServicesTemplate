@@ -3,7 +3,9 @@ from typing import Self
 from sqlalchemy.orm import DeclarativeBase
 
 from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
-from Services.TemplateApiServise.Persistence.Repository.Orm.SqlRepository import BaseRepository
+from Services.TemplateApiServise.Persistence.Repository.Orm.SqlRepository import (
+    BaseRepository,
+)
 
 
 class BaseSqlModel(DeclarativeBase):

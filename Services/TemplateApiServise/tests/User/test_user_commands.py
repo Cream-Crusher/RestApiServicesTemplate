@@ -1,9 +1,18 @@
 import pytest
 
-from Services.TemplateApiServise.Application.Users.user_dtos import CreateUserDTO, UpdateUserDTO
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
-from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
-from Services.TemplateApiServise.tests.Common.UsersContextFactory import UsersContextFactory
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+    ModelNotFound,
+)
+from Services.TemplateApiServise.Application.Users.user_dtos import (
+    CreateUserDTO,
+    UpdateUserDTO,
+)
+from Services.TemplateApiServise.tests.Common.UsersContextFactory import (
+    UsersContextFactory,
+)
+from Services.TemplateApiServise.WebApi.Controllers.UserController import (  # type: ignore
+    get_user_by_id_api,
+)
 
 pytest_plugins = ("pytest_asyncio",)
 
@@ -16,7 +25,7 @@ async def test_create_user(test_engine, test_factory, test_client):
             id=user_context.user_id_for_create,
             first_name="John",
             last_name="Smith",
-            username="username"
+            username="username",
         )
 
         # Act
@@ -33,11 +42,7 @@ async def test_update_user(test_engine, test_factory, test_client):
     async with UsersContextFactory(test_engine, test_factory) as user_context:
         # Arrange
         user_id_for_update = user_context.user_id_for_update
-        update_user_dto = UpdateUserDTO(
-            first_name="John_new",
-            last_name="Smith_new",
-            username="username_new"
-        )
+        update_user_dto = UpdateUserDTO(first_name="John_new", last_name="Smith_new", username="username_new")
 
         # Act
         response = await test_client.put(f"/users/{user_id_for_update}", json=update_user_dto.model_dump())

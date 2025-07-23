@@ -3,16 +3,19 @@ from datetime import datetime
 from pydantic import BaseModel
 from sqlalchemy import delete, update
 
-from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService, model_cache_service
+from Services.TemplateApiServise.Application.common.ModelCacheService import (
+    ModelCacheService,
+    model_cache_service,
+)
 from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 
 class BaseCommandService[T, I]:
 
     def __init__(
-            self,
-            model: type[T],
-            cache_service: ModelCacheService = model_cache_service,
+        self,
+        model: type[T],
+        cache_service: ModelCacheService = model_cache_service,
     ) -> None:
         self.model: type[T] = model
         self.cache_service = cache_service

@@ -1,18 +1,22 @@
 from typing import Any
 
 from aiogram import Router
-from aiogram.filters import CommandObject, Command
+from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
 from Infrastructure.Posthog.Posthog import posthog_manager  # type: ignore
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
-from Services.TelegramBotService.handlers.manager.filters.tools_filters import ManagerFilter
+from Services.TelegramBotService.handlers.manager.filters.tools_filters import (
+    ManagerFilter,
+)
 from Services.TelegramBotService.handlers.manager.states.tool_state import ToolState
 from Services.TelegramBotService.handlers.manager.texts.tool_text import ToolText
 from Services.TelegramBotService.utils.keyboard.ckb import CKB
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
-from Services.TelegramBotService.utils.message.send_copy_message import send_copy_message
+from Services.TelegramBotService.utils.message.send_copy_message import (
+    send_copy_message,
+)
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
@@ -52,7 +56,7 @@ async def send_broadcast_state_malling_tool(message: Message, state: FSMContext,
     await state.set_state(state=ToolState.send_broadcast)
 
     data: dict[str, Any] = await state.get_data()
-    message_id: int | None = data.get('message_id')
+    message_id: int | None = data.get("message_id")
     assert message_id is not None, "message_id is None"
     assert message.bot is not None, "message.bot is None"
 
@@ -60,13 +64,11 @@ async def send_broadcast_state_malling_tool(message: Message, state: FSMContext,
         from_chat_id=telegram_user.id,
         chat_id=telegram_user.id,
         message_id=message_id,
-        parse_mode='HTML',
+        parse_mode="HTML",
     )
     await message.answer(
         text=ToolText.mailing_confirmation,
-        reply_markup=CKB()
-        .row(text='yes')
-        .row(text='No')
+        reply_markup=CKB().row(text="yes").row(text="No"),
     )
 
 
@@ -77,11 +79,11 @@ async def send_broadcast_state_tool(message: Message, state: FSMContext, telegra
         await posthog_manager.lead_state(
             user_id=str(telegram_user.id),
             state="mailing_admin",
-            data=telegram_user.model_dump()
+            data=telegram_user.model_dump(),
         )
         await message.answer(ToolText.mailing_confirmated)
         data: dict[str, Any] = await state.get_data()
-        message_id: int | None = data.get('message_id')
+        message_id: int | None = data.get("message_id")
         assert message_id is not None, "message_id is None"
 
         for user in await User.select().order_by(User.created_at.asc()).all():
@@ -103,9 +105,8 @@ async def send_broadcast_state_tool(message: Message, state: FSMContext, telegra
 async def webapp(message: Message, command: CommandObject) -> None:
     assert command.args
     await message.answer(
-        text='TestWaLink',
-        reply_markup=IKB()
-        .row(text='TestWaLinkKB', web_app=WebAppInfo(url=command.args))
+        text="TestWaLink",
+        reply_markup=IKB().row(text="TestWaLinkKB", web_app=WebAppInfo(url=command.args)),
     )
 
 
@@ -115,7 +116,7 @@ async def broadcast_chat_botton_on(msg: Message, telegram_user: TelegramUser, co
         return
 
     assert msg.reply_to_message and command.args
-    
+
     for user_id in command.args.splitlines():
         await send_copy_message(
             int(user_id.strip()),

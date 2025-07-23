@@ -11,3 +11,6 @@ volumes
 .gitlab-ci.yml
 .run
 *__init__.py
+.pre-commit-config.yaml
+setup.cfg
+pyproject.toml

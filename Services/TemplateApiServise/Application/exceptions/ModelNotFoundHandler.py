@@ -2,7 +2,9 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette import status
 
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
+from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+    ModelNotFound,
+)
 
 
 def model_not_found_error_exception_handler(_: Request, exc: Exception) -> JSONResponse:

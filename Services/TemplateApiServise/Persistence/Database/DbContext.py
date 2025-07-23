@@ -1,10 +1,11 @@
+from collections.abc import Awaitable, Callable, Coroutine, Generator
 from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from functools import wraps
-from typing import Callable, Any, Coroutine, Generator, Concatenate, Awaitable, cast
+from typing import Any, Concatenate, cast
 
 import sqlalchemy.engine.url as SQURL
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
 from config import DatabaseConfig, settings
@@ -18,11 +19,13 @@ url: SQURL.URL = SQURL.URL.create(
     password=Database.password,
     host=Database.host,
     port=Database.port,
-    database=Database.database
+    database=Database.database,
 )
 
 engine: AsyncEngine = create_async_engine(url=url, pool_size=10, max_overflow=5)
-factory: async_sessionmaker[AsyncSession] = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
+    bind=engine, class_=AsyncSession, expire_on_commit=False
+)
 
 
 def get_session() -> AsyncSession:
@@ -60,6 +63,4 @@ def use_context_value[T](context: ContextVar[T], value: T) -> Generator[None, An
         context.reset(reset)
 
 
-db_session_var: ContextVar[AsyncSession | None] = ContextVar(
-    "db_session_var", default=None
-)
+db_session_var: ContextVar[AsyncSession | None] = ContextVar("db_session_var", default=None)

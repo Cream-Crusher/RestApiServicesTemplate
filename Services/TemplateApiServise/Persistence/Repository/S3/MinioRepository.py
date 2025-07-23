@@ -1,16 +1,23 @@
 from io import BytesIO
-from typing import cast, Any
+from typing import Any, cast
 
 from loguru import logger
 from types_aiobotocore_s3 import S3Client
 
-from Services.TemplateApiServise.Persistence.Database.S3Context import s3_context, S3Context
-from Services.TemplateApiServise.Persistence.Repository.S3.BaseS3Repository import BaseS3Repository
+from Services.TemplateApiServise.Persistence.Database.S3Context import (
+    S3Context,
+    s3_context,
+)
+from Services.TemplateApiServise.Persistence.Repository.S3.BaseS3Repository import (
+    BaseS3Repository,
+)
 
 
 class MinioRepository(BaseS3Repository[BytesIO]):
     def __init__(self, s3_context: S3Context) -> None:
-        self.endpoint: str = f"https://{s3_context.endpoint}" if 'https://' not in s3_context.endpoint else s3_context.endpoint
+        self.endpoint: str = (
+            f"https://{s3_context.endpoint}" if "https://" not in s3_context.endpoint else s3_context.endpoint
+        )
         self.s3_context: S3Context = s3_context
 
     async def _is_exists_bucket(self, bucket: str) -> bool:
@@ -43,9 +50,7 @@ class MinioRepository(BaseS3Repository[BytesIO]):
                         "ACL": "public-read",
                     },
                 )  # type: ignore
-                logger.info(
-                    f"File '{object_name}' success uploaded to '{bucket_name}'"
-                )
+                logger.info(f"File '{object_name}' success uploaded to '{bucket_name}'")
             except Exception as e:
                 logger.exception(f"There was an error loading the file: {e}")
 
@@ -65,9 +70,12 @@ class MinioRepository(BaseS3Repository[BytesIO]):
 
     async def update(self, body: BytesIO, object_name: str, bucket_name: str, content_type: str) -> str:
         await self.remove(object_name=object_name, bucket_name=bucket_name)
-        return await self.upload(body=body, object_name=object_name, bucket_name=bucket_name, content_type=content_type)
+        return await self.upload(
+            body=body,
+            object_name=object_name,
+            bucket_name=bucket_name,
+            content_type=content_type,
+        )
 
 
-s3_manager: MinioRepository = MinioRepository(
-    s3_context=s3_context
-)
+s3_manager: MinioRepository = MinioRepository(s3_context=s3_context)

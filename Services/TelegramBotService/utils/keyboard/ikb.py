@@ -41,7 +41,5 @@ class IKB(InlineKeyboardMarkup):
             callback_data = GlobalCallback(data=callback_data)
 
         callback_data = callback_data and callback_data.pack()
-        self.inline_keyboard[-1].append(
-            InlineKeyboardButton(text=text, callback_data=callback_data, **kw)
-        )
+        self.inline_keyboard[-1].append(InlineKeyboardButton(text=text, callback_data=callback_data, **kw))
         return self

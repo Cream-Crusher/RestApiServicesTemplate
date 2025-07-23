@@ -1,5 +1,6 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import cast, AsyncGenerator
+from typing import cast
 
 import aioboto3
 from loguru import logger
@@ -15,7 +16,7 @@ class S3Context:
         assert endpoint is not None
         assert access_key is not None
         assert secret_key is not None
-        logger.info(f'\nendpoint: {endpoint}\naccess_key: {access_key},\nsecret_key: {secret_key}')
+        logger.info(f"\nendpoint: {endpoint}\naccess_key: {access_key},\nsecret_key: {secret_key}")
 
         self.endpoint: str = f"https://{endpoint}"
         self.access_key: str = access_key

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
 with suppress(Exception):
-    env_file = '.env'
+    env_file = ".env"
     load_dotenv(dotenv_path=env_file)
 
 
@@ -70,7 +70,7 @@ class MinioConfig(BaseSettings):
 
     class Config:
         env_prefix: str = "S3_"
-        
+
 
 class AppConfig(BaseSettings):
     environment_type: Literal["local", "dev", "prod"] | str = "dev"
