@@ -2,7 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from Services.TemplateApiServise.Persistence.Repository.Orm.SqlModel import BaseSqlModel
 
-
 skip_tables = [
     "alembic_version",
 ]

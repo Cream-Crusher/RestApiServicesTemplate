@@ -23,7 +23,7 @@ async def main():
         tg.start_soon(uvicorn_server.serve)
         tg.start_soon(setup_scheduler)  # type: ignore
 
-        if settings.app_config.environment_type != 'local':
+        if settings.app_config.environment_type != "local":
             tg.start_soon(bot_main)
 
 

@@ -1,13 +1,12 @@
 import asyncio
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
-
-from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
 from config import settings
+from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
