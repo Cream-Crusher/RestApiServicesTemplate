@@ -28,10 +28,9 @@ class MemCacheRepository(BaseCacheRepository):
     async def lpush(self, key: str, *values: bytes) -> None:
         self.kv.setdefault(key, []).extend(values)
 
-    async def lrem(self, key: str, count: int, value: bytes) -> Literal[1]:
+    async def lrem(self, key: str, count: int, value: bytes):
         assert count == 1
         self.kv.setdefault(key, []).remove(value)
-        return count
 
     async def lrange(self, key: str, start: int, end: int) -> list[bytes]:
         return self.kv.setdefault(key, [])[start:end]

@@ -7,7 +7,6 @@ from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdD
 from Services.TemplateApiServise.tests.Common.UsersContextFactory import (
     UsersContextFactory,
 )
-from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
 
 pytest_plugins = ("pytest_asyncio",)
 

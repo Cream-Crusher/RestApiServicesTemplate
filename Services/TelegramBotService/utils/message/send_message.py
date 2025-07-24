@@ -3,7 +3,7 @@ from typing import Any
 import anyio
 from aiogram.exceptions import TelegramRetryAfter
 
-from Infrastructure.Posthog.Posthog import posthog_manager
+from Infrastructure.PostHog.PostHog import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
 
 lim = anyio.CapacityLimiter(2)
@@ -24,7 +24,7 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
                     state="broadcast_sent",
                     data={"message_id": msg.message_id, "text": text},
                 )
-                return
+                return None
             except TelegramRetryAfter as e:
                 if i == 3 or "blocked" in str(e) or "chat not found" in str(e):
                     await posthog_manager.lead_state(
@@ -32,7 +32,7 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
                         state="broadcast_sent_fail",
                         data={"error": str(e)},
                     )
-                    return
+                    return None
                 else:
                     await anyio.sleep(min(i**3, 30))
                 await anyio.sleep(e.retry_after * 2)
@@ -43,7 +43,7 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
                         state="broadcast_sent_fail",
                         data={"error": str(e)},
                     )
-                    return
+                    return None
                 else:
                     await anyio.sleep(min(i**3, 30))
         await anyio.sleep(0.4)

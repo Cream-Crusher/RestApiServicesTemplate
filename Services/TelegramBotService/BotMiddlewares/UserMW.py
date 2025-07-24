@@ -12,7 +12,9 @@ class TelegramUser(BaseModel):
     last_name: str | None = None
 
 
-async def user_middleware(handler: Callable, event: Update, data: dict[str, TelegramUser]) -> TelegramUser | None:  # type: ignore
+async def user_middleware(
+    handler: Callable, event: Update, data: dict[str, TelegramUser]
+) -> TelegramUser | None:  # type: ignore
     try:
         # Type assertion to help the type checker
         from_user: User = event.from_user  # type: ignore

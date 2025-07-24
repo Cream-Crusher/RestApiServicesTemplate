@@ -19,7 +19,7 @@ class ModelCacheService:
     def __init__(self, cache: RedisCacheRepository):
         self.cache = cache
 
-    async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:
+    async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:  # type: ignore
         """
         get cache model by key
 
