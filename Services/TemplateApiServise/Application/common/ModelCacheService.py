@@ -1,13 +1,12 @@
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from contextlib import suppress
 from datetime import datetime
-from typing import Any, overload, Union, Iterable
+from typing import Any, get_args, get_origin, overload
 from uuid import UUID
 
 from pydantic import BaseModel
 from redis.exceptions import ConnectionError
-from typing import get_origin, get_args
 
 from Infrastructure.Logging.logger import log
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import (
@@ -57,15 +56,13 @@ class ModelCacheService:
         return None
 
     @overload
-    async def set(self, key: str, model: Iterable[BaseModel], **kw: Any):
-        ...
+    async def set(self, key: str, model: Iterable[BaseModel], **kw: Any): ...
 
     @overload
-    async def set(self, key: str, model: BaseModel, **kw: Any):
-        ...
+    async def set(self, key: str, model: BaseModel, **kw: Any): ...
 
     @log("ModelCacheService: set")
-    async def set(self, key: str, models: Union[BaseModel, Iterable[BaseModel]], **kw: Any):
+    async def set(self, key: str, models: BaseModel | Iterable[BaseModel], **kw: Any):
         """
         set cache model by key
 
@@ -81,9 +78,10 @@ class ModelCacheService:
         elif models in []:
 
             await self.cache.set(
-                name=key, value=json.dumps(
-                    [model.model_dump() for model in models], default=self._default_serializer
-                ), ex=300, **kw
+                name=key,
+                value=json.dumps([model.model_dump() for model in models], default=self._default_serializer),
+                ex=300,
+                **kw,
             )
 
     @log("ModelCacheService: delete")
