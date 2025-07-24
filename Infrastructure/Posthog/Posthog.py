@@ -1,7 +1,7 @@
 from typing import Any
 
+import posthog
 from loguru import logger
-from posthog import Posthog
 
 from config import settings
 
@@ -10,7 +10,7 @@ class PosthogManager:
 
     def __init__(self, host: str, token: str | None = None) -> None:
         logger.info(f"PosthogManager init token: {token}")
-        self.posthog = Posthog(token if token else "None", host=host)
+        self.posthog = posthog.Posthog(token if token else "None", host=host)
 
     async def lead_register(self, user_id: str, referral: str = "self", user_data: dict[str, Any] = {}) -> None:
         await self.posthog.identify(  # type: ignore
