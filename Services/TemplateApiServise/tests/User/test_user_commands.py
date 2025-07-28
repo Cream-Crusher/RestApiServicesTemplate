@@ -21,7 +21,10 @@ pytest_plugins = ("pytest_asyncio",)
 
 @pytest.mark.asyncio(scope="session")
 async def test_create_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient, test_cache_service: ModelCacheService
+    test_engine: AsyncEngine,
+    test_factory: async_sessionmaker[AsyncSession],
+    test_client: AsyncClient,
+    test_cache_service: ModelCacheService,
 ) -> None:
     async with UsersContextFactory(engine=test_engine, factory=test_factory, cache_service=test_cache_service) as user_context:  # type: ignore
         # Arrange
@@ -43,11 +46,14 @@ async def test_create_user(
 
 @pytest.mark.asyncio(scope="session")
 async def test_update_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient,
-    test_cache_service: ModelCacheService
+    test_engine: AsyncEngine,
+    test_factory: async_sessionmaker[AsyncSession],
+    test_client: AsyncClient,
+    test_cache_service: ModelCacheService,
 ) -> None:
-    async with UsersContextFactory(engine=test_engine, factory=test_factory,
-                                   cache_service=test_cache_service) as user_context:  # type: ignore
+    async with UsersContextFactory(
+        engine=test_engine, factory=test_factory, cache_service=test_cache_service
+    ) as user_context:  # type: ignore
         # Arrange
         user_id_for_update = user_context.user_id_for_update
         update_user_dto = UpdateUserDTO(first_name="John_new", last_name="Smith_new", username="username_new")
@@ -63,11 +69,14 @@ async def test_update_user(
 
 @pytest.mark.asyncio(scope="session")
 async def test_delete_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient,
-    test_cache_service: ModelCacheService
+    test_engine: AsyncEngine,
+    test_factory: async_sessionmaker[AsyncSession],
+    test_client: AsyncClient,
+    test_cache_service: ModelCacheService,
 ) -> None:
-    async with UsersContextFactory(engine=test_engine, factory=test_factory,
-                                   cache_service=test_cache_service) as user_context:  # type: ignore
+    async with UsersContextFactory(
+        engine=test_engine, factory=test_factory, cache_service=test_cache_service
+    ) as user_context:  # type: ignore
         # Arrange
         user_id_for_delete = user_context.user_id_for_delete
 
