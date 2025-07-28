@@ -71,18 +71,18 @@ class ModelCacheService:
         :param ex: ex time
         :param kw: Any redis.set parameter
         """
-
-        if isinstance(models, BaseModel):
-            await self.cache.set(
-                name=key, value=json.dumps(models.model_dump(), default=self._default_serializer), ex=ex, **kw
-            )
-        elif models in []:
-            await self.cache.set(
-                name=key,
-                value=json.dumps([model.model_dump() for model in models], default=self._default_serializer),
-                ex=ex,
-                **kw,
-            )
+        with suppress(ConnectionError):
+            if isinstance(models, BaseModel):
+                await self.cache.set(
+                    name=key, value=json.dumps(models.model_dump(), default=self._default_serializer), ex=ex, **kw
+                )
+            elif models in []:
+                await self.cache.set(
+                    name=key,
+                    value=json.dumps([model.model_dump() for model in models], default=self._default_serializer),
+                    ex=ex,
+                    **kw,
+                )
 
     @log("ModelCacheService: delete")
     async def delete(self, key: str):

@@ -3,11 +3,11 @@ from alembic import command
 from alembic.config import Config
 from loguru import logger
 
-from config import settings
 from Infrastructure.Logging.logger import setup_logging  # type: ignore
 from Infrastructure.Scheduler.scheduler import setup_scheduler  # type: ignore
 from Services.TelegramBotService.bot_main import bot_main  # type: ignore
 from Services.TemplateApiServise.WebApi.app import uvicorn_server  # type: ignore
+from config import settings
 
 
 def run_migrations():
