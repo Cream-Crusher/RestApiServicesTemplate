@@ -2,6 +2,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService, model_cache_service
 from Services.TemplateApiServise.Persistence.Database.DbContext import engine, factory
 from Services.TemplateApiServise.WebApi.app import app, router
 
@@ -19,3 +20,8 @@ def test_factory() -> async_sessionmaker[AsyncSession]:
 @pytest.fixture(scope="session")
 def test_client() -> AsyncClient:
     return AsyncClient(transport=ASGITransport(app=app), base_url=f"https://test{router.prefix}")
+
+
+@pytest.fixture(scope="session")
+def test_cache_service() -> ModelCacheService:
+    return model_cache_service

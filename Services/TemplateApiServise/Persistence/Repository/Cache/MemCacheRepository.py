@@ -28,7 +28,7 @@ class MemCacheRepository(BaseCacheRepository):
     async def lpush(self, key: str, *values: bytes) -> None:
         self.kv.setdefault(key, []).extend(values)
 
-    async def lrem(self, key: str, count: int, value: bytes):
+    async def lrem(self, key: str, count: int, value: bytes):  # type: ignore
         assert count == 1
         self.kv.setdefault(key, []).remove(value)
 

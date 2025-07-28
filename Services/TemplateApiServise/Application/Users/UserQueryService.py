@@ -16,10 +16,10 @@ class UserQueryService:
 
     async def get_by_id(self, user_id: int) -> GetUserByIdDTO:
         cached_key = f"user:{user_id}"
-        cached_user = await self.cache_service.get(key=cached_key, callback=GetUserByIdDTO)
+        cached_model = await self.cache_service.get(key=cached_key, callback=GetUserByIdDTO)
 
-        if cached_user:
-            return cached_user
+        if cached_model:
+            return cached_model
 
         real_user: User = await User.select().where(User.id == user_id).one_or_raise(ModelNotFound(User))
         return_real_user = GetUserByIdDTO(**real_user.__dict__)

@@ -49,38 +49,38 @@ class ModelCacheService:
                 return None
             elif get_origin(callback) is list:
                 item_type = get_args(callback)[0]
-                return [item_type(**item) for item in json.loads(cached_model)]
+                return [item_type(**item) for item in json.loads(cached_model)]  # type: ignore
             elif cached_model:
                 return callback(**json.loads(cached_model))
 
         return None
 
     @overload
-    async def set(self, key: str, model: Iterable[BaseModel], **kw: Any): ...
+    async def set(self, key: str, models: Iterable[BaseModel], ex: int = 300, **kw: Any) -> None: ...
 
     @overload
-    async def set(self, key: str, model: BaseModel, **kw: Any): ...
+    async def set(self, key: str, models: BaseModel, ex: int = 300, **kw: Any) -> None: ...
 
     @log("ModelCacheService: set")
-    async def set(self, key: str, models: BaseModel | Iterable[BaseModel], **kw: Any):
+    async def set(self, key: str, models: BaseModel | Iterable[BaseModel], ex: int = 300, **kw: Any) -> None:
         """
         set cache model by key
 
         :param key: key of model
         :param models: pydantic models or model
+        :param ex: ex time
         :param kw: Any redis.set parameter
         """
 
         if isinstance(models, BaseModel):
             await self.cache.set(
-                name=key, value=json.dumps(models.model_dump(), default=self._default_serializer), ex=300, **kw
+                name=key, value=json.dumps(models.model_dump(), default=self._default_serializer), ex=ex, **kw
             )
         elif models in []:
-
             await self.cache.set(
                 name=key,
                 value=json.dumps([model.model_dump() for model in models], default=self._default_serializer),
-                ex=300,
+                ex=ex,
                 **kw,
             )
 

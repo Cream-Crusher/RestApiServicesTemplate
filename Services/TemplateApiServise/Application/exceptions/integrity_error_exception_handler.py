@@ -10,6 +10,6 @@ def integrity_error_exception_handler(_: Request, exc: Exception) -> JSONRespons
         table_name = error_message.split('"')[1].replace("_unique", "") if '"' in error_message else "Model"
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            content={"message": f"{table_name} recorded already exists"},
+            content={"success": False, "message": f"{table_name} recorded already exists"},
         )
     raise exc

@@ -3,6 +3,7 @@ from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
+from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
@@ -20,9 +21,9 @@ pytest_plugins = ("pytest_asyncio",)
 
 @pytest.mark.asyncio(scope="session")
 async def test_create_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient
+    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient, test_cache_service: ModelCacheService
 ) -> None:
-    async with UsersContextFactory(engine=test_engine, factory=test_factory) as user_context:  # type: ignore
+    async with UsersContextFactory(engine=test_engine, factory=test_factory, cache_service=test_cache_service) as user_context:  # type: ignore
         # Arrange
         new_user_dto = CreateUserDTO(
             id=user_context.user_id_for_create,
@@ -42,9 +43,11 @@ async def test_create_user(
 
 @pytest.mark.asyncio(scope="session")
 async def test_update_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient
-):
-    async with UsersContextFactory(test_engine, test_factory) as user_context:  # type: ignore
+    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient,
+    test_cache_service: ModelCacheService
+) -> None:
+    async with UsersContextFactory(engine=test_engine, factory=test_factory,
+                                   cache_service=test_cache_service) as user_context:  # type: ignore
         # Arrange
         user_id_for_update = user_context.user_id_for_update
         update_user_dto = UpdateUserDTO(first_name="John_new", last_name="Smith_new", username="username_new")
@@ -60,9 +63,11 @@ async def test_update_user(
 
 @pytest.mark.asyncio(scope="session")
 async def test_delete_user(
-    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient
-):
-    async with UsersContextFactory(test_engine, test_factory) as user_context:  # type: ignore
+    test_engine: AsyncEngine, test_factory: async_sessionmaker[AsyncSession], test_client: AsyncClient,
+    test_cache_service: ModelCacheService
+) -> None:
+    async with UsersContextFactory(engine=test_engine, factory=test_factory,
+                                   cache_service=test_cache_service) as user_context:  # type: ignore
         # Arrange
         user_id_for_delete = user_context.user_id_for_delete
 

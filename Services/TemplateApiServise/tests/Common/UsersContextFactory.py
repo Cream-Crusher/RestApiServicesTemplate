@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import (
     db_session_var,
@@ -17,12 +18,15 @@ class UsersContextFactory(ContextFactory):
     user_id_for_update: int = 4
     user_id_for_delete: int = 5
 
-    def __init__(self, engine: AsyncEngine, factory: async_sessionmaker[AsyncSession]) -> None:
-        super().__init__(engine, factory)
+    def __init__(
+        self, engine: AsyncEngine, factory: async_sessionmaker[AsyncSession], cache_service: ModelCacheService
+    ) -> None:
+        super().__init__(engine, factory, cache_service)
         self.models: list[BaseSqlModel] = []
 
     async def __aenter__(self) -> "UsersContextFactory":
         await self._clear_db()
+        await self.cache_service.cache.flushall()  # type: ignore
         self.models.extend(
             [
                 User(
@@ -60,6 +64,3 @@ class UsersContextFactory(ContextFactory):
                 await session.commit()
 
         return self
-
-    async def __aexit__(self):
-        await self._clear_db()

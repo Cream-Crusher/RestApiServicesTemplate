@@ -33,7 +33,7 @@ async def start(
     except ModelNotFound:
         User(**telegram_user.model_dump()).add()
         await posthog_manager.lead_register(
-            user_id=str(user_id), referral=command.args, user_data=message.chat.model_dump()
+            user_id=str(user_id), referral=command.args, user_data=message.chat.model_dump()  # type: ignore
         )  # type: ignore
 
     await posthog_manager.lead_state(user_id=str(user_id), state="start")
