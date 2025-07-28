@@ -26,7 +26,8 @@ class ContextFactory:
             for table in tables_to_drop:
                 await conn.execute(text(f'DROP TABLE IF EXISTS "{table.name}" CASCADE'))
 
-            # await conn.run_sync(BaseSqlModel.metadata.drop_all, tables=tables_to_drop) -- не подойдет из за CASCADE. И его нестройка не поможет т к он удаляет саму модельку, а не поля.
+            # await conn.run_sync(BaseSqlModel.metadata.drop_all, tables=tables_to_drop)
+            # не подойдет из за CASCADE. И его нестройка не поможет т к он удаляет саму модельку, а не поля.
             await conn.run_sync(BaseSqlModel.metadata.create_all)
 
     async def __aenter__(self) -> "ContextFactory":

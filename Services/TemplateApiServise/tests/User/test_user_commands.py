@@ -26,7 +26,9 @@ async def test_create_user(
     test_client: AsyncClient,
     test_cache_service: ModelCacheService,
 ) -> None:
-    async with UsersContextFactory(engine=test_engine, factory=test_factory, cache_service=test_cache_service) as user_context:  # type: ignore
+    async with UsersContextFactory(
+        engine=test_engine, factory=test_factory, cache_service=test_cache_service
+    ) as user_context:  # type: ignore
         # Arrange
         new_user_dto = CreateUserDTO(
             id=user_context.user_id_for_create,
