@@ -17,7 +17,7 @@ class UserQueryService:
     def __init__(self, cache_service: ModelCacheService = model_cache_service):
         self.cache_service = cache_service
 
-    @Profiler()
+    # @Profiler()
     async def get_by_id(self, user_id: int) -> GetUserByIdDTO:
         cached_key = f"user:{user_id}"
         cached_model = await self.cache_service.get(key=cached_key, callback=GetUserByIdDTO)

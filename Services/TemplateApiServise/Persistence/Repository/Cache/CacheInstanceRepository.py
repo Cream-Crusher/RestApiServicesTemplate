@@ -21,6 +21,8 @@ def connect_cache_repository_instance(
             return RedisCacheRepository(host=host)
         case "memory":
             return MemCacheRepository()
+        case _:
+            return MemCacheRepository()
 
 
 CacheRepositoryInstance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance(

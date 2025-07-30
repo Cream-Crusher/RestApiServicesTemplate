@@ -74,12 +74,12 @@ class ModelCacheService:
         with suppress(ConnectionError):
             if isinstance(models, BaseModel):
                 await self.cache.set(
-                    name=key, value=json.dumps(models.model_dump(), default=self._default_serializer), ex=ex, **kw
+                    name=key, value=json.dumps(models.model_dump(mode="json")), ex=ex, **kw
                 )
-            elif models in []:
+            elif models:
                 await self.cache.set(
                     name=key,
-                    value=json.dumps([model.model_dump() for model in models], default=self._default_serializer),
+                    value=json.dumps([model.model_dump(mode="json") for model in models]),
                     ex=ex,
                     **kw,
                 )

@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
 from config import settings
-from Infrastructure.PostHog.PostHog import posthog_manager
+from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
 from Services.TelegramBotService.utils.keyboard.ikb import IKB

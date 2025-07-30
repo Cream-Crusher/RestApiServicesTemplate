@@ -4,7 +4,7 @@ import anyio
 from aiogram.exceptions import TelegramRetryAfter
 from aiogram.types import MessageId
 
-from Infrastructure.PostHog.PostHog import posthog_manager
+from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
 
 lim = anyio.CapacityLimiter(2)

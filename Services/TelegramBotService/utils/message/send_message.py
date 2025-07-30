@@ -3,7 +3,7 @@ from typing import Any
 import anyio
 from aiogram.exceptions import TelegramRetryAfter
 
-from Infrastructure.PostHog.PostHog import posthog_manager
+from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
 
 lim = anyio.CapacityLimiter(2)

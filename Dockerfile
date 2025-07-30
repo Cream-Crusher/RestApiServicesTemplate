@@ -10,4 +10,5 @@ COPY . /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-CMD ["python", "/app/__main__.py"]
+CMD ["python", "/app/__main__.py --server --bot"]
+

@@ -3,6 +3,7 @@ from alembic import command
 from alembic.config import Config
 from loguru import logger
 
+from Infrastructure.Argparse.setup_argparse import setup_argparse
 from Infrastructure.Logging.logger import setup_logging  # type: ignore
 from Infrastructure.Scheduler.scheduler import setup_scheduler  # type: ignore
 from Services.TelegramBotService.bot_main import bot_main  # type: ignore
@@ -18,12 +19,15 @@ def run_migrations():
 
 async def main():
     setup_logging(settings.app_config.log_level)
+    parse_args = setup_argparse()
 
     async with anyio.create_task_group() as tg:
-        tg.start_soon(uvicorn_server.serve)
         tg.start_soon(setup_scheduler)  # type: ignore
 
-        if settings.app_config.environment_type != "local":
+        if parse_args.server:
+            tg.start_soon(uvicorn_server.serve)
+
+        if parse_args.bot:
             tg.start_soon(bot_main)
 
 

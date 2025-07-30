@@ -5,7 +5,7 @@ from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
-from Infrastructure.PostHog.PostHog import posthog_manager  # type: ignore
+from Infrastructure.PostHog.PosthogManager import posthog_manager  # type: ignore
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.manager.filters.tools_filters import (
     ManagerFilter,
