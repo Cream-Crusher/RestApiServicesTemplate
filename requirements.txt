@@ -36,3 +36,4 @@ httpx==0.28.1
 pytest_asyncio==1.1.0
 pytest-cov==6.2.1
 pre_commit==4.2.0
+line_profiler==5.0.0
