@@ -28,10 +28,10 @@ class BaseCommandService[T, I]:
         query = update(self.model).where(self.model.id == model_id).values(**update_data)  # type: ignore
         await get_session().execute(query)
         if cache_key:
-            await self.cache_service.delete(key=cache_key)
+            await self.cache_service.delete(keys=cache_key)
 
     async def delete(self, model_id: I, cache_key: str | None = None) -> None:
         query = delete(self.model).where(self.model.id == model_id)  # type: ignore
         await get_session().execute(query)
         if cache_key:
-            await self.cache_service.delete(key=cache_key)
+            await self.cache_service.delete(keys=cache_key)

@@ -20,7 +20,7 @@ async def get_bot_file_url(file_id: str, content_type: str = "image/png") -> str
     await bot.download_file(file_path=file.file_path, destination=object_data)
     object_data.seek(0)
 
-    file_url: str = await s3_manager.update(
+    file_url: str = await s3_manager.upload(
         body=object_data,
         object_name=f"{file_id}.png",
         bucket_name="user-avatar",

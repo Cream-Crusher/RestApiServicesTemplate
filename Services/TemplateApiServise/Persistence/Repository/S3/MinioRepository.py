@@ -64,18 +64,5 @@ class MinioRepository(BaseS3Repository[BytesIO]):
         body.name = object_name
         return body
 
-    async def remove(self, object_name: str, bucket_name: str) -> None:
-        pass
-        # await self.session.delete_object(Bucket=bucket_name, Key=object_name)
-
-    async def update(self, body: BytesIO, object_name: str, bucket_name: str, content_type: str) -> str:
-        await self.remove(object_name=object_name, bucket_name=bucket_name)
-        return await self.upload(
-            body=body,
-            object_name=object_name,
-            bucket_name=bucket_name,
-            content_type=content_type,
-        )
-
 
 s3_manager: MinioRepository = MinioRepository(s3_context=s3_context)

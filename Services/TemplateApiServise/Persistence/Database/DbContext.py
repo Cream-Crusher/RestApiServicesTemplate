@@ -5,6 +5,8 @@ from functools import wraps
 from typing import Any, Concatenate, cast
 
 import sqlalchemy.engine.url as SQURL
+from loguru import logger
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
@@ -46,7 +48,13 @@ def transaction[SELF, **P, T]():  # type: ignore
             async with cast(AsyncSession, factory()) as session:  # type: ignore
                 with use_context_value(db_session_var, session):  # type: ignore
                     result = await cb(*args, **kwargs)  # type: ignore
-                    await session.commit()  # type: ignore
+                    try:
+                        await session.commit()  # type: ignore
+                    except IntegrityError as e:
+                        logger.warning(e)
+                        await session.rollback()
+                        raise e
+
                     return result  # type: ignore
 
         return wrapped  # type: ignore

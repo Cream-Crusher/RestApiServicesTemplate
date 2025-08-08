@@ -25,14 +25,9 @@ def setup_logging(log_level: str = "INFO") -> None:
 def log[F](operation_name: str) -> Callable[[F], F]:
     def decorator(func: F) -> F:
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            logger.info(f"Starting {operation_name}", operation=operation_name)
+            logger.debug(f"Starting {operation_name}", operation=operation_name)
             try:
                 result = await func(*args, **kwargs)  # type: ignore
-                logger.info(
-                    f"Completed {operation_name}",
-                    operation=operation_name,
-                    success=True,
-                )
                 return result  # type: ignore
             except Exception as e:
                 logger.error(
@@ -46,3 +41,4 @@ def log[F](operation_name: str) -> Callable[[F], F]:
         return cast(F, wrapper)
 
     return decorator
+

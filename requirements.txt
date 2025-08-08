@@ -1,5 +1,5 @@
 environs==11.0.0
-SQLAlchemy==2.0.22
+SQLAlchemy==2.0.42
 Pyrebase4==4.8.0
 pydantic==2.11.7
 asyncpg==0.30.0
@@ -22,8 +22,8 @@ types-aiobotocore-lite==2.15.2
 types-aiobotocore-rds==2.15.2
 types-aiobotocore-s3==2.15.2
 types-aiobotocore-sqs==2.15.2
-aioboto3==15.0.0
-aiobotocore==2.23.1
+aioboto3==13.1.1
+aiobotocore==2.13.1
 fastapi-utils==0.8.0
 injector==0.22.0
 loguru==0.7.3

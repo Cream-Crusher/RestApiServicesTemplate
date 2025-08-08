@@ -3,7 +3,6 @@ from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
-from config import settings
 from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
@@ -14,6 +13,7 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
+from config import settings
 
 router = Router()
 

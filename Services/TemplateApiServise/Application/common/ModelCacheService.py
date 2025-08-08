@@ -84,15 +84,25 @@ class ModelCacheService:
                     **kw,
                 )
 
+    @overload
+    async def delete(self, keys: str) -> None: ...  # type: ignore
+
+    @overload
+    async def delete(self, keys: Iterable[str]) -> None: ...  # type: ignore
+
     @log("ModelCacheService: delete")
-    async def delete(self, key: str):
+    async def delete(self, keys: Iterable[str] | str):
         """
         delete cache model by key
 
-        :param key: key of model
+        :param keys: key of model
         """
         with suppress(ConnectionError):
-            await self.cache.delete(key)
+            if isinstance(keys, str):
+                await self.cache.delete(keys)
+            else:
+                for key in keys:
+                    await self.cache.delete(key)
 
 
 model_cache_service = ModelCacheService(cache=CacheRepositoryInstance)  # type: ignore
