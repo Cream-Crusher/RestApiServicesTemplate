@@ -1,28 +1,34 @@
+import inspect
 import pathlib
-from functools import wraps
+from typing import Callable, Any, cast
 
 from line_profiler import LineProfiler
 
+from config import settings
+
 FULL_PATH = pathlib.Path(__file__).parent.resolve()
+line_profiler = LineProfiler()
 
 
-class Profiler:
-    def __init__(self, filename=f"{FULL_PATH}/profile_results.txt"):
-        self.filename = filename
-        self.profiler = LineProfiler()
+def profiler[F](prefixname: str = "") -> Callable[[F], F]:
+    def decorator(func: F) -> F:
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            if settings.app_config.environment_type != "local":
+                return await func(*args, **kwargs)
 
-    def __call__(self, func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            self.profiler.add_function(func)
-            self.profiler.enable()
+            line_profiler.add_function(func)
+            line_profiler.enable()
+            try:
+                if inspect.iscoroutinefunction(func):
+                    return await func(*args, **kwargs)
+                else:
+                    return func(*args, **kwargs)
+            finally:
+                line_profiler.disable()
 
-            result = func(*args, **kwargs)
+                with open(f"{FULL_PATH}/{prefixname}{func.__name__}_profiler_result.txt", "a") as f:  # NOSONAR
+                    line_profiler.print_stats(stream=f)
 
-            self.profiler.disable()
-            with open(self.filename, "a") as f:
-                self.profiler.print_stats(stream=f)
+        return cast(F, wrapper)
 
-            return result
-
-        return wrapper
+    return decorator
