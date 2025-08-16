@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, get_args, get_origin, overload
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from redis.exceptions import ConnectionError
 
 from Infrastructure.Logging.logger import log
@@ -42,7 +42,7 @@ class ModelCacheService:
 
         :return: pydantic model or list[model] or None
         """
-        with suppress(ConnectionError):
+        with suppress(ConnectionError, ValidationError):
             cached_model = await self.cache.get(key)
 
             if cached_model is None:
@@ -73,9 +73,7 @@ class ModelCacheService:
         """
         with suppress(ConnectionError):
             if isinstance(models, BaseModel):
-                await self.cache.set(
-                    name=key, value=json.dumps(models.model_dump(mode="json")), ex=ex, **kw
-                )
+                await self.cache.set(name=key, value=json.dumps(models.model_dump(mode="json")), ex=ex, **kw)
             elif models:
                 await self.cache.set(
                     name=key,

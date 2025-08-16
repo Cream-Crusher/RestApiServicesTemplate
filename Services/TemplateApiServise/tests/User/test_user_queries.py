@@ -3,8 +3,8 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
-from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
 from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService
+from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
 from Services.TemplateApiServise.tests.Common.UsersContextFactory import (
     UsersContextFactory,
 )

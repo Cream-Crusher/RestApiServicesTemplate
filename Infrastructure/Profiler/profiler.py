@@ -1,6 +1,7 @@
 import inspect
 import pathlib
-from typing import Callable, Any, cast
+from collections.abc import Callable
+from typing import Any, cast
 
 from line_profiler import LineProfiler
 

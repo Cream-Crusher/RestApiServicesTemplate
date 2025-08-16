@@ -1,5 +1,4 @@
 from Infrastructure.Profiler.profiler import profiler
-from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
 from Services.TemplateApiServise.Application.common.ModelCacheService import (
     ModelCacheService,
     model_cache_service,
@@ -7,6 +6,7 @@ from Services.TemplateApiServise.Application.common.ModelCacheService import (
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
+from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
 from Services.TemplateApiServise.Domain.User import User
 
 

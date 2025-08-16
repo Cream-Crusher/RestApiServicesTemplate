@@ -93,5 +93,4 @@ class AppSettings(BaseModel):
     app_config: AppConfig = AppConfig()
 
 
-
 settings = AppSettings()

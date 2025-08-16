@@ -41,4 +41,3 @@ def log[F](operation_name: str) -> Callable[[F], F]:
         return cast(F, wrapper)
 
     return decorator
-
