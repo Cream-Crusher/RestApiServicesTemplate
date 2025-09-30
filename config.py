@@ -1,5 +1,6 @@
 from contextlib import suppress
-from typing import Any, Literal
+from enum import StrEnum
+from typing import Any
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
@@ -8,6 +9,22 @@ from pydantic_settings import BaseSettings
 with suppress(Exception):
     env_file = ".env"
     load_dotenv(dotenv_path=env_file)
+
+
+class EnvironmentEnum(StrEnum):
+    LOCAL = "LOCAL"
+    DEV = "DEV"
+    PROD = "PROD"
+
+
+class LogLevelEnum(StrEnum):
+    TRACE = "TRACE"
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    SUCCESS = "SUCCESS"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
 
 
 class PosthogConfig(BaseSettings):
@@ -74,11 +91,24 @@ class MinioConfig(BaseSettings):
 
 
 class AppConfig(BaseSettings):
-    environment_type: Literal["local", "dev", "prod"] | str = "dev"
-    log_level: str = "DEBUG"
+    environment: EnvironmentEnum = EnvironmentEnum.LOCAL
+    log_level: LogLevelEnum = LogLevelEnum.DEBUG
 
     class Config:
         env_prefix: str = "APP_"
+
+    def __init__(self, **values: Any) -> None:
+        super().__init__(**values)
+
+
+class OAuth2(BaseSettings):
+    token_url: str
+    scheme_name: str
+    algorithm: str
+    key: str
+
+    class Config:
+        env_prefix: str = "OAuth2_"
 
     def __init__(self, **values: Any) -> None:
         super().__init__(**values)
@@ -91,6 +121,7 @@ class AppSettings(BaseModel):
     posthog_config: PosthogConfig = PosthogConfig()
     minio_config: MinioConfig = MinioConfig()
     app_config: AppConfig = AppConfig()
+    oauth2: OAuth2 = OAuth2()
 
 
 settings = AppSettings()

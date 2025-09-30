@@ -7,10 +7,15 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
 )
 
 
-def model_not_found_error_exception_handler(_: Request, exc: Exception) -> JSONResponse:
+def model_not_found_error_handler(_: Request, exc: Exception) -> JSONResponse:
     if isinstance(exc, ModelNotFound):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content={"success": False, "message": exc.message},
+            content={
+                "status": False,
+                "error": "ModelNotFound",
+                "message": exc.message,
+                "detail": None,
+            },
         )
     raise exc

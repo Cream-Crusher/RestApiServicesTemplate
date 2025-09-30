@@ -5,23 +5,21 @@ from fastapi import APIRouter, FastAPI
 from sqlalchemy.exc import IntegrityError
 from starlette.middleware.cors import CORSMiddleware
 
-from config import settings
-from Services.TemplateApiServise.Application.exceptions.integrity_error_exception_handler import (
-    integrity_error_exception_handler,
-)
+from config import EnvironmentEnum, settings
+from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.exceptions.BaseApiErrorHandler import base_api_error_handler
+from Services.TemplateApiServise.Application.exceptions.IntegrityErrorExceptionHandler import integrity_error_handler
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
-from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import (
-    model_not_found_error_exception_handler,
-)
+from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import model_not_found_error_handler
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 
 # add FastApi
-if settings.app_config.environment_type == "prod":
+if settings.app_config.environment == EnvironmentEnum.PROD:
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 else:
-    app = FastAPI(docs_url="/swagger", redoc_url=None)
+    app = FastAPI(docs_url="/swagger")
 
 app.add_middleware(
     middleware_class=CORSMiddleware,
@@ -47,8 +45,9 @@ app.include_router(users_router, tags=["User | Users"], prefix=f"{router.prefix}
 
 
 # Exceptions Handlers
-app.add_exception_handler(IntegrityError, integrity_error_exception_handler)
-app.add_exception_handler(ModelNotFound, model_not_found_error_exception_handler)
+app.add_exception_handler(IntegrityError, integrity_error_handler)
+app.add_exception_handler(ModelNotFound, model_not_found_error_handler)
+app.add_exception_handler(BaseApiError, base_api_error_handler)
 
 
 # uvicorn

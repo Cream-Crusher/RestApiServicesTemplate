@@ -24,7 +24,7 @@ services:
       - traefik-proxy
     volumes:
       - redis_data:/data
-
+    command: ["redis-server", "--maxmemory-policy", "volatile-lru"]
 networks:
   traefik-proxy:
     name: traefik-proxy

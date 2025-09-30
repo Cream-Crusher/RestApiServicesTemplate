@@ -37,7 +37,7 @@ async def create_user_api(
 ) -> BaseResponse:
     user_command_service.create(new_user_dto)
 
-    return BaseResponse(success=True)
+    return BaseResponse()
 
 
 @users_router.put(path="/{user_id}", name="update user", status_code=status.HTTP_200_OK)
@@ -48,7 +48,7 @@ async def update_user_api(
 ) -> BaseResponse:
     await user_command_service.update(user_id, update_user_dto, f"user:{user_id}")
 
-    return BaseResponse(success=True)
+    return BaseResponse()
 
 
 @users_router.delete(path="/{user_id}", name="delete user", status_code=status.HTTP_200_OK)
@@ -58,4 +58,4 @@ async def delete_user_api(
 ) -> BaseResponse:
     await user_command_service.delete(user_id, f"user:{user_id}")
 
-    return BaseResponse(success=True)
+    return BaseResponse()

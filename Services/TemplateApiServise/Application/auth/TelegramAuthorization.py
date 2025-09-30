@@ -1,6 +1,4 @@
-from datetime import datetime
 from typing import Annotated
-from urllib.parse import unquote
 
 from aiogram.utils.web_app import (
     WebAppInitData,
@@ -10,9 +8,10 @@ from aiogram.utils.web_app import (
 from fastapi import Depends, HTTPException
 from fastapi.security.api_key import APIKeyHeader
 
-from config import settings
+from config import EnvironmentEnum, settings
+from Services.TemplateApiServise.Application.common.utcnow import utcnow
 
-is_local = settings.app_config.environment_type == "local"
+is_local = settings.app_config.environment == EnvironmentEnum.LOCAL
 
 
 def init_data_dependency(
@@ -22,21 +21,20 @@ def init_data_dependency(
         if is_local:
             return WebAppInitData(
                 user=WebAppUser(id=int(auth), first_name="cream"),
-                auth_date=datetime(2025, 5, 10),
+                auth_date=utcnow(),
                 hash="",
             )
 
-        init_data: str = unquote(auth)
-        return safe_parse_webapp_init_data(token=settings.bot_config.token, init_data=init_data)
+        return safe_parse_webapp_init_data(token=settings.bot_config.token, init_data=auth)
     except ValueError:
         raise HTTPException(403, detail="Invalid init data signature")
 
 
-def get_me(
+def get_me_telegram(
     auth_data: Annotated[WebAppInitData, Depends(init_data_dependency)],
 ) -> WebAppUser:
 
     if auth_data.user is None:
-        raise HTTPException(500, detail="Unknown error")
+        raise HTTPException(403, detail="Forbidden")
 
     return auth_data.user

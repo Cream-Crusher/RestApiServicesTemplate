@@ -8,10 +8,5 @@ root.crt
 /.env
 volumes
 .DS_Store
-.gitlab-ci.yml
 .run
 *__init__.py
-.pre-commit-config.yaml
-setup.cfg
-pyproject.toml
-*_profiler_result.txt

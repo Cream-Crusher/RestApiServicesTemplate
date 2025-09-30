@@ -2,4 +2,5 @@ from pydantic import BaseModel
 
 
 class BaseResponse(BaseModel):
-    success: bool
+    status: str = "success"
+    detail: dict[str, str] | None = None

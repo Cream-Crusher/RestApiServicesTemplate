@@ -4,6 +4,8 @@ from typing import Any, cast
 
 from loguru import logger
 
+from config import LogLevelEnum
+
 logger_format = """
 <green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> |
 <level>{level: <8}</level> |
@@ -11,7 +13,7 @@ logger_format = """
 """
 
 
-def setup_logging(log_level: str = "INFO") -> None:
+def setup_logging(log_level: LogLevelEnum = LogLevelEnum.INFO) -> None:
     logger.remove()
 
     logger.add(

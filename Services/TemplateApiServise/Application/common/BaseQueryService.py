@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from Services.TemplateApiServise.Application.common.ModelCacheService import (
     ModelCacheService,
@@ -24,7 +24,9 @@ class BaseQueryService[T, I]:
         if cached_model:
             return cached_model
 
-        real_model: T = await self.model.select().where(self.model.id == model_id).one_or_raise(ModelNotFound(self.model))
+        real_model: T = (
+            await self.model.select().where(self.model.id == model_id).one_or_raise(ModelNotFound(self.model))
+        )
         return_real_model = callback_dto(**real_model.__dict__)
         await self.cache_service.set(cached_key, return_real_model)
 

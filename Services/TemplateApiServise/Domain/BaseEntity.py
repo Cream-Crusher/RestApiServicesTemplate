@@ -11,5 +11,5 @@ class BaseEntity(BaseSqlModel):
 
     id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(nullable=True)
+    updated_at: Mapped[datetime | None] = mapped_column(nullable=True)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
