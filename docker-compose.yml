@@ -2,12 +2,17 @@ services:
 
   postgres:
     image: postgres:latest
-    container_name: TEMPLATE_POSTGRES_NAME
+    container_name: TEMPLATE_POSTGRES_DB
 
   redis:
     image: redis:latest
-    container_name: TEMPLATE_REDIS_NAME
+    container_name: TEMPLATE_REDIS_DB
+
+  minio:
+    image: minio/minio
+    container_name: MINIO_S3
 
 volumes:
   postgres_data:
   redis_data:
+  minio_data:

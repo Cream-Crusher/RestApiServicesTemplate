@@ -5,7 +5,7 @@ services:
       - .env
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d TEMPLATE_POSTGRES_NAME"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d $${POSTGRES_DATABASE}"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -15,7 +15,7 @@ services:
     networks:
       - traefik-proxy
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data
+      - postgres_data:/data
 
   redis:
     ports:
@@ -25,6 +25,18 @@ services:
     volumes:
       - redis_data:/data
     command: ["redis-server", "--maxmemory-policy", "volatile-lru"]
+
+  minio:
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"  # API port
+      - "10000:9001"  # console port
+    volumes:
+      - minio_data:/data
+    command: server --console-address ":9001" /data
+    restart: unless-stopped
+
 networks:
   traefik-proxy:
     name: traefik-proxy
