@@ -1,8 +1,8 @@
 import json
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from contextlib import suppress
 from datetime import datetime
-from typing import Any, get_args, get_origin, overload
+from typing import Any, get_args, get_origin, overload, Callable
 from uuid import UUID
 
 from pydantic import BaseModel, ValidationError

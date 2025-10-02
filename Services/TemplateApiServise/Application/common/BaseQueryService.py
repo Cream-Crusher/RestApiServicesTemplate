@@ -18,7 +18,7 @@ class BaseQueryService[T, I]:
         self.cache_service = cache_service
 
     async def get_by_id(self, model_id: int, callback_dto: Callable[..., T]) -> T | None:  # type: ignore
-        cached_key = f"{self.model.__class__.__name__}:{model_id}"
+        cached_key = f"{self.model.__tablename__}:{model_id}"
         cached_model = await self.cache_service.get(key=cached_key, callback=callback_dto)
 
         if cached_model:
@@ -31,6 +31,3 @@ class BaseQueryService[T, I]:
         await self.cache_service.set(cached_key, return_real_model)
 
         return return_real_model
-
-    async def get_all[TM](self, callback: Callable[[T], TM]) -> TM:
-        pass

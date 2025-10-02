@@ -27,7 +27,7 @@ users_router = APIRouter()
 async def get_user_by_id_api(
     user_id: int,
 ) -> GetUserByIdDTO:
-    return await user_query_service.get_by_id(user_id)
+    return await user_query_service.get_by_id(user_id, GetUserByIdDTO)
 
 
 @users_router.post(path="", name="create user", status_code=status.HTTP_201_CREATED)
