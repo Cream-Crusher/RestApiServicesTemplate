@@ -8,11 +8,6 @@ class CreateAdminDTO(BaseModel):
     password: str = Field(min_length=20, max_length=64)
 
 
-class GetAssessTokenDTO(BaseModel):
-    access_token: str
-    type: str
-
-
 class GetAdminByIdDTO(BaseModel):
     display_name: str
     role: Literal["admin", "super_admin"]

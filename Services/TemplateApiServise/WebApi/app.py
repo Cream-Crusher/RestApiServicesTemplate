@@ -13,6 +13,7 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
 from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import model_not_found_error_handler
+from Services.TemplateApiServise.WebApi.Controllers.AdminController import admins_router
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
 
 # add FastApi
@@ -42,7 +43,8 @@ async def ping_server() -> Literal["pong"]:
 app.include_router(router, tags=["Server"], prefix="/server")
 # User
 app.include_router(users_router, tags=["User | Users"], prefix=f"{router.prefix}/users")
-
+# Admin
+app.include_router(admins_router, tags=["Admin | Admins"], prefix=f"{router.prefix}/admins")
 
 # Exceptions Handlers
 app.add_exception_handler(IntegrityError, integrity_error_handler)

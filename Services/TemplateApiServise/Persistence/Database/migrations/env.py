@@ -24,7 +24,7 @@ config.set_main_option("sqlalchemy.url", url)
 
 # models for autogenerate
 
-from Services.TemplateApiServise.Domain import User  # type: ignore  # noqa: F401, E402
+from Services.TemplateApiServise.Domain import User, Admin  # type: ignore  # noqa: F401, E402
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata

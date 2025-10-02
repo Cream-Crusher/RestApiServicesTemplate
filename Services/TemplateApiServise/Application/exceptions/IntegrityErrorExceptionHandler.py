@@ -15,11 +15,6 @@ def integrity_error_handler(_: Request, exc: Exception) -> JSONResponse:
 
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            content={
-                "success": False,
-                "error": error,
-                "message": "integrity error",
-                "detail": {"orig": orig}
-            },
+            content={"success": False, "error": error, "message": "integrity error", "detail": {"orig": orig}},
         )
     raise exc

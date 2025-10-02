@@ -1,10 +1,9 @@
 import uuid
-from collections.abc import Iterable
 
-from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.responses import JSONResponse
 
-from Services.TemplateApiServise.Application.Admins.admin_dtos import CreateAdminDTO, GetAssessTokenDTO
+from Services.TemplateApiServise.Application.Admins.admin_dtos import CreateAdminDTO
 from Services.TemplateApiServise.Application.auth.Oauth2Authorization import (
     AdminDTO,
     create_access_token,
@@ -13,6 +12,7 @@ from Services.TemplateApiServise.Application.auth.Oauth2Authorization import (
 )
 from Services.TemplateApiServise.Application.common.BaseCommandService import BaseCommandService
 from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService, model_cache_service
+from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.Admin import Admin
 
@@ -22,28 +22,35 @@ class AdminCommandService(BaseCommandService[Admin, uuid.UUID]):
     def __init__(self, cache_service: ModelCacheService = model_cache_service):
         super().__init__(model=Admin, cache_service=cache_service)
 
-    async def create_admin(self, create_admin_user_dto: CreateAdminDTO, keys: Iterable[str] | str | None = None):
+    async def create_admin(self, admin: AdminDTO, create_admin_user_dto: CreateAdminDTO):
+        real_admin = await Admin.select().where(Admin.id == admin.id).one_or_raise(ModelNotFound(Admin))
+        if real_admin.role != "super_admin":
+            raise BaseApiError(403, error="Forbidden", message=f"Admin {admin.id} is not super_admin role")
+
         self.model(
             display_name=create_admin_user_dto.display_name,
             password_hash=hash_password(create_admin_user_dto.password),
             role="admin",
         ).add()
 
-        if keys:
-            await self.cache_service.delete(keys=keys)
+        await self.cache_service.delete(keys="admins:all")
 
-    async def login(self, login: OAuth2PasswordRequestForm) -> GetAssessTokenDTO:
+    async def login(self, login: OAuth2PasswordRequestForm) -> JSONResponse:
         username, password = login.username, login.password
         real_admin: Admin = (
             await self.model.select().where(Admin.display_name == username).one_or_raise(ModelNotFound(Admin))
         )
 
         if not verify_password(password, real_admin.password_hash):
-            raise HTTPException(403, "Invalid password")
+            raise BaseApiError(403, error="Forbidden", message="Invalid password")
 
-        assess_token = create_access_token(AdminDTO(id=real_admin.id, display_name=real_admin.display_name))
+        access_token = create_access_token(AdminDTO(id=real_admin.id, display_name=real_admin.display_name))
 
-        return GetAssessTokenDTO(access_token=assess_token, type="bearer")
+        response = JSONResponse(content={"access_token": access_token, "type": "bearer"})
+        response.set_cookie(key="access_token", value=access_token, secure=True, samesite="none")
+        response.headers["Authorization"] = f"Bearer {access_token}"
+
+        return response
 
 
 admin_command_service = AdminCommandService()

@@ -35,9 +35,8 @@ async def get_user_by_id_api(
 async def create_user_api(
     new_user_dto: CreateUserDTO,
 ) -> BaseResponse:
-    await user_command_service.create(new_user_dto)
-
-    return BaseResponse()
+    new_user = await user_command_service.create(new_user_dto)
+    return BaseResponse(detail={"id": new_user.id})
 
 
 @users_router.put(path="/{user_id}", name="update user", status_code=status.HTTP_200_OK)
@@ -46,8 +45,7 @@ async def update_user_api(
     user_id: int,
     update_user_dto: UpdateUserDTO,
 ) -> BaseResponse:
-    await user_command_service.update(user_id, update_user_dto, f"user:{user_id}")
-
+    await user_command_service.update(user_id, update_user_dto)
     return BaseResponse()
 
 
@@ -56,6 +54,5 @@ async def update_user_api(
 async def delete_user_api(
     user_id: int,
 ) -> BaseResponse:
-    await user_command_service.delete(user_id, f"user:{user_id}")
-
+    await user_command_service.delete(user_id)
     return BaseResponse()
