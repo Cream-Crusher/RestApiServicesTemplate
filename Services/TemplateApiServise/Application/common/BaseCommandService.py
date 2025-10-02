@@ -36,7 +36,7 @@ class BaseCommandService[T, I]:
         if isinstance(update_model, dict):
             update_data = {**update_model, "updated_at": utcnow()}
         else:
-            update_data = {**update_model.model_dump(), "updated_at": utcnow()}
+            update_data = {**update_model.model_dump(exclude_none=True, exclude_unset=True), "updated_at": utcnow()}
 
         query = update(self.model).where(self.model.id == model_id).values(**update_data)  # type: ignore
         await get_session().execute(query)
