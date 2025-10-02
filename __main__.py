@@ -21,6 +21,9 @@ async def main():
     setup_logging(settings.app_config.log_level)
     parse_args = setup_argparse()
 
+    if any(arg is False for arg in parse_args.__dict__.values()):
+        logger.critical("Please check your arguments or --help  show this help message and exit.")
+
     async with anyio.create_task_group() as tg:
         tg.start_soon(setup_scheduler)  # type: ignore
 
