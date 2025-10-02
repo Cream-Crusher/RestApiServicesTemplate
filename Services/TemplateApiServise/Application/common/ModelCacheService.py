@@ -8,7 +8,6 @@ from uuid import UUID
 from pydantic import BaseModel, ValidationError
 from redis.exceptions import ConnectionError
 
-from Infrastructure.Logging.logger import log
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import (
     CacheRepositoryInstance,
 )
@@ -23,7 +22,6 @@ class ModelCacheService:
         self.cache = cache
 
     @staticmethod
-    @log("ModelCacheService: _default_serializer")
     def _default_serializer(obj: Any) -> str:
         if isinstance(obj, UUID):
             return str(obj)
@@ -32,7 +30,6 @@ class ModelCacheService:
 
         raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
-    @log("ModelCacheService: get")
     async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:  # type: ignore
         """
         get cache model by key
@@ -61,7 +58,6 @@ class ModelCacheService:
     @overload
     async def set(self, key: str, models: BaseModel, ex: int = 300, **kw: Any) -> None: ...
 
-    @log("ModelCacheService: set")
     async def set(self, key: str, models: BaseModel | Iterable[BaseModel], ex: int = 300, **kw: Any) -> None:
         """
         set cache model by key
@@ -88,7 +84,6 @@ class ModelCacheService:
     @overload
     async def delete(self, keys: Iterable[str]) -> None: ...  # type: ignore
 
-    @log("ModelCacheService: delete")
     async def delete(self, keys: Iterable[str] | str):
         """
         delete cache model by key

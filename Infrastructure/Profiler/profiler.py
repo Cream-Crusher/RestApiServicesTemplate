@@ -13,7 +13,7 @@ FULL_PATH = pathlib.Path(__file__).parent.resolve()
 def profiler[F](prefixname: str = "") -> Callable[[F], F]:
     def decorator(func: F) -> F:
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            if settings.app_config.environment_type != "local":
+            if settings.app_config.environment != "local":
                 return await func(*args, **kwargs)
 
             line_profiler = LineProfiler()
