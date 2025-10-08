@@ -10,7 +10,7 @@ services:
 
   minio:
     image: minio/minio
-    container_name: MINIO_S3
+    container_name: TEMPLATE_MINIO_S3
 
 volumes:
   postgres_data:

@@ -93,6 +93,7 @@ class ModelCacheService:
         with suppress(ConnectionError):
             if isinstance(keys, str):
                 await self.cache.delete(keys)
+                await self.cache.dele(keys)
             else:
                 for key in keys:
                     await self.cache.delete(key)

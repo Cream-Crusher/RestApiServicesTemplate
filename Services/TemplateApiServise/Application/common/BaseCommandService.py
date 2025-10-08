@@ -22,11 +22,13 @@ class BaseCommandService[T, I]:
         self.cache_service = cache_service
 
     async def create(self, new_model: BaseModel | dict, keys: Iterable[str] | str | None = None) -> T:
-        model = self.model(**(new_model if isinstance(new_model, dict) else new_model.model_dump())).add()
+        if isinstance(new_model, dict):
+            self.model(**new_model).add()  # type: ignore
+        else:
+            self.model(**new_model.model_dump()).add()  # type: ignore
+
         if keys:
             await self.cache_service.delete(keys=keys)
-
-        return model
 
     async def update(
         self, model_id: I, update_model: BaseModel | dict, keys: Iterable[str] | str | None = None
@@ -38,13 +40,11 @@ class BaseCommandService[T, I]:
 
         query = update(self.model).where(self.model.id == model_id).values(**update_data)  # type: ignore
         await get_session().execute(query)
-        await self.cache_service.delete(keys=f"{self.model.__tablename__}:{model_id}")
         if keys:
             await self.cache_service.delete(keys=keys)
 
     async def delete(self, model_id: I, keys: Iterable[str] | str | None = None) -> None:
         query = delete(self.model).where(self.model.id == model_id)  # type: ignore
         await get_session().execute(query)
-        await self.cache_service.delete(keys=f"{self.model.__tablename__}:{model_id}")
         if keys:
             await self.cache_service.delete(keys=keys)

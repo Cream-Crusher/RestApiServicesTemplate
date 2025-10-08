@@ -12,6 +12,7 @@ class User(BaseEntity):
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str | None] = mapped_column(nullable=True)
     username: Mapped[str | None] = mapped_column(nullable=True)
+    is_manager: Mapped[bool] = mapped_column(server_default="false", nullable=False)
 
     @property
     def full_name(self):

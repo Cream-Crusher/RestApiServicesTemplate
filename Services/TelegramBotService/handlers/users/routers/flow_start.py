@@ -11,9 +11,10 @@ from Services.TelegramBotService.utils.keyboard.ikb import IKB
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
+from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO
+from Services.TemplateApiServise.Application.Users.UserQueryService import user_query_service
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
-from Services.TemplateApiServise.WebApi.Controllers.UserController import get_user_by_id_api  # type: ignore
 
 router = Router()
 
@@ -29,7 +30,7 @@ async def start(
     await state.clear()
     user_id: int | str = telegram_user.id
     try:
-        await get_user_by_id_api(user_id)  # type: ignore
+        await user_query_service.get_by_id(user_id, GetUserByIdDTO)
     except ModelNotFound:
         User(**telegram_user.model_dump()).add()
         await posthog_manager.lead_register(
