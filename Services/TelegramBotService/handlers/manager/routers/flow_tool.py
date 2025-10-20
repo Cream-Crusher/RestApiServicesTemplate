@@ -17,6 +17,7 @@ from Services.TelegramBotService.utils.keyboard.ikb import IKB
 from Services.TelegramBotService.utils.message.send_copy_message import (
     send_copy_message,
 )
+from Services.TelegramBotService.utils.other.get_file import get_bot_file_url
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
@@ -25,10 +26,15 @@ router = Router()
 
 @router.message(Command("get_file_id"), ManagerFilter())
 async def get_file_id_tool(message: Message, state: FSMContext) -> None:
-    await state.set_state(state=ToolState.tool)
+    await state.set_state(state=ToolState.get_file_id)
 
 
-@router.message(ToolState.tool)
+@router.message(Command("get_file_url"), ManagerFilter())
+async def get_file_url_tool(message: Message, state: FSMContext) -> None:
+    await state.set_state(state=ToolState.get_file_url)
+
+
+@router.message(ToolState.get_file_id)
 async def get_file_id_tool_state(message: Message) -> None:
     if message.voice:
         await message.answer(text=message.voice.file_id)
@@ -42,6 +48,32 @@ async def get_file_id_tool_state(message: Message) -> None:
         await message.answer(text=message.video.file_id)
     elif message.sticker:
         await message.answer(message.sticker.file_id)
+
+
+@router.message(ToolState.get_file_url)
+async def get_file_url_tool_state(message: Message) -> None:
+    file_id = None
+    if message.voice:
+        file_id = message.voice.file_id
+    elif message.document:
+        file_id = message.document.file_id
+    elif message.photo:
+        file_id = message.photo[0].file_id
+    elif message.video_note:
+        file_id = message.video_note.file_id
+    elif message.video:
+        file_id = message.video.file_id
+    elif message.sticker:
+        file_id = message.sticker.file_id
+
+    if file_id is None:
+        await message.answer("File not found")
+
+    else:
+        try:
+            await message.answer(await get_bot_file_url(file_id))
+        except Exception as e:
+            await message.answer(str(e.args))
 
 
 @router.message(Command("send_broadcast"), ManagerFilter())

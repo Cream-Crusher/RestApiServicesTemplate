@@ -44,12 +44,6 @@ class BaseRepository[TM](Select[tuple[TM]]):
             raise exception  # /NOSONAR
         return result
 
-    async def first_or_none(self) -> TM | None:
-        result: TM | None = await self.first()
-        if result is None:
-            return None
-        return result
-
     async def one(self) -> TM:
         return (await self).one()
 

@@ -47,7 +47,7 @@ class MinioRepository(BaseS3Repository[BytesIO]):
                     ExtraArgs={
                         # 'x-amz-acl': 'public-read',
                         "ContentType": content_type,
-                        "ACL": "public-read",
+                        "ACL": "public-read",  # Делает файл публично доступным
                     },
                 )  # type: ignore
                 logger.info(f"File '{object_name}' success uploaded to '{bucket_name}'")

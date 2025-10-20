@@ -13,7 +13,7 @@ class PosthogManager:
         self.posthog = Posthog(token if token else "None", host=host)
 
     async def lead_register(self, user_id: str, referral: str = "self", user_data: dict[str, Any] = {}) -> None:
-        await self.posthog.identify(  # type: ignore
+        self.posthog.identify(  # type: ignore
             distinct_id=user_id,
             properties={
                 "referral": referral if referral else "self",
@@ -23,7 +23,7 @@ class PosthogManager:
         )
 
     async def lead_state(self, user_id: str, state: str, data: dict[str, Any] | None = None) -> None:
-        await self.posthog.capture(distinct_id=user_id, event=state, properties=data)  # type: ignore
+        self.posthog.capture(distinct_id=user_id, event=state, properties=data)  # type: ignore
 
 
 posthog_manager: PosthogManager = PosthogManager(

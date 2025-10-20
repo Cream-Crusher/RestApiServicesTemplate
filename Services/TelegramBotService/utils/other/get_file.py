@@ -11,7 +11,7 @@ from Services.TemplateApiServise.Persistence.Repository.S3.MinioRepository impor
 
 
 @alru_cache
-async def get_bot_file_url(file_id: str, content_type: str = "image/png") -> str:
+async def get_bot_file_url(file_id: str, bucket_name: str = "general", content_type: str = "image/png") -> str:
     bot: Bot = get_bot()
     object_data = io.BytesIO()
     file: File = await bot.get_file(file_id=file_id)
@@ -23,7 +23,7 @@ async def get_bot_file_url(file_id: str, content_type: str = "image/png") -> str
     file_url: str = await s3_manager.upload(
         body=object_data,
         object_name=f"{file_id}.png",
-        bucket_name="user-avatar",
+        bucket_name=bucket_name,
         content_type=content_type,
     )
 

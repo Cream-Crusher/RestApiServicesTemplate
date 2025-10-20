@@ -1,9 +1,7 @@
 import json
 from collections.abc import Callable, Iterable
 from contextlib import suppress
-from datetime import datetime
 from typing import Any, get_args, get_origin, overload
-from uuid import UUID
 
 from pydantic import BaseModel, ValidationError
 from redis.exceptions import ConnectionError
@@ -20,15 +18,6 @@ class ModelCacheService:
 
     def __init__(self, cache: RedisCacheRepository):
         self.cache = cache
-
-    @staticmethod
-    def _default_serializer(obj: Any) -> str:
-        if isinstance(obj, UUID):
-            return str(obj)
-        elif isinstance(obj, datetime):
-            return obj.isoformat()
-
-        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
     async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:  # type: ignore
         """
@@ -69,11 +58,11 @@ class ModelCacheService:
         """
         with suppress(ConnectionError):
             if isinstance(models, BaseModel):
-                await self.cache.set(name=key, value=json.dumps(models.model_dump(mode="json")), ex=ex, **kw)
+                await self.cache.set(name=key, value=models.model_dump_json(), ex=ex, **kw)
             elif models:
                 await self.cache.set(
                     name=key,
-                    value=json.dumps([model.model_dump(mode="json") for model in models]),
+                    value=json.dumps([model.model_dump_json() for model in models]),
                     ex=ex,
                     **kw,
                 )
@@ -93,7 +82,6 @@ class ModelCacheService:
         with suppress(ConnectionError):
             if isinstance(keys, str):
                 await self.cache.delete(keys)
-                await self.cache.dele(keys)
             else:
                 for key in keys:
                     await self.cache.delete(key)
