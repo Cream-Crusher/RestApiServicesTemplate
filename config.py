@@ -42,7 +42,7 @@ class BotConfig(BaseSettings):
     token: str
     subscribe_channel_url: str | None = None
     subscribe_channel_id: int | None = None
-    web_app_url: str | None = None
+    web_app_url: str | None = "https://youtu.be/xvFZjo5PgG0?si=_fxmQO2lntSXYGCi"
 
     class Config:
         env_prefix: str = "BOT_"
@@ -102,10 +102,10 @@ class AppConfig(BaseSettings):
 
 
 class OAuth2(BaseSettings):
-    token_url: str
-    scheme_name: str
-    algorithm: str
-    key: str
+    token_url: str = ""
+    scheme_name: str = ""
+    algorithm: str = ""
+    key: str = ""
 
     class Config:
         env_prefix: str = "OAuth2_"

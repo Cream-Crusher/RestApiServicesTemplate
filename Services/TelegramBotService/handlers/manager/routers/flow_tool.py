@@ -41,7 +41,7 @@ async def get_file_id_tool_state(message: Message) -> None:
     elif message.document:
         await message.answer(message.document.file_id)
     elif message.photo:
-        await message.answer(message.photo[0].file_id)
+        await message.answer(message.photo[-1].file_id)
     elif message.video_note:
         await message.answer(text=message.video_note.file_id)
     elif message.video:
@@ -58,7 +58,7 @@ async def get_file_url_tool_state(message: Message) -> None:
     elif message.document:
         file_id = message.document.file_id
     elif message.photo:
-        file_id = message.photo[0].file_id
+        file_id = message.photo[-1].file_id
     elif message.video_note:
         file_id = message.video_note.file_id
     elif message.video:

@@ -21,7 +21,7 @@ class BaseCommandService[T, I]:
         self.model: type[T] = model
         self.cache_service = cache_service
 
-    async def create(self, new_model: BaseModel | dict, keys: Iterable[str] | str | None = None) -> T:
+    async def create(self, new_model: BaseModel | dict, keys: Iterable[str] | str | None = None):
         if isinstance(new_model, dict):
             self.model(**new_model).add()  # type: ignore
         else:

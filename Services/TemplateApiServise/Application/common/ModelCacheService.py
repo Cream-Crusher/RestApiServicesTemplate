@@ -42,12 +42,12 @@ class ModelCacheService:
         return None
 
     @overload
-    async def set(self, key: str, models: Iterable[BaseModel], ex: int = 300, **kw: Any) -> None: ...
+    async def set(self, key: str, models: Iterable[BaseModel], ex: int | None = 300, **kw: Any) -> None: ...
 
     @overload
-    async def set(self, key: str, models: BaseModel, ex: int = 300, **kw: Any) -> None: ...
+    async def set(self, key: str, models: BaseModel, ex: int | None = 300, **kw: Any) -> None: ...
 
-    async def set(self, key: str, models: BaseModel | Iterable[BaseModel], ex: int = 300, **kw: Any) -> None:
+    async def set(self, key: str, models: BaseModel | Iterable[BaseModel], ex: int | None = 300, **kw: Any) -> None:
         """
         set cache model by key
 
@@ -83,8 +83,15 @@ class ModelCacheService:
             if isinstance(keys, str):
                 await self.cache.delete(keys)
             else:
-                for key in keys:
-                    await self.cache.delete(key)
+                await self.cache.delete(*keys)
+
+    async def delete_by_pattern(self, pattern: str) -> None:
+        while True:
+            cursor, keys = await self.cache.scan(match=pattern)
+            if keys:
+                await self.cache.delete(*keys)
+            if not cursor:
+                break
 
 
 model_cache_service = ModelCacheService(cache=CacheRepositoryInstance)  # type: ignore

@@ -13,18 +13,12 @@ class S3Repository:
         """Загрузить файл в S3"""
         file_obj = BytesIO(file_data)
         return await s3_manager.upload(
-            body=file_obj,
-            object_name=object_name,
-            bucket_name=self.bucket_name,
-            content_type=content_type
+            body=file_obj, object_name=object_name, bucket_name=self.bucket_name, content_type=content_type
         )
 
     async def get_file(self, object_name: str) -> BytesIO:
         """Получить файл из S3"""
-        return await s3_manager.get(
-            object_name=object_name,
-            bucket_name=self.bucket_name
-        )
+        return await s3_manager.get(object_name=object_name, bucket_name=self.bucket_name)
 
     def get_file_url(self, object_name: str) -> str:
         """Получить URL файла в S3"""
