@@ -1,7 +1,14 @@
-from sqlalchemy import BigInteger
+from enum import StrEnum
+
+from sqlalchemy import VARCHAR, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
+
+
+class UserRoleEnum(StrEnum):
+    ADMINISTRATOR = "ADMINISTRATOR"
+    USER = "USER"
 
 
 class User(BaseEntity):
@@ -12,6 +19,7 @@ class User(BaseEntity):
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str | None] = mapped_column(nullable=True)
     username: Mapped[str | None] = mapped_column(nullable=True)
+    role: Mapped[UserRoleEnum] = mapped_column(VARCHAR(16), server_default=UserRoleEnum.USER, nullable=False)
 
     @property
     def full_name(self):

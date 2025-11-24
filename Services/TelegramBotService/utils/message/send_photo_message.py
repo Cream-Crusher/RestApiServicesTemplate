@@ -9,7 +9,9 @@ from Services.TelegramBotService.get_bot import get_bot
 lim = anyio.CapacityLimiter(2)
 
 
-async def send_photo(user_id: int, text: str, photo_url: str, disable_notification: bool = False, **kw: Any) -> None | bool:
+async def send_photo(
+    user_id: int, text: str, photo_url: str, disable_notification: bool = False, **kw: Any
+) -> None | bool:
     async with lim:
         for i in range(4):
             try:

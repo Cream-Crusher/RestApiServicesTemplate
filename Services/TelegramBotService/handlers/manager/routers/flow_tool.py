@@ -17,7 +17,7 @@ from Services.TelegramBotService.utils.keyboard.ikb import IKB
 from Services.TelegramBotService.utils.message.send_copy_message import (
     send_copy_message,
 )
-from Services.TelegramBotService.utils.other.get_file import get_bot_file_url
+from Services.TelegramBotService.utils.other.get_bot_file_url import get_bot_file_url
 from Services.TemplateApiServise.Domain.User import User
 from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 

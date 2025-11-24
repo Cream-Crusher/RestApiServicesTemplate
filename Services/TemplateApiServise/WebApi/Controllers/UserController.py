@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 
 from Services.TemplateApiServise.Application.common.BaseResponse import BaseResponse
 from Services.TemplateApiServise.Application.Users.user_dtos import (

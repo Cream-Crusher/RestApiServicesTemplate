@@ -43,6 +43,7 @@ class BotConfig(BaseSettings):
     subscribe_channel_url: str | None = None
     subscribe_channel_id: int | None = None
     web_app_url: str | None = "https://youtu.be/xvFZjo5PgG0?si=_fxmQO2lntSXYGCi"
+    webhook_path: str | None = None
 
     class Config:
         env_prefix: str = "BOT_"
@@ -114,6 +115,19 @@ class OAuth2(BaseSettings):
         super().__init__(**values)
 
 
+class WebConfig(BaseSettings):
+    http_scheme: str = Field(default="https://")
+    http_domain: str = Field(default="localhost")
+
+    workers: int = Field(default=1)
+
+    class Config:
+        env_prefix: str = "WEB_"
+
+    def __init__(self, **values: Any) -> None:
+        super().__init__(**values)
+
+
 class AppSettings(BaseModel):
     bot_config: BotConfig = BotConfig()
     database_config: DatabaseConfig = DatabaseConfig()
@@ -121,6 +135,7 @@ class AppSettings(BaseModel):
     posthog_config: PosthogConfig = PosthogConfig()
     minio_config: MinioConfig = MinioConfig()
     app_config: AppConfig = AppConfig()
+    web_config: WebConfig = WebConfig()
     oauth2: OAuth2 = OAuth2()
 
 

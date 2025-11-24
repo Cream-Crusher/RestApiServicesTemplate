@@ -1,9 +1,7 @@
 import asyncio
 import time
 from collections import deque
-from typing import Any
-
-from typing_extensions import Deque
+from typing import Any, Deque
 
 
 class RateLimitExceeded(Exception):

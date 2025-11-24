@@ -7,7 +7,7 @@ from config import settings
 from Infrastructure.Argparse.setup_argparse import setup_argparse
 from Infrastructure.Logging.logger import setup_logging  # type: ignore
 from Infrastructure.Scheduler.scheduler import setup_scheduler  # type: ignore
-from Services.TelegramBotService.bot_main import bot_main  # type: ignore
+from Services.TelegramBotService.start_polling_bot import bot_main  # type: ignore
 from Services.TemplateApiServise.WebApi.app import uvicorn_server  # type: ignore
 
 

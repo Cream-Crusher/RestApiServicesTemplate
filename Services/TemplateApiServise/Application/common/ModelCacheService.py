@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 from redis.exceptions import ConnectionError
 
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import (
-    CacheRepositoryInstance,
+    cache_repository_instance,
 )
 from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import (
     RedisCacheRepository,
@@ -94,4 +94,4 @@ class ModelCacheService:
                 break
 
 
-model_cache_service = ModelCacheService(cache=CacheRepositoryInstance)  # type: ignore
+model_cache_service = ModelCacheService(cache=cache_repository_instance)  # type: ignore
