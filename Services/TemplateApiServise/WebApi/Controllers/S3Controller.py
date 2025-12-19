@@ -3,9 +3,10 @@ from io import BytesIO
 from typing import Annotated, Literal
 
 import filetype
-from fastapi import APIRouter, File, HTTPException, UploadFile
 from PIL import Image
+from fastapi import APIRouter, File, UploadFile
 
+from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Persistence.Repository.S3.MinioRepository import s3_manager
 
 simple_storage_service_router = APIRouter()
@@ -15,10 +16,20 @@ MAX_FILE_SIZE = 15 * 1024 * 1024
 @simple_storage_service_router.post("/file", name="upload file", status_code=200)
 async def upload_file(bucket_name: Literal["general"], file: Annotated[UploadFile, File(...)]):
     if not (file.filename and file.content_type and file.size):
-        raise HTTPException(409)
+        raise BaseApiError(
+            status_code=409,
+            error="FILE_NOT_SUPPORTED",
+            message="filename and content_type and size are required",
+            detail={"filename": file.filename, "content_type": file.content_type, "size": file.size},
+        )
 
     if file.size > MAX_FILE_SIZE:
-        raise HTTPException(400, "File too large 15 mb")
+        raise BaseApiError(
+            status_code=400,
+            error="FILE_NOT_SUPPORTED",
+            message="File size too large 15 mb",
+            detail={"filename": file.filename, "content_type": file.content_type, "size": file.size},
+        )
 
     object_bytes = await file.read()
     object_data = BytesIO(object_bytes)

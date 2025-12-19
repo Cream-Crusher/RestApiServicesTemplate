@@ -5,11 +5,12 @@ from aiogram.utils.web_app import (
     WebAppUser,
     safe_parse_webapp_init_data,
 )
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from fastapi.security.api_key import APIKeyHeader
 
-from config import EnvironmentEnum, config
 from Services.TemplateApiServise.Application.common.utcnow import utcnow
+from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
+from config import EnvironmentEnum, config
 
 is_local = config.app_config.environment == EnvironmentEnum.LOCAL
 
@@ -27,7 +28,9 @@ def init_data_dependency(
 
         return safe_parse_webapp_init_data(token=config.bot_config.token, init_data=auth)
     except ValueError:
-        raise HTTPException(403, detail="Invalid init data signature")
+        raise BaseApiError(
+            status_code=403, error="INVALID_INITDATA", message="Invalid init data signature", detail={"init_data": auth}
+        )
 
 
 def get_me_telegram(
@@ -35,6 +38,8 @@ def get_me_telegram(
 ) -> WebAppUser:
 
     if auth_data.user is None:
-        raise HTTPException(403, detail="Forbidden")
+        raise BaseApiError(
+            status_code=403, error="Forbidden", message="auth_data.user is None"
+        )
 
     return auth_data.user

@@ -3,13 +3,14 @@ from datetime import datetime, timedelta
 
 import bcrypt
 import jose
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import BaseModel
 
-from config import config
 from Services.TemplateApiServise.Application.common.utcnow import utcnow
+from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
+from config import config
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=config.oauth2.token_url, scheme_name=config.oauth2.scheme_name, auto_error=False
@@ -41,17 +42,25 @@ def verify_password(password, hashed_password):
 
 def get_me_admin(token: str = Depends(oauth2_scheme)) -> AdminDTO:
     if not token:
-        raise HTTPException(status_code=401, detail="Token not provided")
+        raise BaseApiError(
+            status_code=401, error="TOKEN_NOT_PROVIDED", message="Token not provided", detail={"token": token}
+        )
     try:
         payload = jwt.decode(token=token, key=KEY, algorithms=[ALGORITHM])
 
     except jose.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token has expired")
+        raise BaseApiError(
+            status_code=401, error="TOKEN_EXPIRED", message="Token has expired", detail={"token": token}
+        )
 
     except Exception as e:
-        raise HTTPException(status_code=401, detail="Invalid token: " + str(e))
+        raise BaseApiError(
+            status_code=401, error="INVALID_TOKEN", message="Invalid token", detail={"error": str(e), "token": token}
+        )
 
     if payload.get("exp") and payload["exp"] < datetime.timestamp(utcnow()):
-        raise HTTPException(status_code=401, detail="Token expired")
+        raise BaseApiError(
+            status_code=401, error="TOKEN_EXPIRED", message="Token has expired", detail={"token": token}
+        )
 
     return AdminDTO(**payload)
