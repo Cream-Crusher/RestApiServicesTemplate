@@ -12,7 +12,7 @@ def model_not_found_error_handler(_: Request, exc: Exception) -> JSONResponse:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
-                "status": False,
+                "status": "error",
                 "error": "ModelNotFound",
                 "message": exc.message,
                 "detail": None,
