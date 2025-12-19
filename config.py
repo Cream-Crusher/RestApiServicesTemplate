@@ -128,7 +128,7 @@ class WebConfig(BaseSettings):
         super().__init__(**values)
 
 
-class AppSettings(BaseModel):
+class Config(BaseModel):
     bot_config: BotConfig = BotConfig()
     database_config: DatabaseConfig = DatabaseConfig()
     redis_config: RedisConfig = RedisConfig()
@@ -139,4 +139,4 @@ class AppSettings(BaseModel):
     oauth2: OAuth2 = OAuth2()
 
 
-settings = AppSettings()
+config = Config()

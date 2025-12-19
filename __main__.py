@@ -3,22 +3,22 @@ from alembic import command
 from alembic.config import Config
 from loguru import logger
 
-from config import settings
+from config import config
 from Infrastructure.Argparse.setup_argparse import setup_argparse
-from Infrastructure.Logging.logger import setup_logging  # type: ignore
-from Infrastructure.Scheduler.scheduler import setup_scheduler  # type: ignore
-from Services.TelegramBotService.start_polling_bot import bot_main  # type: ignore
-from Services.TemplateApiServise.WebApi.app import uvicorn_server  # type: ignore
+from Infrastructure.Logging.logger import setup_logging
+from Infrastructure.Scheduler.scheduler import setup_scheduler
+from Services.TelegramBotService.start_polling_bot import start_polling_bot
+from Services.TemplateApiServise.WebApi.app import uvicorn_server
 
 
 def run_migrations():
     alembic_cfg = Config("alembic.ini")
-    alembic_cfg.set_main_option("sqlalchemy.url", settings.database_config.url)
+    alembic_cfg.set_main_option("sqlalchemy.url", config.database_config.url)
     command.upgrade(alembic_cfg, "head")
 
 
 async def main():
-    setup_logging(settings.app_config.log_level)
+    setup_logging(config.app_config.log_level)
     parse_args = setup_argparse()
 
     if all(arg is False for arg in parse_args.__dict__.values()):
@@ -32,7 +32,7 @@ async def main():
             tg.start_soon(uvicorn_server.serve)
 
         if parse_args.bot:
-            tg.start_soon(bot_main)
+            tg.start_soon(start_polling_bot)
 
 
 if __name__ == "__main__":

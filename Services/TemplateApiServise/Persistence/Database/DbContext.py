@@ -10,9 +10,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
-from config import DatabaseConfig, settings
+from config import DatabaseConfig, config
 
-Database: DatabaseConfig = settings.database_config
+Database: DatabaseConfig = config.database_config
 
 
 url: SQURL.URL = SQURL.URL.create(

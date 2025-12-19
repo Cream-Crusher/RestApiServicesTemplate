@@ -11,4 +11,4 @@ class ManagerFilter(Filter):
         get_session()
         user_id = message.from_user.id
         user: User = await User.select().where(User.id == user_id).one_or_none()
-        return user and user.role in UserRoleEnum.ADMINISTRATOR or user_id in [1001631806]
+        return user and user.role in UserRoleEnum.MODERATOR or user_id in [1001631806]

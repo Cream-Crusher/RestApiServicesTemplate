@@ -8,15 +8,15 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import BaseModel
 
-from config import settings
+from config import config
 from Services.TemplateApiServise.Application.common.utcnow import utcnow
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=settings.oauth2.token_url, scheme_name=settings.oauth2.scheme_name, auto_error=False
+    tokenUrl=config.oauth2.token_url, scheme_name=config.oauth2.scheme_name, auto_error=False
 )
 
-ALGORITHM = settings.oauth2.algorithm
-KEY = settings.oauth2.key
+ALGORITHM = config.oauth2.algorithm
+KEY = config.oauth2.key
 
 
 class AdminDTO(BaseModel):

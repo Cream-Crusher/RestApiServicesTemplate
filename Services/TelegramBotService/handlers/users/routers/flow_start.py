@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, WebAppInfo
 
-from config import settings
+from config import config
 from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
@@ -43,6 +43,6 @@ async def start(
         text=StartText.start,
         reply_markup=IKB().row(
             text="Перейти в игру1",
-            web_app=WebAppInfo(url=settings.bot_config.web_app_url),  # type: ignore
+            web_app=WebAppInfo(url=config.bot_config.web_app_url),  # type: ignore
         ),  # type: ignore
     )

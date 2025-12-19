@@ -1,7 +1,7 @@
 from functools import cache
 from typing import Literal
 
-from config import settings
+from config import config
 from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import (
     MemCacheRepository,
 )
@@ -26,5 +26,5 @@ def connect_cache_repository_instance(
 
 
 cache_repository_instance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance(
-    "redis", settings.redis_config.host
+    "redis", config.redis_config.host
 )

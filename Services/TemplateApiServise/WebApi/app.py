@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from starlette.middleware.cors import CORSMiddleware
 from starlette_context import middleware, plugins
 
-from config import EnvironmentEnum, settings
+from config import EnvironmentEnum, config
 from Services.TelegramBotService.get_bot import get_bot
 from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Application.exceptions.BaseApiErrorHandler import base_api_error_handler
@@ -27,12 +27,12 @@ async def lifespan(app: FastAPI):
     bot_setup_done = False
     if not bot_setup_done:
         bot = get_bot()
-        if settings.app_config.environment != EnvironmentEnum.LOCAL:
+        if config.app_config.environment != EnvironmentEnum.LOCAL:
             await bot.set_webhook(
-                f"{settings.web_config.http_scheme}"
-                f"{settings.web_config.http_domain}"
+                f"{config.web_config.http_scheme}"
+                f"{config.web_config.http_domain}"
                 f"/bot/"
-                f"{settings.bot_config.webhook_path}"
+                f"{config.bot_config.webhook_path}"
             )
             logger.info("Bot started")
         bot_setup_done = True
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 
 # add FastApi
-if settings.app_config.environment == EnvironmentEnum.PROD:
+if config.app_config.environment == EnvironmentEnum.PROD:
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 else:
     app = FastAPI(docs_url="/swagger", redoc_url=None, lifespan=lifespan)
@@ -87,5 +87,5 @@ app.add_exception_handler(BaseApiError, base_api_error_handler)
 
 
 # uvicorn
-config = uvicorn.Config(app, host="0.0.0.0", port=8011, workers=settings.web_config.workers)
-uvicorn_server = uvicorn.Server(config=config)
+uvicorn_config = uvicorn.Config(app, host="0.0.0.0", port=8011, workers=config.web_config.workers)
+uvicorn_server = uvicorn.Server(config=uvicorn_config)

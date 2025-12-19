@@ -7,7 +7,7 @@ from Services.TemplateApiServise.Domain.BaseEntity import BaseEntity
 
 
 class UserRoleEnum(StrEnum):
-    ADMINISTRATOR = "ADMINISTRATOR"
+    MODERATOR = "MODERATOR"
     USER = "USER"
 
 

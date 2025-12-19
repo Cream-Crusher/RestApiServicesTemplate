@@ -18,6 +18,17 @@ users_router = APIRouter()
 
 
 @users_router.get(
+    path="",
+    name="get all user",
+    status_code=status.HTTP_200_OK,
+    response_model=list[GetUserByIdDTO],
+)
+@transaction()  # type: ignore
+async def get_all_user_api() -> list[GetUserByIdDTO]:
+    return await user_query_service.get_all(GetUserByIdDTO)
+
+
+@users_router.get(
     path="/{user_id}",
     name="get user by id",
     status_code=status.HTTP_200_OK,

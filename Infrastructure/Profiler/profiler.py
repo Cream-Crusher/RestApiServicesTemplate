@@ -5,7 +5,7 @@ from typing import Any, cast
 
 from line_profiler import LineProfiler
 
-from config import settings
+from config import config
 
 FULL_PATH = pathlib.Path(__file__).parent.resolve()
 
@@ -13,7 +13,7 @@ FULL_PATH = pathlib.Path(__file__).parent.resolve()
 def profiler[F](prefixname: str = "") -> Callable[[F], F]:
     def decorator(func: F) -> F:
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            if settings.app_config.environment != "local":
+            if config.app_config.environment != "local":
                 return await func(*args, **kwargs)
 
             line_profiler = LineProfiler()

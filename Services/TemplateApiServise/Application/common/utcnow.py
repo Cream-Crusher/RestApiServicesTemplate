@@ -3,4 +3,4 @@ from typing import Any
 
 
 def utcnow(**kw: Any) -> datetime:
-    return datetime.now(timezone.utc).replace(**kw, tzinfo=None)
+    return datetime.now(timezone.utc).replace(**kw)

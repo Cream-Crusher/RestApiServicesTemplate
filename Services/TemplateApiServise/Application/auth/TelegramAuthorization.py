@@ -8,10 +8,10 @@ from aiogram.utils.web_app import (
 from fastapi import Depends, HTTPException
 from fastapi.security.api_key import APIKeyHeader
 
-from config import EnvironmentEnum, settings
+from config import EnvironmentEnum, config
 from Services.TemplateApiServise.Application.common.utcnow import utcnow
 
-is_local = settings.app_config.environment == EnvironmentEnum.LOCAL
+is_local = config.app_config.environment == EnvironmentEnum.LOCAL
 
 
 def init_data_dependency(
@@ -25,7 +25,7 @@ def init_data_dependency(
                 hash="",
             )
 
-        return safe_parse_webapp_init_data(token=settings.bot_config.token, init_data=auth)
+        return safe_parse_webapp_init_data(token=config.bot_config.token, init_data=auth)
     except ValueError:
         raise HTTPException(403, detail="Invalid init data signature")
 

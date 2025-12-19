@@ -3,7 +3,7 @@ from typing import Any
 from loguru import logger
 from posthog import Posthog
 
-from config import settings
+from config import config
 
 
 class PosthogManager:
@@ -18,7 +18,6 @@ class PosthogManager:
             properties={
                 "referral": referral if referral else "self",
                 **user_data,
-                "$set": {**user_data, "referral": referral},
             },
         )
 
@@ -26,6 +25,4 @@ class PosthogManager:
         self.posthog.capture(distinct_id=user_id, event=state, properties=data)  # type: ignore
 
 
-posthog_manager: PosthogManager = PosthogManager(
-    token=settings.posthog_config.token, host=settings.posthog_config.host
-)
+posthog_manager: PosthogManager = PosthogManager(token=config.posthog_config.token, host=config.posthog_config.host)

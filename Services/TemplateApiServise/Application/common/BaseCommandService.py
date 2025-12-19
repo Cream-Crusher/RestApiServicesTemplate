@@ -30,6 +30,8 @@ class BaseCommandService[T, I]:
         if keys:
             await self.cache_service.delete(keys=keys)
 
+        await self.cache_service.delete(keys=f"{self.model.__tablename__}:all")
+
     async def update(
         self, model_id: I, update_model: BaseModel | dict, keys: Iterable[str] | str | None = None
     ) -> None:
@@ -42,11 +44,17 @@ class BaseCommandService[T, I]:
         await get_session().execute(query)
         if keys:
             await self.cache_service.delete(keys=keys)
-        await self.cache_service.delete(keys=f"{self.model.__tablename__}:{model_id}")
+
+        await self.cache_service.delete(
+            keys=[f"{self.model.__tablename__}:{model_id}", f"{self.model.__tablename__}:all"]
+        )
 
     async def delete(self, model_id: I, keys: Iterable[str] | str | None = None) -> None:
         query = delete(self.model).where(self.model.id == model_id)  # type: ignore
         await get_session().execute(query)
         if keys:
             await self.cache_service.delete(keys=keys)
-        await self.cache_service.delete(keys=f"{self.model.__tablename__}:{model_id}")
+
+        await self.cache_service.delete(
+            keys=[f"{self.model.__tablename__}:{model_id}", f"{self.model.__tablename__}:all"]
+        )

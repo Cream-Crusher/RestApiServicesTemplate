@@ -6,9 +6,9 @@ import aioboto3
 from loguru import logger
 from types_aiobotocore_s3 import S3Client
 
-from config import DatabaseConfig, settings
+from config import DatabaseConfig, config
 
-Database: DatabaseConfig = settings.database_config
+Database: DatabaseConfig = config.database_config
 
 
 class S3Context:
@@ -38,7 +38,7 @@ class S3Context:
 
 
 s3_context: S3Context = S3Context(
-    endpoint=settings.minio_config.endpoint,
-    access_key=settings.minio_config.access_key,
-    secret_key=settings.minio_config.secret_key,
+    endpoint=config.minio_config.endpoint,
+    access_key=config.minio_config.access_key,
+    secret_key=config.minio_config.secret_key,
 )

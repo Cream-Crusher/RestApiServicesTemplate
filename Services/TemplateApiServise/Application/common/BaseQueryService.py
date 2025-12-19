@@ -17,11 +17,11 @@ class BaseQueryService[T, I]:
         self.model: type[T] = model
         self.cache_service = cache_service
 
-    async def set_and_return[TM](self, cached_key: str, real_model: T, callback_dto: Callable[..., TM]) -> TM:
-        real_model = callback_dto.model_validate(real_model, from_attributes=True)
-        await self.cache_service.set(cached_key, real_model)
+    async def set_and_return[TM](self, cached_key: str, model: T, callback_dto: Callable[..., TM]) -> TM:
+        model_dto = callback_dto.model_validate(model, from_attributes=True)
+        await self.cache_service.set(cached_key, model_dto)
 
-        return real_model
+        return model_dto
 
     async def get_by_id[TM](self, model_id: I, callback_dto: Callable[..., TM]) -> TM | None:  # type: ignore
         cached_key = f"{self.model.__tablename__}:{model_id}"
@@ -30,7 +30,20 @@ class BaseQueryService[T, I]:
         if cached_model:
             return cached_model
 
-        real_model: T = (
-            await self.model.select().where(self.model.id == model_id).one_or_raise(ModelNotFound(self.model))
+        model: T = await self.model.select().where(self.model.id == model_id).one_or_raise(ModelNotFound(self.model))
+        return await self.set_and_return(cached_key, model, callback_dto)
+
+    async def get_all[TM](self, callback_dto: Callable[..., TM]) -> list[TM] | None:  # type: ignore
+        cached_key = f"{self.model.__tablename__}:all"
+        cached_model = await self.cache_service.get(key=cached_key, callback=list[callback_dto])
+
+        if cached_model:
+            return cached_model
+
+        models_dto: T = (
+            await self.model.select()
+            .where(self.model.active.is_(True))
+            .all_map(lambda model: callback_dto.model_validate(model, from_attributes=True))
         )
-        return await self.set_and_return(cached_key, real_model, callback_dto)
+        await self.cache_service.set(cached_key, models_dto)
+        return models_dto

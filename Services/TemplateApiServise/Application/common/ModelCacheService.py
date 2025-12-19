@@ -19,7 +19,7 @@ class ModelCacheService:
     def __init__(self, cache: RedisCacheRepository):
         self.cache = cache
 
-    async def get[T](self, key: str, callback: Callable[..., T]) -> T | None:  # type: ignore
+    async def get[T](self, key: str, callback: Callable[..., T]) -> list[T] | T | None:  # type: ignore
         """
         get cache model by key
 
@@ -35,7 +35,7 @@ class ModelCacheService:
                 return None
             elif get_origin(callback) is list:
                 item_type = get_args(callback)[0]
-                return [item_type(**item) for item in json.loads(cached_model)]  # type: ignore
+                return [item_type(**json.loads(item)) for item in json.loads(cached_model)]  # type: ignore
             elif cached_model:
                 return callback(**json.loads(cached_model))
 
@@ -86,12 +86,9 @@ class ModelCacheService:
                 await self.cache.delete(*keys)
 
     async def delete_by_pattern(self, pattern: str) -> None:
-        while True:
-            cursor, keys = await self.cache.scan(match=pattern)
-            if keys:
-                await self.cache.delete(*keys)
-            if not cursor:
-                break
+        _, keys = await self.cache.scan(match=pattern, count=-1)
+        if keys:
+            await self.cache.delete(*keys)
 
 
 model_cache_service = ModelCacheService(cache=cache_repository_instance)  # type: ignore

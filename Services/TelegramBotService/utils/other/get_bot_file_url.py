@@ -22,7 +22,7 @@ async def get_bot_file_url(file_id: str, bucket_name: str = "general", content_t
 
     file_url: str = await s3_manager.upload(
         body=object_data,
-        object_name=f"{file_id}.png",
+        object_name=f"{file_id}",
         bucket_name=bucket_name,
         content_type=content_type,
     )
