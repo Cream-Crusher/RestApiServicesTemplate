@@ -3,8 +3,8 @@ from io import BytesIO
 from typing import Annotated, Literal
 
 import filetype
-from PIL import Image
 from fastapi import APIRouter, File, UploadFile
+from PIL import Image
 
 from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Persistence.Repository.S3.MinioRepository import s3_manager

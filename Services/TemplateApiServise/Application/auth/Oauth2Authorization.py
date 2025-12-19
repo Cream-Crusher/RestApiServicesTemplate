@@ -8,9 +8,9 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import BaseModel
 
+from config import config
 from Services.TemplateApiServise.Application.common.utcnow import utcnow
 from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
-from config import config
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=config.oauth2.token_url, scheme_name=config.oauth2.scheme_name, auto_error=False
