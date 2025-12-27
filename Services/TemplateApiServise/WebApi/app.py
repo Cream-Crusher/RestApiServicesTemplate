@@ -3,9 +3,9 @@ from typing import Literal
 
 import uvicorn
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from sqlalchemy.exc import IntegrityError
-from starlette.middleware.cors import CORSMiddleware
 from starlette_context import middleware, plugins
 
 from config import EnvironmentEnum, config
@@ -17,6 +17,8 @@ from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
     ModelNotFound,
 )
 from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import model_not_found_error_handler
+from Services.TemplateApiServise.Application.exceptions.RateLimitError import RateLimitError
+from Services.TemplateApiServise.Application.exceptions.RateLimitErrorHandler import rate_limit_error_handler
 from Services.TemplateApiServise.WebApi.Controllers.AdminController import admins_router
 from Services.TemplateApiServise.WebApi.Controllers.S3Controller import simple_storage_service_router
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router
@@ -81,9 +83,10 @@ app.include_router(simple_storage_service_router, tags=["S3 | Simple Storage Ser
 # app.include_router(bot_router, tags=["bot webhook"])
 
 # Exceptions Handlers
+app.add_exception_handler(BaseApiError, base_api_error_handler)
 app.add_exception_handler(IntegrityError, integrity_error_handler)
 app.add_exception_handler(ModelNotFound, model_not_found_error_handler)
-app.add_exception_handler(BaseApiError, base_api_error_handler)
+app.add_exception_handler(RateLimitError, rate_limit_error_handler)
 
 
 # uvicorn

@@ -42,7 +42,7 @@ async def start(
     await message.answer(
         text=StartText.start,
         reply_markup=IKB().row(
-            text="Перейти в игру1",
+            text="Перейти в игру",
             web_app=WebAppInfo(url=config.bot_config.web_app_url),  # type: ignore
         ),  # type: ignore
     )

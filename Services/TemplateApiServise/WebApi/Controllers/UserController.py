@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status
 
+from Infrastructure.RateLimit.RateLimit import ip_limiter
 from Services.TemplateApiServise.Application.common.BaseResponse import BaseResponse
 from Services.TemplateApiServise.Application.Users.user_dtos import (
     CreateUserDTO,
@@ -25,6 +26,7 @@ users_router = APIRouter()
 )
 @transaction()  # type: ignore
 async def get_all_user_api() -> list[GetUserByIdDTO]:
+    await ip_limiter.acquire("new")
     return await user_query_service.get_all(GetUserByIdDTO)
 
 

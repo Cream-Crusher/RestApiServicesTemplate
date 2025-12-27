@@ -1,12 +1,10 @@
-from http import HTTPStatus
-
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
 
-PER_SECONDS_LIMIT = 50
+RPS_LIMIT = 1
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
@@ -16,8 +14,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         counter = await cache_repository_instance.incr(key)
         if counter == 1:
-            await cache_repository_instance.expire(key, PER_SECONDS_LIMIT)
-        elif counter > PER_SECONDS_LIMIT:
-            return JSONResponse(status_code=HTTPStatus.TOO_MANY_REQUESTS, content="Too Many Requests")
+            await cache_repository_instance.expire(key, RPS_LIMIT)
+        elif counter > RPS_LIMIT:
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "status": "error",
+                    "error": "TOO_MANY_REQUESTS",
+                    "message": f"Too Many Requests by {key}",
+                    "detail": {"key": key, "rps_limit": RPS_LIMIT},
+                },
+            )
 
         return await call_next(request)

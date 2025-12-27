@@ -11,7 +11,6 @@ from Services.TemplateApiServise.Application.auth.Oauth2Authorization import (
     verify_password,
 )
 from Services.TemplateApiServise.Application.common.BaseCommandService import BaseCommandService
-from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService, model_cache_service
 from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.Admin import Admin
@@ -19,8 +18,8 @@ from Services.TemplateApiServise.Domain.Admin import Admin
 
 class AdminCommandService(BaseCommandService[Admin, uuid.UUID]):
 
-    def __init__(self, cache_service: ModelCacheService = model_cache_service):
-        super().__init__(model=Admin, cache_service=cache_service)
+    def __init__(self):
+        super().__init__(model=Admin)
 
     async def create_admin(self, admin: AdminDTO, create_admin_user_dto: CreateAdminDTO):
         real_admin = await Admin.select().where(Admin.id == admin.id).one_or_raise(ModelNotFound(Admin))

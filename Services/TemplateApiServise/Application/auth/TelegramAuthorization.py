@@ -41,6 +41,6 @@ def get_me_telegram(
 ) -> WebAppUser:
 
     if auth_data.user is None:
-        raise BaseApiError(status_code=403, error="Forbidden", message="auth_data.user is None")
+        raise BaseApiError(status_code=403, error="FORBIDDEN", message="auth_data.user is None")
 
     return auth_data.user

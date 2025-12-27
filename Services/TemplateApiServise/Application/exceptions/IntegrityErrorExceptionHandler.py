@@ -6,12 +6,12 @@ from starlette import status
 
 def integrity_error_handler(_: Request, exc: Exception) -> JSONResponse:
     if isinstance(exc, IntegrityError):
-        error = "IntegrityError"
+        error = "INTEGRITY_ERROR"
         orig = exc.orig.__str__()
         if "duplicate key" in orig:
-            error = "DuplicateKey"
+            error = "DUPLICATE_KEY"
         elif "foreign key" in orig:
-            error = "ForeignKey"
+            error = "FOREIGN_KEY"
 
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
