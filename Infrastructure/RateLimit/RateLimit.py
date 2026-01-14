@@ -1,4 +1,4 @@
-from Services.TemplateApiServise.Application.exceptions.RateLimitError import RateLimitError
+from Services.TemplateApiServise.Application.common.exceptions.RateLimitError import RateLimitError
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
 from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import MemCacheRepository
 from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import RedisCacheRepository

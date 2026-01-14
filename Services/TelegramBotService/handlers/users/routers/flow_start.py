@@ -8,7 +8,7 @@ from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.BotMiddlewares.UserMW import TelegramUser
 from Services.TelegramBotService.handlers.users.texts.start_text import StartText
 from Services.TelegramBotService.utils.keyboard.ikb import IKB
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFound import (
     ModelNotFound,
 )
 from Services.TemplateApiServise.Application.Users.user_dtos import GetUserByIdDTO

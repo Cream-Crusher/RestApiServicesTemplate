@@ -7,7 +7,7 @@ from Services.TemplateApiServise.Application.common.ModelCacheService import (
     ModelCacheService,
     model_cache_service,
 )
-from Services.TemplateApiServise.Application.common.utcnow import utcnow
+from Services.TemplateApiServise.Application.common.utils.utcnow import utcnow
 from Services.TemplateApiServise.Persistence.Database.DbContext import get_session
 
 

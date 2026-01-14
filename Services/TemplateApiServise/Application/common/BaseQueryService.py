@@ -1,10 +1,10 @@
 from collections.abc import Callable
 
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Application.common.ModelCacheService import (
     ModelCacheService,
     model_cache_service,
 )
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
 
 
 class BaseQueryService[T, I]:

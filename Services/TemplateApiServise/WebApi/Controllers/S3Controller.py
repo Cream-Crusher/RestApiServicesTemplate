@@ -7,7 +7,7 @@ import filetype
 from fastapi import APIRouter, File, UploadFile
 from PIL import Image
 
-from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.common.exceptions.BaseApiError import BaseApiError
 from Services.TemplateApiServise.Persistence.Repository.S3.MinioRepository import s3_manager
 
 simple_storage_service_router = APIRouter()

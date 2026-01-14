@@ -86,7 +86,7 @@ class ModelCacheService:
                 await self.cache.delete(*keys)
 
     async def delete_by_pattern(self, pattern: str) -> None:
-        _, keys = await self.cache.scan(match=pattern, count=-1)
+        _, keys = await self.cache.scan(match=pattern, count=1000)
         if keys:
             await self.cache.delete(*keys)
 

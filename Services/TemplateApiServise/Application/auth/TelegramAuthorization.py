@@ -9,8 +9,8 @@ from fastapi import Depends
 from fastapi.security.api_key import APIKeyHeader
 
 from config import EnvironmentEnum, config
-from Services.TemplateApiServise.Application.common.utcnow import utcnow
-from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.common.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.common.utils.utcnow import utcnow
 
 is_local = config.app_config.environment == EnvironmentEnum.LOCAL
 

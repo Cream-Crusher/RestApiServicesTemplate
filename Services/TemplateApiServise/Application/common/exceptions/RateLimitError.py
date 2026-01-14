@@ -8,8 +8,7 @@ class RateLimitError(Exception):
     def __str__(self):
         return str(
             {
-                "message": f"Too Many Requests by {self.key}", "detail": {
-                    "key": self.key, "rps_limit": self.max_calls / self.period_seconds
-                }
+                "message": f"Too Many Requests by {self.key}",
+                "detail": {"key": self.key, "rps_limit": round(self.max_calls / self.period_seconds, 2)},
             }
         )

@@ -11,8 +11,8 @@ from Services.TemplateApiServise.Application.auth.Oauth2Authorization import (
     verify_password,
 )
 from Services.TemplateApiServise.Application.common.BaseCommandService import BaseCommandService
-from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import ModelNotFound
+from Services.TemplateApiServise.Application.common.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFound import ModelNotFound
 from Services.TemplateApiServise.Domain.Admin import Admin
 
 

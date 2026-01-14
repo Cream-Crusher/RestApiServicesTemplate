@@ -14,11 +14,11 @@ class BaseUserDTO(BaseModel):
 
     @field_validator("last_name", mode="before")
     def validate_last_name(cls, v):
-        return v.strip()
+        return v.strip() if v else None
 
     @field_validator("username", mode="before")
     def validate_username(cls, v):
-        return v.strip()
+        return v.strip() if v else None
 
 
 class CreateUserDTO(BaseUserDTO): ...

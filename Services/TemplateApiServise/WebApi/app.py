@@ -10,15 +10,19 @@ from starlette_context import middleware, plugins
 
 from config import EnvironmentEnum, config
 from Services.TelegramBotService.get_bot import get_bot
-from Services.TemplateApiServise.Application.exceptions.BaseApiError import BaseApiError
-from Services.TemplateApiServise.Application.exceptions.BaseApiErrorHandler import base_api_error_handler
-from Services.TemplateApiServise.Application.exceptions.IntegrityErrorExceptionHandler import integrity_error_handler
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+from Services.TemplateApiServise.Application.common.exceptions.BaseApiError import BaseApiError
+from Services.TemplateApiServise.Application.common.exceptions.BaseApiErrorHandler import base_api_error_handler
+from Services.TemplateApiServise.Application.common.exceptions.IntegrityErrorExceptionHandler import (
+    integrity_error_handler,
+)
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFound import (
     ModelNotFound,
 )
-from Services.TemplateApiServise.Application.exceptions.ModelNotFoundHandler import model_not_found_error_handler
-from Services.TemplateApiServise.Application.exceptions.RateLimitError import RateLimitError
-from Services.TemplateApiServise.Application.exceptions.RateLimitErrorHandler import rate_limit_error_handler
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFoundHandler import (
+    model_not_found_error_handler,
+)
+from Services.TemplateApiServise.Application.common.exceptions.RateLimitError import RateLimitError
+from Services.TemplateApiServise.Application.common.exceptions.RateLimitErrorHandler import rate_limit_error_handler
 from Services.TemplateApiServise.WebApi.Controllers.AdminController import admins_router
 from Services.TemplateApiServise.WebApi.Controllers.S3Controller import simple_storage_service_router
 from Services.TemplateApiServise.WebApi.Controllers.UserController import users_router

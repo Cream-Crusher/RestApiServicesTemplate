@@ -3,10 +3,10 @@ from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
-from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService
-from Services.TemplateApiServise.Application.exceptions.ModelNotFound import (
+from Services.TemplateApiServise.Application.common.exceptions.ModelNotFound import (
     ModelNotFound,
 )
+from Services.TemplateApiServise.Application.common.ModelCacheService import ModelCacheService
 from Services.TemplateApiServise.Application.Users.user_dtos import (
     CreateUserDTO,
     UpdateUserDTO,
