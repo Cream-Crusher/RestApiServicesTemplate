@@ -25,6 +25,6 @@ def connect_cache_repository_instance(
             return MemCacheRepository()
 
 
-cache_repository_instance: MemCacheRepository | RedisCacheRepository = connect_cache_repository_instance(
+cache_repository_instance: RedisCacheRepository | MemCacheRepository = connect_cache_repository_instance(
     "redis", config.redis_config.host
 )

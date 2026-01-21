@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from Infrastructure.RateLimit.RateLimit import ip_limiter
+from Infrastructure.Redis.RateLimit import ip_limiter
 from Services.TemplateApiServise.Application.common.BaseResponse import BaseResponse
 from Services.TemplateApiServise.Application.Users.user_dtos import (
     CreateUserDTO,

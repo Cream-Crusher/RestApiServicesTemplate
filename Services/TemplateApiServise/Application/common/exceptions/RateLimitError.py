@@ -1,6 +1,6 @@
 class RateLimitError(Exception):
 
-    def __init__(self, key: str, max_calls: int, period_seconds: int):
+    def __init__(self, key: str, max_calls: int, period_seconds: float):
         self.key = key
         self.max_calls = max_calls
         self.period_seconds = period_seconds

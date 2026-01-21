@@ -1,19 +1,19 @@
+from redis.asyncio import Redis
+
 from Services.TemplateApiServise.Application.common.exceptions.RateLimitError import RateLimitError
 from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
-from Services.TemplateApiServise.Persistence.Repository.Cache.MemCacheRepository import MemCacheRepository
-from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import RedisCacheRepository
 
 
 class RateLimit:
-    def __init__(self, cache: MemCacheRepository | RedisCacheRepository, max_calls: int, period_seconds: int):
-        self.cache = cache
+    def __init__(self, redis_client: Redis, max_calls: int, period_seconds: float):
+        self.redis_client = redis_client
         self.max_calls = max_calls
         self.period = period_seconds
 
     async def acquire(self, key: str = "all"):
-        counter = await self.cache.incr(key)
+        counter = await self.redis_client.incr(key)
         if counter == 1:
-            await self.cache.expire(key, self.period)
+            await self.redis_client.expire(key, self.period)
         if counter > self.max_calls:
             raise RateLimitError(key, self.max_calls, self.period)
 
