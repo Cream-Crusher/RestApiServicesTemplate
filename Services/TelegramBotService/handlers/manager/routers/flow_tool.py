@@ -24,6 +24,11 @@ from Services.TemplateApiServise.Persistence.Database.DbContext import transacti
 router = Router()
 
 
+@router.message(Command("state_clear"), ManagerFilter())
+async def get_file_id_tool(message: Message, state: FSMContext) -> None:
+    await state.clear()
+
+
 @router.message(Command("get_file_id"), ManagerFilter())
 async def get_file_id_tool(message: Message, state: FSMContext) -> None:
     await state.set_state(state=ToolState.get_file_id)
@@ -32,6 +37,17 @@ async def get_file_id_tool(message: Message, state: FSMContext) -> None:
 @router.message(Command("get_file_url"), ManagerFilter())
 async def get_file_url_tool(message: Message, state: FSMContext) -> None:
     await state.set_state(state=ToolState.get_file_url)
+
+
+@router.message(Command("get_custom_emoji_id"), ManagerFilter())
+async def get_file_id_tool(message: Message, state: FSMContext) -> None:
+    if message.entities:
+        for entity in message.entities:
+            if entity.type == "custom_emoji":
+                emoji_id = entity.custom_emoji_id
+                await message.answer(
+                    f'ID кастомного эмодзи: {emoji_id}\n\n<tg-emoji emoji-id="{{}}emoji_id">🏆</tg-emoji>'
+                )
 
 
 @router.message(ToolState.get_file_id)
@@ -152,6 +168,29 @@ async def broadcast_chat_botton_on(msg: Message, telegram_user: TelegramUser, co
     for user_id in command.args.splitlines():
         await send_copy_message(
             int(user_id.strip()),
+            msg_chat=msg.chat.id,
+            msg_id=msg.reply_to_message.message_id,
+            parse_mode="markdown",
+        )
+    await msg.answer("ok")
+
+
+@router.message(Command("broadcast_not_user_id"))
+@transaction()
+async def broadcast_chat_botton_on(msg: Message, telegram_user: TelegramUser, command: CommandObject):
+    if str(telegram_user.id) not in ["1001631806"]:
+        return
+
+    assert msg.reply_to_message and command.args
+
+    for user in (
+        await User.select()
+        .where(User.id != [int(user_id) for user_id in command.args.splitlines()])
+        .order_by(User.created_at.asc())
+        .all()
+    ):
+        await send_copy_message(
+            user_id=user.id,
             msg_chat=msg.chat.id,
             msg_id=msg.reply_to_message.message_id,
             parse_mode="markdown",

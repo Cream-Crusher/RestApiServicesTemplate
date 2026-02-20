@@ -7,7 +7,7 @@ from aiogram.types import MessageId
 from Infrastructure.PostHog.PosthogManager import posthog_manager
 from Services.TelegramBotService.get_bot import get_bot
 
-lim = anyio.CapacityLimiter(2)
+lim = anyio.CapacityLimiter(5)
 
 
 async def send_copy_message(user_id: int, msg_id: int, msg_chat: int, **kw: Any) -> None | bool:

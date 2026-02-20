@@ -1,5 +1,6 @@
+from redis import Redis
 from rq import Queue
 
-from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
+from config import config
 
-task_queue = Queue("default", connection=cache_repository_instance)
+task_queue = Queue(connection=Redis(config.redis_config.host))
