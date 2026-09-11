@@ -1,11 +1,11 @@
 from redis.asyncio import Redis
 
+from Infrastructure.Redis.Client import async_redis_client
 from Services.TemplateApiServise.Application.common.exceptions.RateLimitError import RateLimitError
-from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
 
 
 class RateLimit:
-    def __init__(self, redis_client: Redis, max_calls: int, period_seconds: float):
+    def __init__(self, redis_client: Redis, max_calls: int, period_seconds: int):
         self.redis_client = redis_client
         self.max_calls = max_calls
         self.period = period_seconds
@@ -18,5 +18,5 @@ class RateLimit:
             raise RateLimitError(key, self.max_calls, self.period)
 
 
-ip_limiter = RateLimit(cache_repository_instance, 2, 10)
+ip_limiter = RateLimit(async_redis_client, 2, 10)
 # Пример использования: await ip_limiter.acquire(x_forwarded_for)

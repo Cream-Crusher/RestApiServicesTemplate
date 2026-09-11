@@ -12,39 +12,37 @@ from Services.TelegramBotService.start_polling_bot import start_polling_bot
 from Services.TemplateApiServise.WebApi.app import uvicorn_server
 
 
-def run_migrations():
+def run_migrations() -> None:
     alembic_cfg = Config("alembic.ini")
     alembic_cfg.set_main_option("sqlalchemy.url", config.database_config.url)
     command.upgrade(alembic_cfg, "head")
 
 
-async def start_web(tg: TaskGroup):
+async def start_web(task_group: TaskGroup) -> None:
     await uvicorn_server.serve()
+    task_group.cancel_scope.cancel()
 
-    tg.cancel_scope.cancel()
 
-
-async def main():
+async def run_services() -> None:
     setup_logging(config.app_config.log_level)
-    parse_args = setup_argparse()
+    parsed_args = setup_argparse()
+    if not parsed_args.server and not parsed_args.bot:
+        logger.error("Select --server or --bot. Use --help for details.")
+        return
 
-    if all(arg is False for arg in parse_args.__dict__.values()):
-        logger.critical("Please check your arguments or --help  show this help message and exit.")
-        raise SystemExit
+    async with anyio.create_task_group() as task_group:
+        task_group.start_soon(setup_scheduler)
 
-    async with anyio.create_task_group() as tg:
-        tg.start_soon(setup_scheduler)  # type: ignore
+        if parsed_args.server:
+            task_group.start_soon(start_web, task_group)
 
-        if parse_args.server:
-            tg.start_soon(start_web, tg)
-
-        if parse_args.bot:
-            tg.start_soon(start_polling_bot)
+        if parsed_args.bot:
+            task_group.start_soon(start_polling_bot)
 
 
 if __name__ == "__main__":
     try:
         run_migrations()
-        anyio.run(main)
-    except SystemExit:  # /NOSONAR
+        anyio.run(run_services)
+    except SystemExit:  # NOSONAR
         logger.info("Exiting")

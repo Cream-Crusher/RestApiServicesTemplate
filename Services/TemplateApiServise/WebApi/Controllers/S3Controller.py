@@ -24,7 +24,7 @@ async def upload_file(bucket_name: Literal["general"], file: Annotated[UploadFil
             message="filename and content_type and size are required",
             detail={"filename": file.filename, "content_type": file.content_type, "size": file.size},
         )
-    elif file.content_type in ALLOWED_EXTENSIONS:
+    elif file.content_type not in ALLOWED_EXTENSIONS:
         raise BaseApiError(
             status_code=400,
             error="FILE_NOT_SUPPORTED",

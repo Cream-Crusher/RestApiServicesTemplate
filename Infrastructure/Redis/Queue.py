@@ -1,6 +1,5 @@
-from redis import Redis
 from rq import Queue
 
-from config import config
+from Infrastructure.Redis.Client import redis_client
 
-task_queue = Queue(connection=Redis(config.redis_config.host))
+task_queue = Queue(connection=redis_client)

@@ -73,7 +73,7 @@ class DatabaseConfig(BaseSettings):
 
 
 class RedisConfig(BaseSettings):
-    host: str | None = None
+    host: str = "localhost"
 
     class Config:
         env_prefix: str = "REDIS_"

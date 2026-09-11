@@ -4,19 +4,15 @@ from contextlib import suppress
 from typing import Any, get_args, get_origin, overload
 
 from pydantic import BaseModel, ValidationError
+from redis.asyncio import Redis
 from redis.exceptions import ConnectionError
 
-from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import (
-    cache_repository_instance,
-)
-from Services.TemplateApiServise.Persistence.Repository.Cache.RedisCacheRepository import (
-    RedisCacheRepository,
-)
+from Infrastructure.Redis.Client import async_redis_client
 
 
 class ModelCacheService:
 
-    def __init__(self, cache: RedisCacheRepository):
+    def __init__(self, cache: Redis):
         self.cache = cache
 
     async def get[T](self, key: str, callback: Callable[..., T]) -> list[T] | T | None:  # type: ignore
@@ -91,4 +87,4 @@ class ModelCacheService:
             await self.cache.delete(*keys)
 
 
-model_cache_service = ModelCacheService(cache=cache_repository_instance)  # type: ignore
+model_cache_service = ModelCacheService(cache=async_redis_client)

@@ -2,7 +2,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from Services.TemplateApiServise.Persistence.Repository.Cache.CacheInstanceRepository import cache_repository_instance
+from Infrastructure.Redis.Client import async_redis_client
 
 RPS_LIMIT = 1
 
@@ -12,9 +12,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> JSONResponse | Response:
         key = f"rate:{request.client.host}:{request.url.path}"
 
-        counter = await cache_repository_instance.incr(key)
+        counter = await async_redis_client.incr(key)
         if counter == 1:
-            await cache_repository_instance.expire(key, RPS_LIMIT)
+            await async_redis_client.expire(key, RPS_LIMIT)
         elif counter > RPS_LIMIT:
             return JSONResponse(
                 status_code=429,
