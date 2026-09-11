@@ -13,11 +13,11 @@ class BaseUserDTO(BaseModel):
     username: str | None = Field(default=None, min_length=1)
 
     @field_validator("last_name", mode="before")
-    def validate_last_name(cls, v):
+    def validate_last_name(self, v):
         return v.strip() if v else None
 
     @field_validator("username", mode="before")
-    def validate_username(cls, v):
+    def validate_username(self, v):
         return v.strip() if v else None
 
 

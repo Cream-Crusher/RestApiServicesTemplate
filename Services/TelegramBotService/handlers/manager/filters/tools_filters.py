@@ -2,7 +2,7 @@ from aiogram.filters import Filter
 from aiogram.types import Message
 
 from Services.TemplateApiServise.Domain.User import User, UserRoleEnum
-from Services.TemplateApiServise.Persistence.Database.DbContext import get_session, transaction
+from Services.TemplateApiServise.Persistence.Database.DbContext import transaction
 
 
 class ManagerFilter(Filter):

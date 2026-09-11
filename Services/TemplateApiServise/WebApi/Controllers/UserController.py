@@ -22,7 +22,6 @@ users_router = APIRouter()
     path="",
     name="get all user",
     status_code=status.HTTP_200_OK,
-    response_model=list[GetUserByIdDTO],
 )
 @transaction()  # type: ignore
 async def get_all_user_api() -> list[GetUserByIdDTO]:
@@ -34,7 +33,6 @@ async def get_all_user_api() -> list[GetUserByIdDTO]:
     path="/{user_id}",
     name="get user by id",
     status_code=status.HTTP_200_OK,
-    response_model=GetUserByIdDTO,
 )
 @transaction()  # type: ignore
 async def get_user_by_id_api(

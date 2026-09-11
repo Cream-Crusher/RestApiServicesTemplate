@@ -1,4 +1,5 @@
 import asyncio
+from typing import Annotated
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import Update
@@ -16,8 +17,8 @@ tasks = set()
 @bot_router.post(f"/bot/{config.bot_config.webhook_path}", include_in_schema=False)
 async def process_tg_webhook(
     update: Update,
-    bot: Bot = Depends(get_bot),
-    dp: Dispatcher = Depends(get_dispatcher),
+    bot: Annotated[Bot, Depends(get_bot)],
+    dp: Annotated[Dispatcher, Depends(get_dispatcher)],
 ):
     task = asyncio.create_task(dp.feed_update(bot, update))
     tasks.add(task)
